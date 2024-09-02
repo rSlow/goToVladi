@@ -1,5 +1,5 @@
-from sqlalchemy import Text, BigInteger, Boolean
-from sqlalchemy.orm import mapped_column
+from sqlalchemy import BigInteger
+from sqlalchemy.orm import mapped_column, Mapped
 
 from goToVladi.core.data.db import dto
 from .base import Base
@@ -9,13 +9,13 @@ class User(Base):
     __tablename__ = "users"
     __mapper_args__ = {"eager_defaults": True}  # TODO eager_defaults
 
-    id = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     tg_id = mapped_column(BigInteger, unique=True, nullable=False)
-    first_name = mapped_column(Text, nullable=True)
-    last_name = mapped_column(Text, nullable=True)
-    username = mapped_column(Text, nullable=True, unique=True)
-    hashed_password = mapped_column(Text, nullable=True)
-    is_bot = mapped_column(Boolean, default=False)
+    first_name: Mapped[str] = mapped_column(nullable=True)
+    last_name: Mapped[str] = mapped_column(nullable=True)
+    username: Mapped[str] = mapped_column(nullable=True, unique=True)
+    hashed_password: Mapped[str] = mapped_column(nullable=True)
+    is_bot: Mapped[bool] = mapped_column(default=False)
 
     def __repr__(self) -> str:
         rez = (

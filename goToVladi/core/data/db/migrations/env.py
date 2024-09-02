@@ -1,5 +1,6 @@
 import asyncio
 import logging.config
+import alembic_postgresql_enum
 
 from alembic import context
 from sqlalchemy import create_engine
@@ -10,7 +11,7 @@ from goToVladi.core.data.db.models import Base
 
 config = context.config
 
-logging.config.fileConfig(config.config_file_name)  # type: ignore
+logging.config.fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
 
@@ -44,7 +45,8 @@ async def run_migrations_online():
     )
 
     async with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(connection=connection,
+                          target_metadata=target_metadata)
 
         await connection.run_sync(do_run_migrations)
 

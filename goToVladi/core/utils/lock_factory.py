@@ -16,7 +16,7 @@ class KeyCheckerLock(Protocol):
         await self.release()
 
 
-class LockFactory(Protocol):  # TODO CHECK USAGES
+class LockFactory(Protocol):  # TODO check usages
     def lock_globally(self) -> KeyCheckerLock:
         raise NotImplementedError
 

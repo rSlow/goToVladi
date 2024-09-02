@@ -25,4 +25,4 @@ def setup_lifespan(app: FastAPI, dishka: AsyncContainer, /, **kwargs: Any):
         )
 
     app.include_router(APIRouter(lifespan=lifespan))
-    # TODO lifespan replace events ahahahah fastapi nice work
+    # lifespan replace events ahahahah fastapi nice work

@@ -65,7 +65,6 @@ async def on_startup(dishka: AsyncContainer, webhook_config: WebhookConfig):
 
     bot = await dishka.get(Bot)
     # dp = await dishka.get(Dispatcher)
-
     await bot.set_webhook(
         url=webhook_url,
         secret_token=webhook_config.secret,

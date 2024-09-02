@@ -12,7 +12,7 @@ from goToVladi.core.scheduler.context import ScheduledContextHolder
 logger = logging.getLogger(__name__)
 
 
-class Scheduler(Protocol):  # TODO Protocol or ABC?
+class Scheduler(Protocol):
     async def start(self):
         raise NotImplementedError
 

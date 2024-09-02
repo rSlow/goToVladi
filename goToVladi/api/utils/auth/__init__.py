@@ -47,7 +47,6 @@ class AuthService:
         )
         try:
             user = await dao.user.get_by_username_with_password(username)
-            # TODO get_by_username ??
         except NoUsernameFound as e:
             raise http_status_401 from e
         if not self._verify_password(password, user.hashed_password or ""):

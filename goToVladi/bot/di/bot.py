@@ -25,7 +25,6 @@ class BotProvider(Provider):
         yield bot
         await bot.session.close()
 
-    # TODO нужен ли alert?
     @provide
     async def bot_alert(self, bot: Bot, bot_config: BotConfig) -> BotAlert:
         return BotAlert(bot, bot_config.log_chat)

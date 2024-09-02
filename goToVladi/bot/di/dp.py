@@ -9,7 +9,7 @@ from dishka import Provider, Scope, provide, AsyncContainer
 from dishka.integrations.aiogram import setup_dishka as setup_aiogram_dishka
 from redis.asyncio import Redis
 
-from goToVladi.bot.apps.router import setup_handlers
+from goToVladi.bot.apps import setup_handlers
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.config.models.storage import StorageConfig, StorageType
 from goToVladi.bot.middlewares import setup_middlewares

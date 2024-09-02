@@ -10,6 +10,7 @@ class BaseError(Exception, ABC):
             self,
             text: str = "",
             user_id: int | None = None,
+            chat_id: int | None = None,
             user: dto.User | None = None,
             alarm: bool | None = False,
             notify_user: str | None = None,
@@ -19,6 +20,7 @@ class BaseError(Exception, ABC):
         super().__init__(args, kwargs)
         self.text = text
         self.user_id = user_id
+        self.chat_id = chat_id
         self.user = user
         self.alarm = alarm
         self.notify_user = notify_user or self.notify_user
@@ -27,6 +29,8 @@ class BaseError(Exception, ABC):
         result_msg = f"Error: {self.text}"
         if self.user_id:
             result_msg += f", by user {self.user_id}"
+        if self.chat_id:
+            result_msg += f", in chat {self.chat_id}"
         if self.notify_user:
             result_msg += f". Information for user: {self.notify_user}"
         return result_msg

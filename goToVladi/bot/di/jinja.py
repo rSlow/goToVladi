@@ -19,7 +19,7 @@ class JinjaProvider(Provider):
             lstrip_blocks=True,
             autoescape=True
         )
-        logger.info("Jinja init:")  # TODO вставить лог инициализации jinja
+        logger.info(f"Jinja init with loader <{loader.__class__.__name__}>")
         return env
 
     @provide
