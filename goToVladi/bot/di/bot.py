@@ -1,26 +1,45 @@
 import logging
-from typing import AsyncIterable
+from typing import AsyncIterable, NewType
 
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats
 from dishka import Provider, Scope, provide
 
 from ..config.models.bot import BotConfig
 from ..views.alert import BotAlert
+from ..views import commands
+
+BotCommandsList = NewType('CommandsList', list[BotCommand])
+
+logger = logging.getLogger(__name__)
 
 
 class BotProvider(Provider):
     scope = Scope.APP
 
     @provide
-    async def get_bot(self, bot_config: BotConfig) -> AsyncIterable[Bot]:
-        logging.getLogger(__name__).info(bot_config.token)
+    async def get_common_commands(self) -> BotCommandsList:
+        return BotCommandsList([
+            # commands.START_COMMAND,
+            commands.HELP_COMMAND,
+            commands.ABOUT_COMMAND,
+            commands.CANCEL_COMMAND
+        ])
+
+    @provide
+    async def get_bot(self, bot_config: BotConfig, bot_commands: BotCommandsList) -> AsyncIterable[Bot]:
+        logger.info(bot_config.token)
         bot = Bot(
             token=bot_config.token,
             default=DefaultBotProperties(
                 parse_mode=ParseMode.HTML, allow_sending_without_reply=True
             )
+        )
+        await bot.set_my_commands(
+            commands=bot_commands,
+            scope=BotCommandScopeAllPrivateChats()
         )
         yield bot
         await bot.session.close()

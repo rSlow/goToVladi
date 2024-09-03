@@ -20,7 +20,7 @@ from goToVladi.core.config.parser.retort import get_base_retort
 from goToVladi.core.di import get_common_providers
 from goToVladi.core.utils import di_visual
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("goToVladi")
 
 
 def main():
@@ -47,8 +47,10 @@ def main():
 
     setup_fastapi_dishka(di_container, api_app)
 
-    setup_callback = partial(on_startup, di_container, webhook_config)
-    api_app.add_event_handler("startup", setup_callback)
+    startup_callback = partial(on_startup, di_container, webhook_config)
+    shutdown_callback = partial(on_shutdown, di_container)
+    api_app.add_event_handler("startup", startup_callback)
+    api_app.add_event_handler("shutdown", shutdown_callback)
 
     logger.info(
         "app prepared with dishka:\n%s",
@@ -70,6 +72,14 @@ async def on_startup(dishka: AsyncContainer, webhook_config: WebhookConfig):
         secret_token=webhook_config.secret,
         # allowed_updates=resolve_update_types(dp),
     )
+
+
+async def on_shutdown(dishka: AsyncContainer):
+    bot: Bot = await dishka.get(Bot)
+    await bot.delete_webhook()
+    logger.info("webhook deleted")
+
+    await dishka.close()
 
 
 def run():

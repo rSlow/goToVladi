@@ -1,6 +1,6 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..base import Base
+from goToVladi.core.data.db.models import Base
 
 
 class RestaurantCuisine(Base):

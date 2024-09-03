@@ -1,5 +1,6 @@
 __all__ = [
     "handlers",
+    "dialogs",
 ]
 
-from . import handlers
+from . import handlers, dialogs

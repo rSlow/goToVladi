@@ -14,5 +14,5 @@ ABOUT_COMMAND = BotCommand(
 )
 CANCEL_COMMAND = BotCommand(
     command="cancel",
-    description="отмена начатого диалога"
+    description="на главную"
 )

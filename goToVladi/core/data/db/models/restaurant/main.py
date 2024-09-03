@@ -4,7 +4,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
-from ..base import Base
+from goToVladi.core.data.db.models import Base
 
 
 class RestaurantType(Enum):
@@ -25,16 +25,23 @@ class Restaurant(Base):
     rating: Mapped[float]
     priority: Mapped[float] = mapped_column(default=0)
 
-    cuisine: Mapped[int] = mapped_column(
-        ForeignKey('cuisines.id'), nullable=True
+    cuisine_id: Mapped[int] = mapped_column(
+        ForeignKey('restaurant_cuisines.id'), nullable=True
     )
 
+    cuisine = relationship("RestaurantCuisine", foreign_keys=cuisine_id)
     phones = relationship(
-        "RestaurantPhone"
+        "RestaurantPhone",
+        back_populates="restaurant",
+        foreign_keys="RestaurantPhone.restaurant_id",
     )
     photos = relationship(
-        "RestaurantPhoto"
+        "RestaurantPhoto",
+        back_populates="restaurant",
+        foreign_keys="RestaurantPhoto.restaurant_id",
     )
     socials = relationship(
-        "RestaurantSocial"
+        "RestaurantSocial",
+        back_populates="restaurant",
+        foreign_keys="RestaurantSocial.restaurant_id",
     )

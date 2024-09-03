@@ -8,9 +8,11 @@ from aiogram.exceptions import AiogramError
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types.error_event import ErrorEvent
 from aiogram.utils.markdown import html_decoration as hd
-from aiogram_dialog.api.exceptions import UnknownIntent
+from aiogram_dialog import DialogManager, StartMode
+from aiogram_dialog.api.exceptions import UnknownIntent, NoContextError
 
-from core.utils.exceptions.base import BaseError
+from goToVladi.bot.apps.base.states import MainMenuSG
+from goToVladi.core.utils.exceptions.base import BaseError
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +51,22 @@ async def clear_unknown_intent(error: ErrorEvent, bot: Bot):
     )
 
 
+async def no_context(error: ErrorEvent, bot: Bot, dialog_manager: DialogManager):
+    logger.exception(
+        "No dialog context found",
+        error.exception.__class__.__name__,
+        error.update.model_dump(exclude_none=True),
+        exc_info=error.exception,
+    )
+    message = error.update.message or error.update.callback_query.message
+    if message:
+        await bot.send_message(
+            chat_id=message.chat.id,
+            text="Произошла ошибка бота, мы вынуждены вернуть вас в главное меню, и уже работаем над устранением 🛠"
+        )
+        await dialog_manager.start(MainMenuSG.state, mode=StartMode.RESET_STACK)
+
+
 async def handle(error: ErrorEvent, log_chat_id: int, bot: Bot):
     logger.exception(
         "Cause unexpected exception %s, by processing %s",
@@ -80,6 +98,10 @@ def setup(dp: Dispatcher, log_chat_id: int):
     dp.errors.register(
         clear_unknown_intent,
         ExceptionTypeFilter(UnknownIntent)
+    )
+    dp.errors.register(
+        no_context,
+        ExceptionTypeFilter(NoContextError)
     )
     dp.errors.register(
         partial(handle, log_chat_id=log_chat_id)
