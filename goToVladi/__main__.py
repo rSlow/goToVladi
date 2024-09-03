@@ -5,10 +5,14 @@ import uvicorn
 from aiogram import Bot
 from dishka import make_async_container, AsyncContainer
 from dishka.integrations.fastapi import setup_dishka as setup_fastapi_dishka
+from fastapi import FastAPI
 
+from goToVladi.api import create_app as create_api_app
+from goToVladi.api.admin import mount_admin_app
+from goToVladi.api.admin.ulits.settings import set_admin_settings
+from goToVladi.api.config.models import ApiAppConfig
 from goToVladi.api.config.parser.main import load_config as load_api_config
 from goToVladi.api.di import get_api_providers
-from goToVladi.api.main import create_app as create_api_app
 from goToVladi.api.utils.webhook.handler import SimpleRequestHandler
 from goToVladi.api.utils.webhook.setup import setup_lifespan
 from goToVladi.bot.config.models.webhook import WebhookConfig
@@ -33,12 +37,13 @@ def main():
     bot_config = load_bot_config(paths, retort)
     webhook_config = bot_config.bot.webhook
 
+    set_admin_settings(api_config.admin)
+
     di_container = make_async_container(
         *get_common_providers(),
         *get_bot_providers(),
         *get_api_providers(),
     )
-
     api_app = create_api_app(api_config)
     setup_lifespan(api_app, di_container)
 
@@ -47,7 +52,9 @@ def main():
 
     setup_fastapi_dishka(di_container, api_app)
 
-    startup_callback = partial(on_startup, di_container, webhook_config)
+    startup_callback = partial(
+        on_startup, di_container, webhook_config, api_app
+    )
     shutdown_callback = partial(on_shutdown, di_container)
     api_app.add_event_handler("startup", startup_callback)
     api_app.add_event_handler("shutdown", shutdown_callback)
@@ -61,10 +68,17 @@ def main():
     return api_app
 
 
-async def on_startup(dishka: AsyncContainer, webhook_config: WebhookConfig):
-    webhook_url = webhook_config.web_url + webhook_config.path
-    logger.info("as webhook url used %s", webhook_url)
+async def on_startup(
+        dishka: AsyncContainer, webhook_config: WebhookConfig,
+        api_app: FastAPI
+):
+    api_app_config: ApiAppConfig = await dishka.get(ApiAppConfig)
+    await mount_admin_app(api_app, dishka, api_app_config)
+    logger.info(
+        f"mounted admin api app at `/{api_app_config.admin.ADMIN_PREFIX}`"
+    )
 
+    webhook_url = webhook_config.web_url + webhook_config.path
     bot = await dishka.get(Bot)
     # dp = await dishka.get(Dispatcher)
     await bot.set_webhook(
@@ -72,6 +86,7 @@ async def on_startup(dishka: AsyncContainer, webhook_config: WebhookConfig):
         secret_token=webhook_config.secret,
         # allowed_updates=resolve_update_types(dp),
     )
+    logger.info("as webhook url used %s", webhook_url)
 
 
 async def on_shutdown(dishka: AsyncContainer):

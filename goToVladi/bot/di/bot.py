@@ -30,7 +30,6 @@ class BotProvider(Provider):
 
     @provide
     async def get_bot(self, bot_config: BotConfig, bot_commands: BotCommandsList) -> AsyncIterable[Bot]:
-        logger.info(bot_config.token)
         bot = Bot(
             token=bot_config.token,
             default=DefaultBotProperties(

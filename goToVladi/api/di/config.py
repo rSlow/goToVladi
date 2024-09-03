@@ -1,8 +1,8 @@
 from adaptix import Retort
 from dishka import Provider, Scope, provide
 
-from goToVladi.api.config.models.api import ApiAppConfig
-from goToVladi.api.config.models.main import ApiConfig
+from goToVladi.api.config.models import ApiAppConfig
+from goToVladi.api.config.models.api import ApiConfig
 from goToVladi.api.config.parser.main import load_config
 from goToVladi.core.config import Paths
 

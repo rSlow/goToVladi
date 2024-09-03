@@ -16,6 +16,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(nullable=True, unique=True)
     hashed_password: Mapped[str] = mapped_column(nullable=True)
     is_bot: Mapped[bool] = mapped_column(default=False)
+    is_superuser: Mapped[bool] = mapped_column(default=False)
 
     def __repr__(self) -> str:
         rez = (
