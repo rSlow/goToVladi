@@ -52,6 +52,7 @@ class UserDao(BaseDAO[User]):
             )
             .returning(User)
         )
+        await self.session.commit()
         return saved_user.scalar_one().to_dto()
 
     async def get_by_username(self, username: str):
