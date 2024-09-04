@@ -29,6 +29,7 @@ phonenumbers = "^8.13.44"
 fastadmin = {extras = ["fastapi", "sqlalchemy"], version = "^0.2.13"}
 passlib = "^1.7.4"
 bcrypt = "^4.2.0"
+python-multipart = "^0.0.9"
 
 
 [build-system]

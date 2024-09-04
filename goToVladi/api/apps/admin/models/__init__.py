@@ -2,8 +2,8 @@ from dishka import AsyncContainer
 from fastadmin import register_admin_model_class as register
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from goToVladi.api.admin.models.user import UserAdmin
 from goToVladi.core.data.db.models import User
+from .user import UserAdmin
 
 
 async def register_models(dishka: AsyncContainer):

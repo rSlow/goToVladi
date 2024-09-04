@@ -7,6 +7,7 @@ from typing import Literal
 class AuthConfig:
     secret_key: str
     domain: str
+    bot_username: str
     token_expire: timedelta
     samesite: Literal["lax", "strict", "none"] | None
     httponly: bool

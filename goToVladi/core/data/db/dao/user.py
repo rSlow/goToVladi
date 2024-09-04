@@ -3,7 +3,8 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from goToVladi.core.utils.exceptions.user import NoUsernameFound, MultipleUsernameFound
+from goToVladi.core.utils.exceptions.user import NoUsernameFound, \
+    MultipleUsernameFound
 from .base import BaseDAO
 from .. import dto
 from ..models.user import User
@@ -18,6 +19,10 @@ class UserDao(BaseDAO[User]):
             select(User).where(User.tg_id == tg_id)
         )
         user = result.one()
+        return user.to_dto()
+
+    async def get_by_id(self, id_: int) -> dto.User:
+        user = await self._get_by_id(id_)
         return user.to_dto()
 
     async def _get_by_username(self, username: str) -> User:
@@ -62,3 +67,8 @@ class UserDao(BaseDAO[User]):
     async def get_by_username_with_password(self, username: str):
         user = await self._get_by_username(username)
         return user.to_dto().add_password(user.hashed_password)
+
+    async def set_password(self, user: dto.User, hashed_password: str):
+        db_user = await self._get_by_id(user.db_id)
+        db_user.hashed_password = hashed_password
+        await self.session.commit()

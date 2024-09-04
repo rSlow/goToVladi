@@ -53,8 +53,9 @@ class AuthService:
             raise http_status_401
         return user.without_password()
 
-    def create_access_token(self, data: dict,
-                            expires_delta: timedelta) -> Token:
+    def _create_access_token(
+            self, data: dict, expires_delta: timedelta
+    ) -> Token:
         to_encode = data.copy()
         expire = datetime.now(tz=tz_utc) + expires_delta
         to_encode.update({"exp": expire})
@@ -64,7 +65,7 @@ class AuthService:
         return Token(token=encoded_jwt, token_type="bearer")
 
     def create_user_token(self, user: dto.User) -> Token:
-        return self.create_access_token(
+        return self._create_access_token(
             data={"sub": str(user.db_id)},
             expires_delta=self.access_token_expire
         )
@@ -98,7 +99,7 @@ class AuthService:
             raise e
 
         try:
-            user = await dao.user.get_by_tg_id(user_db_id)
+            user = await dao.user.get_by_id(user_db_id)
         except Exception as e:
             logger.info("user by id %s not found", user_db_id)
             raise credentials_exception from e

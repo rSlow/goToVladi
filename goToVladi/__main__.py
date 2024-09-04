@@ -8,7 +8,7 @@ from dishka.integrations.fastapi import setup_dishka as setup_fastapi_dishka
 from fastapi import FastAPI
 
 from goToVladi.api import create_app as create_api_app
-from goToVladi.api.admin import mount_admin_app
+from goToVladi.api.apps.admin import mount_admin_app
 from goToVladi.api.config.parser.main import load_config as load_api_config
 from goToVladi.api.di import get_api_providers
 from goToVladi.api.utils.webhook.handler import SimpleRequestHandler

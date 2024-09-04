@@ -1,7 +1,7 @@
 from dishka import FromDishka
 from fastadmin import SqlAlchemyModelAdmin
 
-from goToVladi.api.admin.ulits.inject_context import AdminInjectContext
+from goToVladi.api.apps.admin.ulits.inject_context import AdminInjectContext
 from goToVladi.api.utils.auth import AuthService
 from goToVladi.core.data.db.dao import DaoHolder
 
