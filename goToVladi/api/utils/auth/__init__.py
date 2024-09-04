@@ -10,7 +10,7 @@ from passlib.context import CryptContext
 from starlette import status
 
 from goToVladi.api.config.models.auth import AuthConfig
-from goToVladi.api.config.models.auth.token import Token
+from goToVladi.api.config.models.token import Token
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
 from goToVladi.core.utils.exceptions.user import NoUsernameFound

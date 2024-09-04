@@ -1,7 +1,9 @@
-from sqlalchemy import ScalarResult, select
+from sqlalchemy import ScalarResult, select, Result
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from goToVladi.core.utils.exceptions.user import NoUsernameFound, MultipleUsernameFound
 from .base import BaseDAO
 from .. import dto
 from ..models.user import User
@@ -17,6 +19,20 @@ class UserDao(BaseDAO[User]):
         )
         user = result.one()
         return user.to_dto()
+
+    async def _get_by_username(self, username: str) -> User:
+        result: Result[tuple[User]] = await self.session.execute(
+            select(User).where(User.username == username)
+        )
+
+        try:
+            user = result.scalar_one()
+        except MultipleResultsFound as e:
+            raise MultipleUsernameFound(username=username) from e
+        except NoResultFound as e:
+            raise NoUsernameFound(username=username) from e
+
+        return user
 
     async def upsert_user(self, user: dto.User) -> dto.User:
         kwargs = {
@@ -37,3 +53,11 @@ class UserDao(BaseDAO[User]):
             .returning(User)
         )
         return saved_user.scalar_one().to_dto()
+
+    async def get_by_username(self, username: str):
+        user = await self._get_by_username(username)
+        return user.to_dto()
+
+    async def get_by_username_with_password(self, username: str):
+        user = await self._get_by_username(username)
+        return user.to_dto().add_password(user.hashed_password)

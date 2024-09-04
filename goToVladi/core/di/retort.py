@@ -1,5 +1,7 @@
-from adaptix import Retort, name_mapping, NameStyle
+from adaptix import Retort
 from dishka import Provider, Scope, provide
+
+from goToVladi.core.config.parser.retort import get_base_retort
 
 
 class RetortProvider(Provider):
@@ -7,8 +9,4 @@ class RetortProvider(Provider):
 
     @provide
     def get_retort(self) -> Retort:
-        return Retort(
-            recipe=[
-                name_mapping(name_style=NameStyle.LOWER_KEBAB)
-            ]
-        )
+        return get_base_retort()

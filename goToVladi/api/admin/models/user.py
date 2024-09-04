@@ -1,9 +1,9 @@
+from dishka import FromDishka
 from fastadmin import SqlAlchemyModelAdmin
-from passlib.context import CryptContext
-from sqlalchemy import select, ScalarResult
-from sqlalchemy.ext.asyncio import async_sessionmaker as maker, AsyncSession
 
-from goToVladi.core.data.db.models import User
+from goToVladi.api.admin.ulits.inject_context import AdminInjectContext
+from goToVladi.api.utils.auth import AuthService
+from goToVladi.core.data.db.dao import DaoHolder
 
 
 class UserAdmin(SqlAlchemyModelAdmin):
@@ -13,18 +13,12 @@ class UserAdmin(SqlAlchemyModelAdmin):
     list_filter = ("id", "username", "is_superuser", "is_active")
     search_fields = ("username",)
 
-    async def authenticate(self, username: str, password: str):
-        session_maker: maker[AsyncSession] = self.get_sessionmaker()
-        async with session_maker() as session:
-            result: ScalarResult[User] = await session.scalars(
-                select(User).filter_by(username=username)
-            )
-            user = result.one_or_none()
-
-        if not user or not user.is_superuser:
-            return None
-
-        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        if not pwd_context.verify(password, user.hashed_password):
-            return None
-        return user.id
+    @AdminInjectContext.inject
+    async def authenticate(
+            self, username: str, password: str,
+            auth_service: FromDishka[AuthService], dao: FromDishka[DaoHolder]
+    ):
+        user = await auth_service.authenticate_user(username, password, dao)
+        if user.is_superuser and user.db_id is not None:
+            return user.db_id
+        return None

@@ -9,8 +9,6 @@ from fastapi import FastAPI
 
 from goToVladi.api import create_app as create_api_app
 from goToVladi.api.admin import mount_admin_app
-from goToVladi.api.admin.ulits.settings import set_admin_settings
-from goToVladi.api.config.models import ApiAppConfig
 from goToVladi.api.config.parser.main import load_config as load_api_config
 from goToVladi.api.di import get_api_providers
 from goToVladi.api.utils.webhook.handler import SimpleRequestHandler
@@ -36,8 +34,6 @@ def main():
     api_config = load_api_config(paths, retort)
     bot_config = load_bot_config(paths, retort)
     webhook_config = bot_config.bot.webhook
-
-    set_admin_settings(api_config.admin)
 
     di_container = make_async_container(
         *get_common_providers(),
@@ -72,11 +68,8 @@ async def on_startup(
         dishka: AsyncContainer, webhook_config: WebhookConfig,
         api_app: FastAPI
 ):
-    api_app_config: ApiAppConfig = await dishka.get(ApiAppConfig)
-    await mount_admin_app(api_app, dishka, api_app_config)
-    logger.info(
-        f"mounted admin api app at `/{api_app_config.admin.ADMIN_PREFIX}`"
-    )
+    await mount_admin_app(api_app, dishka)
+    logger.info(f"mounted admin api app")
 
     webhook_url = webhook_config.web_url + webhook_config.path
     bot = await dishka.get(Bot)

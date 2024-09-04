@@ -7,7 +7,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dishka import AsyncContainer
 
 from goToVladi.core.data.redis.config.models import RedisConfig
-from goToVladi.core.scheduler.context import ScheduledContextHolder
+from goToVladi.core.scheduler.context import SchedulerInjectContext
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class Scheduler(Protocol):
 
 class ApScheduler(Scheduler):
     def __init__(self, dishka: AsyncContainer, redis_config: RedisConfig):
-        ScheduledContextHolder.dishka = dishka
+        SchedulerInjectContext.container = dishka
         self.job_store = RedisJobStore(
             host=redis_config.host,
             port=redis_config.port,

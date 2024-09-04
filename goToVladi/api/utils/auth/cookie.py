@@ -10,7 +10,7 @@ from fastapi.security.utils import get_authorization_scheme_param
 from starlette.responses import Response
 
 from goToVladi.api.config.models.auth import AuthConfig
-from goToVladi.api.config.models.auth.token import Token
+from goToVladi.api.config.models.token import Token
 
 
 class OAuth2PasswordBearerWithCookie(OAuth2):
