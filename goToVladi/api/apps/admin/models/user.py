@@ -7,10 +7,9 @@ from goToVladi.core.data.db.dao import DaoHolder
 
 
 class UserAdmin(SqlAlchemyModelAdmin):
-    exclude = ("hash_password",)
-    list_display = ("id", "username", "is_superuser", "is_active")
-    list_display_links = ("id", "username")
-    list_filter = ("id", "username", "is_superuser", "is_active")
+    list_display = ("username", "is_superuser")
+    list_display_links = ("username",)
+    list_filter = ("username", "is_superuser")
     search_fields = ("username",)
 
     @AdminInjectContext.inject

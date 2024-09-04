@@ -49,6 +49,7 @@ class User:
             first_name=self.first_name,
             last_name=self.last_name,
             is_bot=self.is_bot,
+            is_superuser=self.is_superuser,
             hashed_password=hashed_password,
         )
 
@@ -65,4 +66,5 @@ class UserWithCreds(User):
             first_name=self.first_name,
             last_name=self.last_name,
             is_bot=self.is_bot,
+            is_superuser=self.is_superuser
         )
