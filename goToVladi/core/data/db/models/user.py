@@ -31,7 +31,7 @@ class User(Base):
 
     def to_dto(self) -> dto.User:
         return dto.User(
-            db_id=self.id,
+            id_=self.id,
             tg_id=self.tg_id,
             username=self.username,
             first_name=self.first_name,

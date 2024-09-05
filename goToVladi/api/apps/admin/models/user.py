@@ -19,8 +19,8 @@ class UserAdmin(SqlAlchemyModelAdmin):
             auth_service: FromDishka[AuthService], dao: FromDishka[DaoHolder]
     ):
         user = await auth_service.authenticate_user(username, password, dao)
-        if user.is_superuser and user.db_id is not None:
-            return user.db_id
+        if user.is_superuser and user.id_ is not None:
+            return user.id_
         return None
 
     @AdminInjectContext.inject

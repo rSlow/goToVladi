@@ -7,8 +7,8 @@ from aiogram import types as tg
 
 @dataclass
 class User:
-    tg_id: int
-    db_id: int | None = None
+    id_: int | None = None
+    tg_id: int | None = None
     username: str | None = None
     first_name: str | None = None
     last_name: str | None = None
@@ -28,7 +28,7 @@ class User:
         return (self.fullname
                 or self.username
                 or str(self.tg_id)
-                or str(self.db_id)
+                or str(self.id_)
                 or "unknown")
 
     @classmethod
@@ -44,7 +44,7 @@ class User:
     def add_password(self, hashed_password: str) -> UserWithCreds:
         return UserWithCreds(
             tg_id=self.tg_id,
-            db_id=self.db_id,
+            id_=self.id_,
             username=self.username,
             first_name=self.first_name,
             last_name=self.last_name,
@@ -61,7 +61,7 @@ class UserWithCreds(User):
     def without_password(self) -> User:
         return User(
             tg_id=self.tg_id,
-            db_id=self.db_id,
+            id_=self.id_,
             username=self.username,
             first_name=self.first_name,
             last_name=self.last_name,

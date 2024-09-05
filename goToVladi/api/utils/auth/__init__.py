@@ -72,7 +72,7 @@ class AuthService:
 
     def create_user_token(self, user: dto.User) -> Token:
         return self._create_access_token(
-            data={"sub": str(user.db_id)},
+            data={"sub": str(user.id_)},
             expires_delta=self.access_token_expire
         )
 
