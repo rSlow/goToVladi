@@ -5,8 +5,10 @@ from sqlalchemy.orm import mapped_column, Mapped, relationship
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dto.restaurant import RestaurantType
 from goToVladi.core.data.db.models import Base
-from goToVladi.core.data.db.models.restaurant import RestaurantSocial, \
-    RestaurantPhoto, RestaurantPhone, RestaurantCuisine  # TODO circular import
+from .cuisine import RestaurantCuisine
+from .phone import RestaurantPhone
+from .photo import RestaurantPhoto
+from .social import RestaurantSocial
 
 
 class Restaurant(Base):
