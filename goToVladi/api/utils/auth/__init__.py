@@ -53,6 +53,12 @@ class AuthService:
             raise http_status_401
         return user.without_password()
 
+    async def update_user_password(
+            self, user: dto.User, password: str, dao: DaoHolder
+    ) -> None:
+        hashed_password = self.get_password_hash(password)
+        await dao.user.set_password(user, hashed_password)
+
     def _create_access_token(
             self, data: dict, expires_delta: timedelta
     ) -> Token:

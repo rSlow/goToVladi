@@ -27,13 +27,12 @@ async def read_user(
 
 @inject
 async def set_password_route(
-        auth: FromDishka[AuthService],
+        auth_service: FromDishka[AuthService],
         user: FromDishka[dto.User],
         dao: FromDishka[DaoHolder],
         password: str = Body()
 ):
-    hashed_password = auth.get_password_hash(password)
-    await dao.user.set_password(user, hashed_password)
+    await auth_service.update_user_password(user, password, dao)
     raise HTTPException(status_code=200)
 
 
