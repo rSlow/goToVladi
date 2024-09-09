@@ -4,20 +4,27 @@ from aiogram_dialog.widgets.text import Const
 
 from goToVladi.bot.apps.base.states import MainMenuSG
 
-MAIN_MENU_BUTTON = Start(
+__all__ = [
+    "MAIN_MENU",
+    "CANCEL",
+    "BACK",
+    "NEXT"
+]
+
+MAIN_MENU = Start(
     text=Const("Главное меню ☰"),
     id="__main__",
     state=MainMenuSG.state,
     mode=StartMode.RESET_STACK
 )
 
-CANCEL_BUTTON = Cancel(
+CANCEL = Cancel(
     text=Const("Назад ◀")
 )
 
-BACK_BUTTON = Back(
+BACK = Back(
     text=Const("Назад ◀")
 )
-NEXT_BUTTON = Next(
+NEXT = Next(
     text=Const("Вперед ◀")
 )

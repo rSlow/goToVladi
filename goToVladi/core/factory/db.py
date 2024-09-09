@@ -20,6 +20,7 @@ def create_pool(db_config: DBConfig) -> async_sessionmaker[AsyncSession]:
 
 def create_engine(db_config: DBConfig) -> AsyncEngine:
     logger.info("created db engine for %s", db_config)
+    logger.debug(db_config.uri)
     return create_async_engine(
         url=make_url(db_config.uri),
         echo=db_config.echo

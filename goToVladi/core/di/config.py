@@ -1,14 +1,13 @@
 from adaptix import Retort
 from dishka import Provider, provide, Scope
 
+from goToVladi.bot.config.models.bot import BotConfig
+from goToVladi.bot.config.models.main import BotAppConfig
 from goToVladi.bot.config.models.storage import StorageConfig
+from goToVladi.bot.config.parser.main import load_config as load_bot_config
 from goToVladi.core.config import Paths, BaseConfig
 from goToVladi.core.config.models.web import WebConfig
 from goToVladi.core.config.parser.paths import get_paths
-
-from goToVladi.bot.config.models.bot import BotConfig
-from goToVladi.bot.config.models.main import BotAppConfig
-from goToVladi.bot.config.parser.main import load_config as load_bot_config
 
 
 class BaseConfigProvider(Provider):
@@ -23,9 +22,7 @@ class BaseConfigProvider(Provider):
         return get_paths(self.path_env)
 
     @provide
-    def get_tgbot_config(self,
-                         paths: Paths,
-                         retort: Retort) -> BotAppConfig:
+    def get_tgbot_config(self, paths: Paths, retort: Retort) -> BotAppConfig:
         return load_bot_config(paths, retort)
 
     @provide

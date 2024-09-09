@@ -29,5 +29,9 @@ class Paths:
         return self.app_dir / "version.yaml"
 
     @property
-    def src_dir(self):
+    def src_path(self) -> Path:
         return self.app_dir / "goToVladi"
+
+    @property
+    def upload_file_path(self) -> Path:
+        return self.src_path / "core" / "data" / "db" / "upload"

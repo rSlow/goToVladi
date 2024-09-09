@@ -11,10 +11,15 @@ from goToVladi.bot.views.jinja import render_template
 
 
 async def cmd_start(_: types.Message, dialog_manager: DialogManager):
-    await dialog_manager.start(state=MainMenuSG.state, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(
+        state=MainMenuSG.state, mode=StartMode.RESET_STACK
+    )
 
 
-async def cmd_help(message: types.Message, dialog_manager: DialogManager, jinja: FromDishka[Environment]):
+async def cmd_help(
+        message: types.Message, dialog_manager: DialogManager,
+        jinja: FromDishka[Environment]
+):
     template = jinja.get_template("help.jinja2")
     await message.answer(render_template(template))
     await dialog_manager.update({}, show_mode=ShowMode.DELETE_AND_SEND)

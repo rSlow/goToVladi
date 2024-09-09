@@ -28,6 +28,8 @@ class OAuth2PasswordBearerWithCookie(OAuth2):
     @staticmethod
     def get_token(request: Request) -> Token:
         authorization = request.cookies.get("Authorization", "")
+        if authorization == "":
+            authorization = request.session.get("Authorization", "")
 
         scheme, param = get_authorization_scheme_param(authorization)
         if not authorization or scheme.lower() != "bearer":

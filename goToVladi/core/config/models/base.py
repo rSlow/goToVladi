@@ -4,11 +4,11 @@ from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
 
+from .app import AppConfig
 from .paths import Paths
+from .web import WebConfig
 from ...data.db.config.models import DBConfig
 from ...data.redis.config.models import RedisConfig
-from .app import AppConfig
-from .web import WebConfig
 
 
 @dataclass
@@ -30,3 +30,7 @@ class BaseConfig(ABC):
     @property
     def log_path(self) -> Path:
         return self.paths.log_path
+
+    @property
+    def upload_file_path(self) -> Path:
+        return self.paths.upload_file_path

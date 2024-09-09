@@ -7,11 +7,14 @@ from goToVladi.core.data.db.dao import DaoHolder
 
 
 class UserAdmin(SqlAlchemyModelAdmin):
-    list_display = ("username", "is_superuser")
+    list_display = ("username", "first_name", "last_name",)
     list_display_links = ("username",)
     list_filter = ("username", "is_superuser")
     search_fields = ("username",)
     exclude = ("hashed_password",)
+
+    verbose_name = "Пользователь"
+    verbose_name_plural = "Пользователи"
 
     @AdminInjectContext.inject
     async def authenticate(

@@ -1,7 +1,12 @@
+__all__ = [
+    "RestaurantSG"
+]
+
 from aiogram.fsm.state import StatesGroup, State
 
 
 class RestaurantSG(StatesGroup):
-    category = State()
+    cuisines = State()
     type_ = State()
-    average_check = State()
+    restaurants = State()
+    restaurant = State()

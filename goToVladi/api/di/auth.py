@@ -28,14 +28,14 @@ class AuthProvider(Provider):
             self,
             request: Request,
             cookie_auth: OAuth2PasswordBearerWithCookie,
-            auth_properties: AuthService,
+            auth_service: AuthService,
             dao: DaoHolder,
     ) -> dto.User:
         try:
             token = cookie_auth.get_token(request)
-            return await auth_properties.get_current_user(token, dao)
+            return await auth_service.get_current_user(token, dao)
         except (PyJWTError, HTTPException):
-            user = await auth_properties.get_user_basic(request, dao)
+            user = await auth_service.get_user_basic(request, dao)
             if user is None:
                 raise
             return user

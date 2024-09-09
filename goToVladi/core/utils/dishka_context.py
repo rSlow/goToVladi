@@ -17,7 +17,9 @@ class BaseInjectContext(ABC):
     def inject(cls, func):
         async def wrapper(*args, **kwargs):
             if cls.container is None:
-                raise RuntimeError("Inject context container has not been initialized")
+                raise RuntimeError(
+                    "Inject context container has not been initialized"
+                )
 
             async with cls.container() as request_container:
                 wrapped = wrap_injection(

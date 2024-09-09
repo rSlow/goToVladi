@@ -30,6 +30,13 @@ fastadmin = {extras = ["fastapi", "sqlalchemy"], version = "^0.2.13"}
 passlib = "^1.7.4"
 bcrypt = "^4.2.0"
 python-multipart = "^0.0.9"
+sqlalchemy-file = "^0.6.0"
+fasteners = "^0.19"
+sqladmin = {extras = ["itsdangerous"], version = "^0.19.0"}
+fastapi-storages = "^0.3.0"
+itsdangerous = "^2.2.0"
+pillow = "^10.4.0"
+django = "^5.1.1"
 
 
 [build-system]

@@ -51,7 +51,8 @@ async def clear_unknown_intent(error: ErrorEvent, bot: Bot):
     )
 
 
-async def no_context(error: ErrorEvent, bot: Bot, dialog_manager: DialogManager):
+async def no_context(error: ErrorEvent, bot: Bot,
+                     dialog_manager: DialogManager):
     logger.exception(
         "No dialog context found",
         error.exception.__class__.__name__,
@@ -62,7 +63,8 @@ async def no_context(error: ErrorEvent, bot: Bot, dialog_manager: DialogManager)
     if message:
         await bot.send_message(
             chat_id=message.chat.id,
-            text="Произошла ошибка бота, мы вынуждены вернуть вас в главное меню, и уже работаем над устранением 🛠"
+            text=f"Произошла ошибка бота, мы вынуждены вернуть вас "
+                 f"в главное меню, и уже работаем над устранением 🛠"
         )
         await dialog_manager.start(MainMenuSG.state, mode=StartMode.RESET_STACK)
 
@@ -78,7 +80,8 @@ async def handle(error: ErrorEvent, log_chat_id: int, bot: Bot):
         return
     error_text = hd.quote(
         json.dumps(
-            error.update.model_dump(exclude_none=True), default=str
+            error.update.model_dump(exclude_none=True),
+            default=str, ensure_ascii=False
         )[:3500]
     )
     exception = hd.quote(str(error.exception))
