@@ -5,10 +5,8 @@ import uvicorn
 from aiogram import Bot
 from dishka import make_async_container, AsyncContainer
 from dishka.integrations.fastapi import setup_dishka as setup_fastapi_dishka
-from fastapi import FastAPI
 
 from goToVladi.api import create_app as create_api_app
-from goToVladi.api.apps.admin import mount_admin_app
 from goToVladi.api.config.parser.main import load_config as load_api_config
 from goToVladi.api.di import get_api_providers
 from goToVladi.api.utils.webhook.handler import SimpleRequestHandler
@@ -19,6 +17,7 @@ from goToVladi.bot.di import get_bot_providers
 from goToVladi.core.config.parser.config_logging import setup_logging
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.config.parser.retort import get_base_retort
+from goToVladi.core.data.db.utils.file_field import configure_storage
 from goToVladi.core.di import get_common_providers
 from goToVladi.core.utils import di_visual
 
@@ -30,6 +29,7 @@ def main():
     retort = get_base_retort()
 
     setup_logging(paths)
+    configure_storage(paths.upload_file_path)
 
     api_config = load_api_config(paths, retort)
     bot_config = load_bot_config(paths, retort)
@@ -48,9 +48,7 @@ def main():
 
     setup_fastapi_dishka(di_container, api_app)
 
-    startup_callback = partial(
-        on_startup, di_container, webhook_config, api_app
-    )
+    startup_callback = partial(on_startup, di_container, webhook_config)
     shutdown_callback = partial(on_shutdown, di_container)
     api_app.add_event_handler("startup", startup_callback)
     api_app.add_event_handler("shutdown", shutdown_callback)
@@ -64,13 +62,7 @@ def main():
     return api_app
 
 
-async def on_startup(
-        dishka: AsyncContainer, webhook_config: WebhookConfig,
-        api_app: FastAPI
-):
-    await mount_admin_app(api_app, dishka)
-    logger.info(f"mounted admin api app")
-
+async def on_startup(dishka: AsyncContainer, webhook_config: WebhookConfig):
     webhook_url = webhook_config.web_url + webhook_config.path
     bot = await dishka.get(Bot)
     # dp = await dishka.get(Dispatcher)

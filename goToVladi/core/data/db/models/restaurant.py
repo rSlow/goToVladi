@@ -1,8 +1,10 @@
 from sqlalchemy import ForeignKey, Text
 from sqlalchemy.orm import mapped_column, Mapped, relationship
+from sqlalchemy_file import ImageField
+from sqlalchemy_file.validators import SizeValidator
 from sqlalchemy_utils import URLType
 
-from goToVladi.core.data.db import dto
+from goToVladi.core.data.db import dto, schemas
 from goToVladi.core.data.db.models import Base
 from .restaurant_cuisine import RestaurantCuisine
 from ..types.string_phonenumber import StringPhoneNumberType
@@ -15,7 +17,7 @@ class Restaurant(Base):
     name: Mapped[str]
     average_check: Mapped[int]
     description = mapped_column(Text, nullable=True)
-    site_url: Mapped[str] = mapped_column(nullable=True)
+    site_url = mapped_column(URLType, nullable=True)
     type_: Mapped[dto.RestaurantType] = mapped_column(
         default=dto.RestaurantType.INNER,
     )
@@ -23,7 +25,13 @@ class Restaurant(Base):
     priority: Mapped[float] = mapped_column(default=0)
     phone: Mapped[str] = mapped_column(StringPhoneNumberType)
 
-    photo: Mapped[str] = mapped_column(nullable=True)
+    photos = mapped_column(
+        ImageField(
+            multiple=True,
+            upload_storage="restaurant_photos",
+            validators=[SizeValidator("16M")],
+        ),
+        nullable=True)
 
     cuisine_id: Mapped[int] = mapped_column(
         ForeignKey('restaurant_cuisines.id'), nullable=True
@@ -46,7 +54,10 @@ class Restaurant(Base):
             site_url=self.site_url,
             description=self.description,
             phone=self.phone,
-            photos=[self.photo],
+            photos=[
+                schemas.FileSchema.from_dict(photo)
+                for photo in self.photos
+            ],
             cuisine=self.cuisine.to_dto(),
             instagram=self.instagram,
             vk=self.vk,

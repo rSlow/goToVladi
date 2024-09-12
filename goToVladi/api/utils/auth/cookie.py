@@ -26,11 +26,8 @@ class OAuth2PasswordBearerWithCookie(OAuth2):
         )
 
     @staticmethod
-    def get_token(request: Request) -> Token:
+    async def get_token(request: Request) -> Token:
         authorization = request.cookies.get("Authorization", "")
-        if authorization == "":
-            authorization = request.session.get("Authorization", "")
-
         scheme, param = get_authorization_scheme_param(authorization)
         if not authorization or scheme.lower() != "bearer":
             raise HTTPException(
@@ -39,6 +36,8 @@ class OAuth2PasswordBearerWithCookie(OAuth2):
                 headers={"WWW-Authenticate": "Bearer"},
             )
         return Token(token=param, token_type="bearer")
+
+    __call__ = get_token
 
 
 def set_auth_cookie(config: AuthConfig, response: Response, token: Token):

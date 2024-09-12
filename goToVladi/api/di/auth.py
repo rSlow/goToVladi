@@ -19,9 +19,7 @@ class AuthProvider(Provider):
 
     @provide
     def get_cookie_auth(self) -> OAuth2PasswordBearerWithCookie:
-        return OAuth2PasswordBearerWithCookie(
-            token_url="auth/token"
-        )  # TODO set token url
+        return OAuth2PasswordBearerWithCookie(token_url="auth/token")
 
     @provide(scope=Scope.REQUEST)
     async def get_current_user(
@@ -32,7 +30,7 @@ class AuthProvider(Provider):
             dao: DaoHolder,
     ) -> dto.User:
         try:
-            token = cookie_auth.get_token(request)
+            token = await cookie_auth.get_token(request)
             return await auth_service.get_current_user(token, dao)
         except (PyJWTError, HTTPException):
             user = await auth_service.get_user_basic(request, dao)

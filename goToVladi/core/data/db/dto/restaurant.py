@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from enum import Enum
 
+from goToVladi.core.data.db import schemas
+
 
 class HintedEnum(Enum):
     @property
@@ -38,7 +40,7 @@ class Restaurant:
     rating: float
     cuisine: RestaurantCuisine
 
-    photos: list[str] = field(default_factory=list)
+    photos: list[schemas.FileSchema] = field(default_factory=list)
 
     id_: int | None = None
     priority: float | None = None

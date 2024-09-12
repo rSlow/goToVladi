@@ -5,7 +5,6 @@ from datetime import timedelta, datetime
 
 import jwt
 from fastapi import HTTPException, Request
-from jwt import PyJWTError
 from passlib.context import CryptContext
 from starlette import status
 
@@ -96,7 +95,7 @@ class AuthService:
                 raise credentials_exception
             user_db_id = int(typing.cast(str, payload.get("sub")))
 
-        except PyJWTError as e:
+        except jwt.PyJWTError as e:
             logger.info("invalid jwt", exc_info=e)
             raise credentials_exception from e
 

@@ -3,8 +3,9 @@ from operator import attrgetter
 from aiogram import types, F
 from aiogram.enums import ContentType
 from aiogram_dialog import Window, Dialog, DialogManager
+from aiogram_dialog.widgets.common import ManagedScroll
 from aiogram_dialog.widgets.kbd import Select, ScrollingGroup, Group, Url, \
-    PrevPage, CurrentPage, NextPage, Row
+    PrevPage, CurrentPage, NextPage, Row, StubScroll
 from aiogram_dialog.widgets.media import StaticMedia
 from aiogram_dialog.widgets.text import Const, Format
 
@@ -72,7 +73,7 @@ type_restaurant_window = Window(
 async def get_restaurants(dao: DaoHolder, dialog_manager: DialogManager, **__):
     cuisine_id = dialog_manager.dialog_data["cuisine_id"]
     restaurant_type = dialog_manager.dialog_data["restaurant_type"]
-    restaurants = await dao.restaurant.get_restaurants(
+    restaurants = await dao.restaurant.get_all(
         cuisine_id=cuisine_id,
         type_=restaurant_type
     )
@@ -112,11 +113,19 @@ PHOTOS_SCROLL = "photos_scroll"
 
 async def get_restaurant(dao: DaoHolder, dialog_manager: DialogManager, **__):
     restaurant_id = dialog_manager.dialog_data["restaurant_id"]
-    restaurant = await dao.restaurant.get_restaurant(restaurant_id)
-    current_page = await dialog_manager.find(PHOTOS_SCROLL).get_page()
+    restaurant = await dao.restaurant.get(restaurant_id)
+    scroll: ManagedScroll = dialog_manager.find(PHOTOS_SCROLL)
+    current_page = await scroll.get_page()
+    try:
+        current_photo = restaurant.photos[current_page]
+    except IndexError:
+        current_photo = restaurant.photos[0]
+        await scroll.set_page(0)
     return {
         "restaurant": restaurant,
-        "current_page": current_page
+        "photos_count": len(restaurant.photos),
+        "current_page": current_page + 1,
+        "current_photo_url": current_photo.url
     }
 
 
@@ -132,16 +141,20 @@ restaurant_window = Window(
         text="<u>Телефон:</u> <code>{restaurant.phone}</code>",
         when=F["restaurant"].phone
     ),
+    StubScroll(id=PHOTOS_SCROLL, pages="photos_count"),
     StaticMedia(
-        url=Format("{restaurant.photos[current_page]}"),
+        path=Format("{current_photo_url}"),
         type=ContentType.PHOTO,
-        when=F["restaurant"].photo
+        when=F["restaurant"].photos
     ),
     Row(
         PrevPage(scroll=PHOTOS_SCROLL, text=Format("◀️")),
-        CurrentPage(scroll=PHOTOS_SCROLL, text=Format("{current_page1}")),
+        CurrentPage(
+            scroll=PHOTOS_SCROLL,
+            text=Format("Фото {current_page1} / {pages}")
+        ),
         NextPage(scroll=PHOTOS_SCROLL, text=Format("▶️")),
-        when=F["restaurant"].photo
+        when=F["photos_count"] > 1
     ),
     Group(
         Url(
@@ -186,5 +199,5 @@ show_dialog = Dialog(
     cuisine_window,
     type_restaurant_window,
     restaurants_window,
-    restaurant_window
+    restaurant_window,
 )

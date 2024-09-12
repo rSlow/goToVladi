@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, AsyncEngine
 from goToVladi.core.config.models import BaseConfig
 from goToVladi.core.data.db.config.models.main import DBConfig
 from goToVladi.core.data.db.dao import DaoHolder
-from goToVladi.core.data.db.utils.file_field import configure_storage
 from goToVladi.core.factory.db import create_engine, create_session_maker
 
 
@@ -20,9 +19,8 @@ class DbProvider(Provider):
 
     @provide
     async def get_engine(
-            self, base_config: BaseConfig, db_config: DBConfig
+            self, db_config: DBConfig
     ) -> AsyncIterable[AsyncEngine]:
-        configure_storage(base_config)
         engine = create_engine(db_config)
         yield engine
         await engine.dispose(True)
