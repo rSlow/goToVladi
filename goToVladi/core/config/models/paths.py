@@ -25,7 +25,7 @@ class Paths:
         return self.app_dir / "log"
 
     @property
-    def version_path(self) -> Path:  # TODO check
+    def version_path(self) -> Path:
         return self.app_dir / "version.yaml"
 
     @property

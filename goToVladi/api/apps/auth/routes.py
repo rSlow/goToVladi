@@ -119,7 +119,7 @@ async def webapp_login_result_post(
 async def tg_login_page(config: FromDishka[AuthConfig]):
     return TG_WIDGET_HTML.format(
         bot_username=config.bot_username,
-        auth_url=config.auth_url,
+        auth_url=config.domain + config.auth_path,
     )
 
 

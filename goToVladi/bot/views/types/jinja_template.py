@@ -5,7 +5,7 @@ from aiogram_dialog.widgets.common import WhenCondition
 from aiogram_dialog.widgets.text import Text
 from jinja2 import Environment
 
-from bot.views.jinja import render_template
+from goToVladi.bot.views.jinja import render_template
 
 
 class JinjaTemplate(Text):

@@ -1,3 +1,4 @@
+from pydantic import AnyHttpUrl
 from sqlalchemy import ScalarResult, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -49,13 +50,13 @@ class RestaurantDao(BaseDAO[db.Restaurant]):
             cuisine_id=restaurant.cuisine_id,
             photos=restaurant.photos,
             priority=restaurant.priority,
-            site_url=restaurant.site_url,
+            site_url=url_to_str(restaurant.site_url),
             description=restaurant.description,
             phone=restaurant.phone,
-            vk=restaurant.vk,
-            instagram=restaurant.instagram,
-            whatsapp=restaurant.whatsapp,
-            telegram=restaurant.telegram
+            vk=url_to_str(restaurant.vk),
+            instagram=url_to_str(restaurant.instagram),
+            whatsapp=url_to_str(restaurant.whatsapp),
+            telegram=url_to_str(restaurant.telegram)
         )
         self.session.add(restaurant_db)
         await self.session.commit()
@@ -68,6 +69,11 @@ class RestaurantDao(BaseDAO[db.Restaurant]):
             .where(db.Restaurant.id == id_)
         )
         await self.session.commit()
+
+
+def url_to_str(url: AnyHttpUrl | None) -> str | None:
+    if url is not None:
+        return url.unicode_string()
 
 
 def get_restaurants_options():

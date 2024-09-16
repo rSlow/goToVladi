@@ -13,7 +13,7 @@ from goToVladi.core.config.parser.paths import get_paths
 class BaseConfigProvider(Provider):
     scope = Scope.APP
 
-    def __init__(self, path_env: str = "..."):  # TODO path_env
+    def __init__(self, path_env: str = ""):
         super().__init__()
         self.path_env = path_env
 

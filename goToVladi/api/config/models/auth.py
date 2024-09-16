@@ -12,6 +12,6 @@ class AuthConfig:
     samesite: Literal["lax", "strict", "none"] | None
     httponly: bool
     secure: bool
-    auth_url: str
+    auth_path: str
     algorythm: str = "HS256"
     disable_cors: bool = False
