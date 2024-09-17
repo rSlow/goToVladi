@@ -1,4 +1,4 @@
-from operator import attrgetter
+from operator import itemgetter
 
 from aiogram import types
 from aiogram_dialog import Window, DialogManager
@@ -43,23 +43,28 @@ cuisine_window = Window(
 
 
 async def get_restaurant_types(**__):
-    return {"restaurant_types": dto.RestaurantType}
+    return {
+        "restaurant_types": [
+            ("delivery", "Доставка"),
+            ("inner", "На месте"),
+        ]
+    }
 
 
 async def set_restaurant_type(
         _: types.CallbackQuery, __: Select,
-        manager: DialogManager, restaurant_type_name: str
+        manager: DialogManager, restaurant_type: str
 ):
-    manager.dialog_data["restaurant_type"] = restaurant_type_name
+    manager.dialog_data["restaurant_type"] = restaurant_type
     await manager.next()
 
 
 type_restaurant_window = Window(
     Const("Выберите вид ресторана:"),
     Select(
-        Format("{item.hint}"),
+        Format("{item[1]}"),
         id="restaurant_types",
-        item_id_getter=attrgetter("name"),
+        item_id_getter=itemgetter(0),
         items="restaurant_types",
         on_click=set_restaurant_type
     ),
@@ -72,9 +77,12 @@ type_restaurant_window = Window(
 async def get_restaurants(dao: DaoHolder, dialog_manager: DialogManager, **__):
     cuisine_id = dialog_manager.dialog_data["cuisine_id"]
     restaurant_type = dialog_manager.dialog_data["restaurant_type"]
+    is_delivery = restaurant_type == "delivery"
+    is_inner = restaurant_type == "inner"
     restaurants = await dao.restaurant.get_all(
         cuisine_id=cuisine_id,
-        type_=restaurant_type
+        is_inner=is_inner,
+        is_delivery=is_delivery
     )
     return {"restaurants": restaurants}
 

@@ -18,12 +18,11 @@ class Restaurant(Base):
     average_check: Mapped[int]
     description = mapped_column(Text, nullable=True)
     site_url = mapped_column(URLType, nullable=True)
-    type_: Mapped[dto.RestaurantType] = mapped_column(
-        default=dto.RestaurantType.INNER,
-    )
+    is_inner: Mapped[bool] = mapped_column(default=True)
+    is_delivery: Mapped[bool] = mapped_column(default=False)
     rating: Mapped[float]
     priority: Mapped[float] = mapped_column(default=0)
-    phone: Mapped[str] = mapped_column(StringPhoneNumberType)
+    phone: Mapped[str] = mapped_column(StringPhoneNumberType, nullable=True)
 
     photos = mapped_column(
         ImageField(
@@ -31,7 +30,8 @@ class Restaurant(Base):
             upload_storage="restaurant_photos",
             validators=[SizeValidator("16M")],
         ),
-        nullable=True)
+        nullable=True
+    )
 
     cuisine_id: Mapped[int] = mapped_column(
         ForeignKey('restaurant_cuisines.id'), nullable=True
@@ -48,16 +48,17 @@ class Restaurant(Base):
             id_=self.id,
             name=self.name,
             average_check=self.average_check,
-            type_=self.type_,
+            is_inner=self.is_inner,
+            is_delivery=self.is_delivery,
             rating=self.rating,
             priority=self.priority,
             site_url=self.site_url,
             description=self.description,
             phone=self.phone,
             photos=[
-                schemas.FileSchema.from_dict(photo)
-                for photo in self.photos
-            ],
+                       schemas.FileSchema.from_dict(photo)
+                       for photo in self.photos
+                   ] if self.photos else [],
             cuisine=self.cuisine.to_dto(),
             instagram=self.instagram,
             vk=self.vk,

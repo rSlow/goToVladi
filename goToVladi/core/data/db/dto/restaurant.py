@@ -14,18 +14,6 @@ class HintedEnum(Enum):
         return self._hints[self]
 
 
-class RestaurantType(HintedEnum):
-    DELIVERY = "DELIVERY"
-    INNER = "INNER"
-
-    @property
-    def _hints(self):
-        return {
-            self.DELIVERY: "Доставка",
-            self.INNER: "На месте"
-        }
-
-
 @dataclass
 class RestaurantCuisine:
     name: str
@@ -36,11 +24,13 @@ class RestaurantCuisine:
 class Restaurant:
     name: str
     average_check: int
-    type_: RestaurantType
     rating: float
     cuisine: RestaurantCuisine
 
     photos: list[schemas.FileSchema] = field(default_factory=list)
+
+    is_delivery: bool = False
+    is_inner: bool = True
 
     id_: int | None = None
     priority: float | None = None

@@ -20,12 +20,13 @@ class RestaurantDao(BaseDAO[db.Restaurant]):
         return [cuisine.to_dto() for cuisine in cuisines]
 
     async def get_all(
-            self, cuisine_id: int, type_: dto.RestaurantType
+            self, cuisine_id: int, is_delivery: bool, is_inner: bool
     ) -> list[dto.Restaurant]:
         result: ScalarResult[db.Restaurant] = await self.session.scalars(
             select(db.Restaurant)
             .where(db.Restaurant.cuisine_id == cuisine_id)
-            .where(db.Restaurant.type_ == type_)
+            .where(db.Restaurant.is_inner == is_inner)
+            .where(db.Restaurant.is_delivery == is_delivery)
             .options(*get_restaurants_options())
         )
         restaurants = result.all()
@@ -45,7 +46,8 @@ class RestaurantDao(BaseDAO[db.Restaurant]):
         restaurant_db = db.Restaurant(
             name=restaurant.name,
             average_check=restaurant.average_check,
-            type_=restaurant.type_,
+            is_delivery=restaurant.is_delivery,
+            is_inner=restaurant.is_inner,
             rating=restaurant.rating,
             cuisine_id=restaurant.cuisine_id,
             photos=restaurant.photos,

@@ -32,19 +32,24 @@ async def get_restaurant(dao: DaoHolder, dialog_manager: DialogManager, **__):
             description_scroll
         )
 
-    current_photo_page = await photos_scroll.get_page()
-    current_photo = restaurant.photos[current_photo_page]
-
-    return {
+    args = {
         "restaurant": restaurant,
         "photos_count": len(restaurant.photos),
         "description_length": (
             len(restaurant.description)
             if restaurant.description else 0
         ),
-        "current_page": current_photo_page + 1,
-        "current_photo_url": current_photo.url
     }
+
+    if restaurant.photos:
+        current_photo_page = await photos_scroll.get_page()
+        current_photo = restaurant.photos[current_photo_page]
+        args.update({
+            "current_page": current_photo_page + 1,
+            "current_photo_url": current_photo.url
+        })
+
+    return args
 
 
 restaurant_window = Window(
