@@ -11,9 +11,9 @@ from ..models.static import StaticConfig, StaticType
 from ..models.web import WebConfig
 
 
-def load_base_config(config_dct: dict,
-                     paths: Paths,
-                     retort: Retort) -> BaseConfig:
+def load_base_config(
+        config_dct: dict, paths: Paths, retort: Retort
+) -> BaseConfig:
     web_config = config_dct["web"]
 
     return BaseConfig(
@@ -26,13 +26,11 @@ def load_base_config(config_dct: dict,
     )
 
 
-def load_app_config(config_dct: dict,
-                    retort: Retort) -> AppConfig:
+def load_app_config(config_dct: dict, retort: Retort) -> AppConfig:
     return retort.load(config_dct, AppConfig)
 
 
-def load_web_config(config_dct: dict,
-                    retort: Retort) -> WebConfig:
+def load_web_config(config_dct: dict, retort: Retort) -> WebConfig:
     return retort.load(config_dct, WebConfig)
 
 

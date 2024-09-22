@@ -5,8 +5,6 @@ from fastapi import FastAPI
 
 from goToVladi.api.apps import setup_routes
 from goToVladi.api.config.models import ApiAppConfig
-from goToVladi.core.config.models.paths import Paths
-from goToVladi.core.config.parser.paths import get_paths as get_common_paths
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +24,3 @@ def create_app(config: ApiAppConfig) -> FastAPI:
     )
 
     return app
-
-
-def get_paths() -> Paths:
-    return get_common_paths("API_PATH")
