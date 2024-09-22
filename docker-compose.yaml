@@ -4,8 +4,6 @@ services:
     build: .
     ports:
       - "127.0.0.1:${EXPOSE_API:-8000}:8000"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - type: "bind"
         source: "./log/"
@@ -31,7 +29,7 @@ services:
     env_file:
       - ${DOCKER_ENV_FILE:-.env}
     ports:
-      - "127.0.0.1:${EXPOSE_PG:-5432}:5432"
+      - "${EXPOSE_PG:-5432}:5432"
     volumes:
       - type: "volume"
         source: "postgres"
@@ -55,9 +53,7 @@ services:
     image: redis
     restart: always
     ports:
-      - "127.0.0.1:${EXPOSE_REDIS:-6379}:6379"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "${EXPOSE_REDIS:-6379}:6379"
     command:
       - "redis-server"
       - "--loglevel ${REDIS_LOGLEVEL:-warning}"
