@@ -1,6 +1,6 @@
 from adaptix import Retort
 
-from ..models.main import DBConfig
+from ..models.db import DBConfig
 
 
 def load_db_config(db_dict: dict,

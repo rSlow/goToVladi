@@ -25,8 +25,10 @@ class DBConfig:
             url = self.type
             if self.connector:
                 url += f"+{self.connector}"
-            url += (f"://{self.login}:{self.password}"
-                    f"@{self.host}:{self.port}/{self.name}")
+            url += f"://{self.login}:{self.password}@{self.host}"
+            if self.port:
+                url += f":{self.port}"
+            url += f"/{self.name}"
         elif self.type == "sqlite":
             url = f"{self.type}://{self.path}"
         else:

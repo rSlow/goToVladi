@@ -2,13 +2,13 @@ from copy import copy
 
 from adaptix import Retort
 
+from .db import load_db_config
+from .redis import load_redis_config
 from .. import BaseConfig
 from ..models.app import AppConfig
 from ..models.paths import Paths
 from ..models.static import StaticConfig, StaticType
 from ..models.web import WebConfig
-from ...data.db.config.parser.main import load_db_config
-from ...data.redis.config.parser.main import load_redis_config
 
 
 def load_base_config(config_dct: dict,

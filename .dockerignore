@@ -1,0 +1,17 @@
+.idea/
+.github/
+.*ignore
+README.md
+__pycache__
+.env*
+docker-compose*.yaml
+docker-compose*.yml
+Dockerfile
+*.service
+*.db
+*.db*
+docs/
+static/
+jsons/
+log/
+config_dist/

@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 from enum import Enum
 
-from goToVladi.core.data.redis.config.models import RedisConfig
+from goToVladi.core.config.models.redis import RedisConfig
 
 logger = logging.getLogger(__name__)
 

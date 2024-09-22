@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import (
     AsyncEngine,
 )
 
-from goToVladi.core.data.db.config.models import DBConfig
+from goToVladi.core.config.models.db import DBConfig
 
 logger = logging.getLogger(__name__)
 

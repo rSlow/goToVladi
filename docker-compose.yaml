@@ -1,0 +1,78 @@
+services:
+
+  aiogram:
+    build: .
+    ports:
+      - "127.0.0.1:${EXPOSE_API:-8000}:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - type: "bind"
+        source: "./log/"
+        target: "/app/log/"
+      - type: "bind"
+        source: "./config/"
+        target: "/app/config/"
+        read_only: true
+      - type: "bind"
+        source: "./static/"
+        target: "/app/static/"
+    depends_on:
+      - postgres
+      - redis
+      - migrations
+    restart: always
+    entrypoint:
+      [ "poetry", "run", "python", "-m", "goToVladi" ]
+
+  postgres:
+    image: postgres
+    restart: always
+    env_file:
+      - ${DOCKER_ENV_FILE:-.env}
+    ports:
+      - "127.0.0.1:${EXPOSE_PG:-5432}:5432"
+    volumes:
+      - type: "volume"
+        source: "postgres"
+        target: "/app/pgdata/goToVladi/"
+    environment:
+      PGDATA: /app/pgdata/goToVladi
+
+  migrations:
+    restart: "no"
+    build: .
+    volumes:
+      - type: "bind"
+        source: "./alembic.ini"
+        target: "/app/alembic.ini"
+        read_only: true
+    entrypoint: [ "poetry", "run", "python", "-m", "alembic", "upgrade", "heads" ]
+    depends_on:
+      - postgres
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "127.0.0.1:${EXPOSE_REDIS:-6379}:6379"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command:
+      - "redis-server"
+      - "--loglevel ${REDIS_LOGLEVEL:-warning}"
+      - "--databases 2"
+      - "--save 900 1"
+      - "--save 300 10"
+      - "--save 60 10000"
+      - "--maxmemory ${REDIS_MAXMEM:-50mb}"
+      - "--maxmemory-policy ${REDIS_POLICY:-noeviction}"
+      - "--requirepass ${REDIS_PASSWORD}"
+    volumes:
+      - type: "volume"
+        source: "redis"
+        target: "/data/"
+
+volumes:
+  redis:
+  postgres:

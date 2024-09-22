@@ -5,8 +5,9 @@ from apscheduler.executors.asyncio import AsyncIOExecutor
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dishka import AsyncContainer
+from redis import Redis
 
-from goToVladi.core.data.redis.config.models import RedisConfig
+from goToVladi.core.config.models.redis import RedisConfig
 from goToVladi.core.scheduler.context import SchedulerInjectContext
 
 logger = logging.getLogger(__name__)
@@ -37,6 +38,7 @@ class ApScheduler(Scheduler):
             db=redis_config.db,
             password=redis_config.password
         )
+        self.job_store.redis = Redis.from_url(redis_config.uri)
         self.executor = AsyncIOExecutor()
         job_defaults = {  # TODO check
             "coalesce": False,

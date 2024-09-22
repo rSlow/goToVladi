@@ -2,7 +2,7 @@ from typing import AsyncIterable
 
 from dishka import Provider, Scope, provide, AsyncContainer
 
-from goToVladi.core.data.redis.config.models import RedisConfig
+from goToVladi.core.config.models.redis import RedisConfig
 from goToVladi.core.scheduler.scheduler import Scheduler, ApScheduler
 
 

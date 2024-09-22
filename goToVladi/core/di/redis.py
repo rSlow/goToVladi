@@ -4,7 +4,7 @@ from dishka import Provider, Scope, provide
 from redis.asyncio.client import Redis
 
 from goToVladi.core.config.models import BaseConfig
-from goToVladi.core.data.redis.config.models import RedisConfig
+from goToVladi.core.config.models.redis import RedisConfig
 from goToVladi.core.factory.redis import create_redis
 
 

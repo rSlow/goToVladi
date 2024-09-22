@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from goToVladi.core.data.db.config.models import DBConfig
-from goToVladi.core.data.redis.config.models import RedisConfig
+from .db import DBConfig
+from .redis import RedisConfig
 from .app import AppConfig
 from .paths import Paths
 from .static import StaticConfig
