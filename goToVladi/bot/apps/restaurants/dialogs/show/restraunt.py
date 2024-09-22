@@ -98,7 +98,7 @@ restaurant_window = Window(
             id=DESCRIPTION_SCROLL + "_next",
             scroll=DESCRIPTION_SCROLL, text=Format("▶️")
         ),
-        when=F["description_length"] > 600
+        when=F["description_length"] >= 600
     ),
 
     Format(
