@@ -1,18 +1,18 @@
 from aiogram.types import BotCommand
 
-START_COMMAND = BotCommand(
+START = BotCommand(
     command="start",
-    description="начало работы с ботом"
+    description="в начало"
 )
-HELP_COMMAND = BotCommand(
+HELP = BotCommand(
     command="help",
     description="помощь"
 )
-ABOUT_COMMAND = BotCommand(
+ABOUT = BotCommand(
     command="about",
     description="о боте"
 )
-CANCEL_COMMAND = BotCommand(
-    command="cancel",
-    description="на главную"
+UPDATE = BotCommand(
+    command="update",
+    description="обновить"
 )

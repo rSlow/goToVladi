@@ -22,14 +22,16 @@ class BotProvider(Provider):
     @provide
     async def get_common_commands(self) -> BotCommandsList:
         return BotCommandsList([
-            # commands.START_COMMAND,
-            commands.HELP_COMMAND,
-            commands.ABOUT_COMMAND,
-            commands.CANCEL_COMMAND
+            commands.START,
+            commands.HELP,
+            commands.ABOUT,
+            commands.UPDATE
         ])
 
     @provide
-    async def get_bot(self, bot_config: BotConfig, bot_commands: BotCommandsList) -> AsyncIterable[Bot]:
+    async def get_bot(
+            self, bot_config: BotConfig, bot_commands: BotCommandsList
+    ) -> AsyncIterable[Bot]:
         bot = Bot(
             token=bot_config.token,
             default=DefaultBotProperties(

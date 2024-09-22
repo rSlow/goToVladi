@@ -75,4 +75,4 @@ def render(registries: list[Registry]):
         if components:
             res += render_scope(scope, components)
 
-    return res
+    return res.strip() + "\n"

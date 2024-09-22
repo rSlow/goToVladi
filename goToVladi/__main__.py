@@ -14,6 +14,7 @@ from goToVladi.api.utils.webhook.setup import setup_lifespan
 from goToVladi.bot.config.models.webhook import WebhookConfig
 from goToVladi.bot.config.parser.main import load_config as load_bot_config
 from goToVladi.bot.di import get_bot_providers
+from goToVladi.core.config.models.web import WebConfig
 from goToVladi.core.config.parser.config_logging import setup_logging
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.config.parser.retort import get_base_retort
@@ -48,7 +49,9 @@ def main():
 
     setup_fastapi_dishka(di_container, api_app)
 
-    startup_callback = partial(on_startup, di_container, webhook_config)
+    startup_callback = partial(
+        on_startup, di_container, api_config.web, webhook_config
+    )
     shutdown_callback = partial(on_shutdown, di_container)
     api_app.add_event_handler("startup", startup_callback)
     api_app.add_event_handler("shutdown", shutdown_callback)
@@ -62,8 +65,11 @@ def main():
     return api_app
 
 
-async def on_startup(dishka: AsyncContainer, webhook_config: WebhookConfig):
-    webhook_url = webhook_config.web_url + webhook_config.path
+async def on_startup(
+        dishka: AsyncContainer,
+        web_config: WebConfig, webhook_config: WebhookConfig
+):
+    webhook_url = web_config.real_base_url + webhook_config.path
     bot = await dishka.get(Bot)
     # dp = await dishka.get(Dispatcher)
     await bot.set_webhook(

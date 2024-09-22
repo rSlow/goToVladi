@@ -8,5 +8,6 @@ __all__ = [
 
 from .base import Base
 from .restaurant import Restaurant
-from .restaurant_cuisine import RestaurantCuisine
+from .restaurant.media import RestaurantMedia
+from .restaurant.cuisine import RestaurantCuisine
 from .user import User

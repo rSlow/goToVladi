@@ -13,16 +13,12 @@ from goToVladi.core.config.parser.paths import get_paths
 class BaseConfigProvider(Provider):
     scope = Scope.APP
 
-    def __init__(self, path_env: str = ""):
-        super().__init__()
-        self.path_env = path_env
-
     @provide
     def get_paths(self) -> Paths:
-        return get_paths(self.path_env)
+        return get_paths()
 
     @provide
-    def get_tgbot_config(self, paths: Paths, retort: Retort) -> BotAppConfig:
+    def get_bot_app_config(self, paths: Paths, retort: Retort) -> BotAppConfig:
         return load_bot_config(paths, retort)
 
     @provide

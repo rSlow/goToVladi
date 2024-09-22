@@ -11,7 +11,7 @@ def configure_storage(upload_path: Path):
 
     container_name = "images"
     try:
-        driver.create_container(container_name="images")
+        driver.create_container(container_name=container_name)
     except ContainerAlreadyExistsError:
         pass
 

@@ -13,6 +13,10 @@ def load_config(paths: Paths,
     config_dct = read_config_yaml(paths)
     return BotAppConfig.from_base(
         base=load_base_config(config_dct, paths, retort),
-        bot=load_bot_config(config_dct["bot"], retort),
+        bot=load_bot_config(
+            config_dct["bot"],
+            config_dct["web"]["base-url"],
+            retort
+        ),
         storage=load_storage_config(config_dct["bot"]["storage"], retort),
     )

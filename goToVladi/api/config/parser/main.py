@@ -10,9 +10,14 @@ from ..parser.auth import load_auth_config
 
 def load_config(paths: Paths, retort: Retort) -> ApiAppConfig:
     config_dct = read_config_yaml(paths)
-    api_config = retort.load(config_dct["api"], ApiConfig)
+    api_config = config_dct["api"]
+
     return ApiAppConfig.from_base(
         base=load_base_config(config_dct, paths, retort),
-        api=api_config,
-        auth=load_auth_config(config_dct["api"]["auth"], retort)
+        api=retort.load(api_config, ApiConfig),
+        auth=load_auth_config(
+            api_config["auth"],
+            config_dct["web"]["base-url"],
+            retort
+        )
     )

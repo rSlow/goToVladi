@@ -1,29 +1,34 @@
-from aiogram import F
-from aiogram.enums import ContentType
+import asyncio
+import logging
+
+from aiogram import F, types, Bot
+from aiogram.exceptions import TelegramBadRequest
 from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.common import ManagedScroll as MScroll
 from aiogram_dialog.widgets.kbd import Group, Url, \
-    PrevPage, CurrentPage, NextPage, Row, StubScroll
-from aiogram_dialog.widgets.media import StaticMedia
+    PrevPage, CurrentPage, NextPage, Row, Back, Button
 from aiogram_dialog.widgets.text import Const, Format
 
 from goToVladi.bot.apps.restaurants.states import RestaurantSG
-from goToVladi.bot.utils import buttons
+from goToVladi.bot.middlewares.config import MiddlewareData
 from goToVladi.bot.utils.scroll import normalize_scroll
 from goToVladi.bot.views.types.scrolling_n_text import ScrollingSplitText, \
     PageTable
+from goToVladi.core.config import BaseConfig
 from goToVladi.core.data.db.dao import DaoHolder
 
 PHOTOS_SCROLL = "photos_scroll"
 DESCRIPTION_SCROLL = "description_scroll"
 
+logger = logging.getLogger(__name__)
 
-async def get_restaurant(dao: DaoHolder, dialog_manager: DialogManager, **__):
+
+async def get_restaurant(
+        dao: DaoHolder, base_config: BaseConfig,
+        dialog_manager: DialogManager, **__
+):
     restaurant_id = dialog_manager.dialog_data["restaurant_id"]
     restaurant = await dao.restaurant.get(restaurant_id)
-
-    photos_scroll: MScroll = dialog_manager.find(PHOTOS_SCROLL)
-    await normalize_scroll(restaurant.photos, photos_scroll)
 
     if restaurant.description:
         description_scroll: MScroll = dialog_manager.find(DESCRIPTION_SCROLL)
@@ -32,24 +37,40 @@ async def get_restaurant(dao: DaoHolder, dialog_manager: DialogManager, **__):
             description_scroll
         )
 
-    args = {
+    return {
         "restaurant": restaurant,
-        "photos_count": len(restaurant.photos),
-        "description_length": (
-            len(restaurant.description)
-            if restaurant.description else 0
-        ),
+        "description_length": len(restaurant.description or "")
     }
 
-    if restaurant.photos:
-        current_photo_page = await photos_scroll.get_page()
-        current_photo = restaurant.photos[current_photo_page]
-        args.update({
-            "current_page": current_photo_page + 1,
-            "current_photo_url": current_photo.url
-        })
 
-    return args
+async def delete_message(bot: Bot, chat_id: int, message_id: int) -> bool:
+    # TODO перенести
+    try:
+        return await bot.delete_message(
+            chat_id=chat_id,
+            message_id=message_id
+        )
+    except TelegramBadRequest as ex:
+        logger.warning(
+            f"Error while deleting additional message "
+            f"{message_id}: {ex.message}"
+        )
+
+
+async def delete_additional_messages(
+        callback: types.CallbackQuery, __: Button, manager: DialogManager
+):
+    # TODO может быть сделать контроллер дополнительных сообщений
+    additional_messages = manager.dialog_data.pop("additional_messages", [])
+    if additional_messages:
+        middleware_data: MiddlewareData = manager.middleware_data
+        bot: Bot = middleware_data["bot"]
+        await asyncio.gather(*[
+            delete_message(
+                bot, callback.message.chat.id, additional_message
+            )
+            for additional_message in additional_messages
+        ])
 
 
 restaurant_window = Window(
@@ -77,34 +98,12 @@ restaurant_window = Window(
             id=DESCRIPTION_SCROLL + "_next",
             scroll=DESCRIPTION_SCROLL, text=Format("▶️")
         ),
-        when=F["description_length"] > 900
+        when=F["description_length"] > 600
     ),
 
     Format(
         text="<u>\nТелефон:</u> <code>{restaurant.phone}</code>",
         when=F["restaurant"].phone
-    ),
-
-    StubScroll(id=PHOTOS_SCROLL, pages="photos_count"),
-    StaticMedia(
-        path=Format("{current_photo_url}"),
-        type=ContentType.PHOTO,
-        when=F["restaurant"].photos
-    ),
-    Row(
-        PrevPage(
-            id=PHOTOS_SCROLL + "_prev",
-            scroll=PHOTOS_SCROLL, text=Format("◀️")
-        ),
-        CurrentPage(
-            id=PHOTOS_SCROLL + "_current", scroll=PHOTOS_SCROLL,
-            text=Format("Фото {current_page1} / {pages}")
-        ),
-        NextPage(
-            id=PHOTOS_SCROLL + "_next",
-            scroll=PHOTOS_SCROLL, text=Format("▶️")
-        ),
-        when=F["photos_count"] > 1
     ),
 
     Group(
@@ -138,9 +137,13 @@ restaurant_window = Window(
             id="telegram",
             when=F["restaurant"].telegram
         ),
-        width=2
+        width=2,
+        when=F["restaurant"]  # .paid TODO сделать фильтрацию по оплате
     ),
-    buttons.BACK,
+    Back(
+        text=Const("Назад ◀"),
+        on_click=delete_additional_messages
+    ),
     state=RestaurantSG.restaurant,
     getter=get_restaurant,
 )

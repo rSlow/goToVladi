@@ -1,23 +1,24 @@
 from __future__ import annotations
 
-from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
 
+from goToVladi.core.data.db.config.models import DBConfig
+from goToVladi.core.data.redis.config.models import RedisConfig
 from .app import AppConfig
 from .paths import Paths
+from .static import StaticConfig
 from .web import WebConfig
-from ...data.db.config.models import DBConfig
-from ...data.redis.config.models import RedisConfig
 
 
 @dataclass
-class BaseConfig(ABC):
+class BaseConfig:
     app: AppConfig
     paths: Paths
     db: DBConfig
     redis: RedisConfig
     web: WebConfig
+    static: StaticConfig
 
     @property
     def app_dir(self) -> Path:

@@ -32,11 +32,11 @@ class DpProvider(Provider):
     ) -> Dispatcher:
         dp = Dispatcher(storage=storage, events_isolation=event_isolation)
         setup_aiogram_dishka(container=dishka, router=dp)
-        setup_handlers(dp, bot_config)
-        setup_middlewares(dp=dp)
+        bg_manager_factory = setup_handlers(dp, bot_config)
+        setup_middlewares(dp=dp, bg_manager_factory=bg_manager_factory)
         logger.info(
             "Configured bot routers \n%s",
-            print_router_tree(dp)
+            print_router_tree(dp) + "\n"
         )
         return dp
 

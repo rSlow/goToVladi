@@ -31,10 +31,17 @@ async def cmd_about(message: types.Message, dialog_manager: DialogManager):
     await dialog_manager.update({}, show_mode=ShowMode.DELETE_AND_SEND)
 
 
+async def cmd_update(message: types.Message, dialog_manager: DialogManager):
+    await message.delete()
+    await dialog_manager.update({}, show_mode=ShowMode.DELETE_AND_SEND)
+
+
 def setup():
     router = Router(name=__name__)
-    router.message.register(cmd_start, Command(commands.START_COMMAND))
-    router.message.register(cmd_help, Command(commands.HELP_COMMAND))
-    router.message.register(cmd_about, Command(commands.ABOUT_COMMAND))
+
+    router.message.register(cmd_start, Command(commands.START))
+    router.message.register(cmd_help, Command(commands.HELP))
+    router.message.register(cmd_about, Command(commands.ABOUT))
+    router.message.register(cmd_update, Command(commands.UPDATE))
 
     return router

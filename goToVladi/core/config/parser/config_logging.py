@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def setup_logging(paths: Paths):
     # monkeypatching logging sqlalchemy (disable logger)
-    # sa_log._add_default_handler = lambda _: None
+    sa_log._add_default_handler = lambda _: None
     try:
         with paths.logging_config_file.open("r") as f:
             logging_config = yaml.safe_load(f)

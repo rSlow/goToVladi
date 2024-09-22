@@ -5,12 +5,13 @@ from aiogram import types, Bot, Router
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import BaseStorage
-from aiogram_dialog import DialogManager
+from aiogram_dialog import DialogManager, BgManagerFactory
 from aiogram_dialog.api.entities import Stack, Context
 from aiogram_dialog.context.storage import StorageProxy
 from dishka import AsyncContainer
 
 from goToVladi.bot.config.models.bot import BotConfig
+from goToVladi.core.config import BaseConfig
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
 from goToVladi.core.scheduler.scheduler import Scheduler
@@ -39,6 +40,7 @@ class DialogMiddlewareData(AiogramMiddlewareData, total=False):
 class MiddlewareData(DialogMiddlewareData, total=False):
     dishka_container: AsyncContainer
     bot_config: BotConfig
+    base_config: BaseConfig
     retort: Retort
     locker: LockFactory
 
@@ -46,3 +48,5 @@ class MiddlewareData(DialogMiddlewareData, total=False):
 
     dao: DaoHolder
     user: dto.User | None
+
+    bg_manager_factory: BgManagerFactory

@@ -8,7 +8,7 @@ from aiogram.exceptions import AiogramError
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types.error_event import ErrorEvent
 from aiogram.utils.markdown import html_decoration as hd
-from aiogram_dialog import DialogManager, StartMode
+from aiogram_dialog import DialogManager, StartMode, ShowMode
 from aiogram_dialog.api.exceptions import UnknownIntent, NoContextError
 
 from goToVladi.bot.apps.base.states import MainMenuSG
@@ -66,7 +66,10 @@ async def no_context(error: ErrorEvent, bot: Bot,
             text=f"Произошла ошибка бота, мы вынуждены вернуть вас "
                  f"в главное меню, и уже работаем над устранением 🛠"
         )
-        await dialog_manager.start(MainMenuSG.state, mode=StartMode.RESET_STACK)
+        await dialog_manager.start(
+            MainMenuSG.main_state, mode=StartMode.RESET_STACK,
+            show_mode=ShowMode.DELETE_AND_SEND
+        )
 
 
 async def handle(error: ErrorEvent, log_chat_id: int, bot: Bot):

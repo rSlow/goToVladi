@@ -3,7 +3,11 @@ from aiogram.fsm.state import StatesGroup, State
 
 class FSMSingleFactory:
     def __init__(self, group_name: str, state_name: str):
-        _states_group: StatesGroup = type(group_name, (StatesGroup,), {state_name: State()})
+        _states_group: StatesGroup = type(
+            group_name,
+            (StatesGroup,),
+            {state_name: State()}
+        )
         self.__states_group = _states_group
 
     @property

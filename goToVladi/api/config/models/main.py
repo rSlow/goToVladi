@@ -18,11 +18,6 @@ class ApiAppConfig(BaseConfig):
                   api: ApiConfig,
                   auth: AuthConfig):
         return cls(
-            paths=base.paths,
-            db=base.db,
-            redis=base.redis,
-            api=api,
-            app=base.app,
-            web=base.web,
-            auth=auth
+            paths=base.paths, db=base.db, redis=base.redis, api=api,
+            app=base.app, web=base.web, auth=auth, static=base.static
         )

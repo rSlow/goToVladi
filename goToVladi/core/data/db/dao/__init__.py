@@ -10,5 +10,5 @@ class DaoHolder:
         self.session = session
         self.redis = redis
 
-        self.user = UserDao(self.session)
-        self.restaurant = RestaurantDao(self.session)
+        self.user: UserDao = UserDao(self.session)
+        self.restaurant: RestaurantDao = RestaurantDao(self.session)

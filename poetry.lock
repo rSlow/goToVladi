@@ -62,17 +62,17 @@ test = ["aresponses (>=2.1.6,<2.2.0)", "pycryptodomex (>=3.19.0,<3.20.0)", "pyte
 
 [[package]]
 name = "aiogram-dialog"
-version = "2.1.0"
+version = "2.2.0"
 description = "Telegram bot UI framework on top of aiogram"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "aiogram_dialog-2.1.0-py3-none-any.whl", hash = "sha256:b0df4de3343bc770a2af57e4bb5fbd827d88faad290702833219f01fbdfcca81"},
-    {file = "aiogram_dialog-2.1.0.tar.gz", hash = "sha256:b8763134a3b8dc8adfb101a280d06dcfd3a7971641f1a4c43e4a065a1e751787"},
+    {file = "aiogram_dialog-2.2.0-py3-none-any.whl", hash = "sha256:0ad4c95e03675c7b07752fc6b10b0bd232eff1b89e12450771f17ae3aa9655e2"},
+    {file = "aiogram_dialog-2.2.0.tar.gz", hash = "sha256:2b443145531e2e2676d4ece12e9e0838070733f6a9f3fb7deb57946acd4af056"},
 ]
 
 [package.dependencies]
-aiogram = ">=3.0.0"
+aiogram = ">=3.5.0"
 cachetools = ">=4.0.0,<6.0.0"
 jinja2 = "*"
 magic-filter = "*"
@@ -692,26 +692,6 @@ files = [
     {file = "dishka-1.3.0-py3-none-any.whl", hash = "sha256:37d534f9d4cb60df1f3ea19a193d60242a509433abb3d94dbefe62b38804ff7a"},
     {file = "dishka-1.3.0.tar.gz", hash = "sha256:07c12cf87517f86d55e113701a4ceb816af4f46ae97929b395d92a0e4b9d6aec"},
 ]
-
-[[package]]
-name = "django"
-version = "5.1.1"
-description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
-optional = false
-python-versions = ">=3.10"
-files = [
-    {file = "Django-5.1.1-py3-none-any.whl", hash = "sha256:71603f27dac22a6533fb38d83072eea9ddb4017fead6f67f2562a40402d61c3f"},
-    {file = "Django-5.1.1.tar.gz", hash = "sha256:021ffb7fdab3d2d388bc8c7c2434eb9c1f6f4d09e6119010bbb1694dda286bc2"},
-]
-
-[package.dependencies]
-asgiref = ">=3.8.1,<4"
-sqlparse = ">=0.3.1"
-tzdata = {version = "*", markers = "sys_platform == \"win32\""}
-
-[package.extras]
-argon2 = ["argon2-cffi (>=19.1.0)"]
-bcrypt = ["bcrypt"]
 
 [[package]]
 name = "fastapi"
@@ -1873,21 +1853,6 @@ timezone = ["python-dateutil"]
 url = ["furl (>=0.4.1)"]
 
 [[package]]
-name = "sqlparse"
-version = "0.5.1"
-description = "A non-validating SQL parser."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "sqlparse-0.5.1-py3-none-any.whl", hash = "sha256:773dcbf9a5ab44a090f3441e2180efe2560220203dc2f8c0b0fa141e18b505e4"},
-    {file = "sqlparse-0.5.1.tar.gz", hash = "sha256:bb6b4df465655ef332548e24f08e205afc81b9ab86cb1c45657a7ff173a3a00e"},
-]
-
-[package.extras]
-dev = ["build", "hatch"]
-doc = ["sphinx"]
-
-[[package]]
 name = "starlette"
 version = "0.38.4"
 description = "The little ASGI library that shines."
@@ -2201,4 +2166,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e5ea21802b8ca93fb196bb16fbc990a78d58e326891ade65e68b2b7fe5b715ad"
+content-hash = "9b18286e6b825f14fbbdaebb6954aa0965b32621212deb8785c0e7d063cb7cbc"

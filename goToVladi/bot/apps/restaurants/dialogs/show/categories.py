@@ -1,7 +1,9 @@
 from operator import itemgetter
 
-from aiogram import types
-from aiogram_dialog import Window, DialogManager
+from aiogram import types, F
+from aiogram.types import FSInputFile
+from aiogram.utils.media_group import MediaGroupBuilder
+from aiogram_dialog import Window, DialogManager, ShowMode
 from aiogram_dialog.widgets.kbd import Select, ScrollingGroup, Group
 from aiogram_dialog.widgets.text import Const, Format
 
@@ -87,16 +89,46 @@ async def get_restaurants(dao: DaoHolder, dialog_manager: DialogManager, **__):
     return {"restaurants": restaurants}
 
 
-async def on_restaurant_click(
-        _: types.CallbackQuery, __: Select,
-        manager: DialogManager, restaurant_id: str
+async def send_restaurants_photos(
+        photos: list[dto.RestaurantMedia], message: types.Message,
+        manager: DialogManager
 ):
-    manager.dialog_data["restaurant_id"] = int(restaurant_id)
+    media_builder = MediaGroupBuilder()
+
+    for photo in photos:
+        media_builder.add_photo(media=FSInputFile(path=photo.url))
+
+    additional_messages = await message. \
+        answer_media_group(media_builder.build())
+    manager.dialog_data["additional_messages"] = [
+        message.message_id for message in additional_messages
+    ]
+    manager.show_mode = ShowMode.DELETE_AND_SEND
+
+
+async def on_restaurant_click(
+        callback: types.CallbackQuery, __: Select,
+        manager: DialogManager, restaurant_id: str,
+):
+    restaurant_id = manager.dialog_data["restaurant_id"] = int(restaurant_id)
+    dao: DaoHolder = manager.middleware_data["dao"]
+    restaurant = await dao.restaurant.get(restaurant_id)
+
+    if restaurant.medias:
+        await send_restaurants_photos(
+            photos=restaurant.medias, message=callback.message, manager=manager
+        )
+
     await manager.next()
 
 
 restaurants_window = Window(
-    Const("Выберите ресторан:"),
+    Const("Выберите ресторан:", when=F["restaurants"]),
+    Const(
+        f"В данной категории пока нет ресторанов, "
+        f"но мы обязательно скоро добавим!",
+        when=~F["restaurants"]
+    ),
     ScrollingGroup(
         Select(
             text=Format("{item.name}"),

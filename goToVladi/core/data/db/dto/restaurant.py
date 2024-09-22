@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 
-from goToVladi.core.data.db import schemas
+from .attachment import BaseAttachment
 
 
 class HintedEnum(Enum):
@@ -21,13 +21,31 @@ class RestaurantCuisine:
 
 
 @dataclass
+class RestaurantMedia(BaseAttachment):
+    restaurant_id: int
+
+
+@dataclass
+class ListRestaurant:
+    name: str
+    rating: float
+    cuisine: RestaurantCuisine
+
+    id_: int | None = None
+    priority: float | None = None
+    site_url: str | None = None
+    description: str | None = None
+    phone: str | None = None
+
+
+@dataclass
 class Restaurant:
     name: str
     average_check: int
     rating: float
     cuisine: RestaurantCuisine
 
-    photos: list[schemas.FileSchema] = field(default_factory=list)
+    medias: list[RestaurantMedia] = field(default_factory=list)
 
     is_delivery: bool = False
     is_inner: bool = True

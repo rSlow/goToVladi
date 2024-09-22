@@ -1,13 +1,11 @@
 from sqlalchemy import ForeignKey, Text
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from sqlalchemy_file import ImageField
-from sqlalchemy_file.validators import SizeValidator
-from sqlalchemy_utils import URLType
+from sqlalchemy_utils import URLType, PhoneNumberType
 
-from goToVladi.core.data.db import dto, schemas
+from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base
-from .restaurant_cuisine import RestaurantCuisine
-from ..types.string_phonenumber import StringPhoneNumberType
+from .cuisine import RestaurantCuisine
+from .media import RestaurantMedia
 
 
 class Restaurant(Base):
@@ -22,16 +20,9 @@ class Restaurant(Base):
     is_delivery: Mapped[bool] = mapped_column(default=False)
     rating: Mapped[float]
     priority: Mapped[float] = mapped_column(default=0)
-    phone: Mapped[str] = mapped_column(StringPhoneNumberType, nullable=True)
+    phone: Mapped[str] = mapped_column(PhoneNumberType, nullable=True)
 
-    photos = mapped_column(
-        ImageField(
-            multiple=True,
-            upload_storage="restaurant_photos",
-            validators=[SizeValidator("16M")],
-        ),
-        nullable=True
-    )
+    medias: Mapped[list[RestaurantMedia]] = relationship()
 
     cuisine_id: Mapped[int] = mapped_column(
         ForeignKey('restaurant_cuisines.id'), nullable=True
@@ -42,6 +33,18 @@ class Restaurant(Base):
     instagram = mapped_column(URLType, nullable=True)
     whatsapp = mapped_column(URLType, nullable=True)
     telegram = mapped_column(URLType, nullable=True)
+
+    def to_list_dto(self) -> dto.ListRestaurant:
+        return dto.ListRestaurant(
+            id_=self.id,
+            name=self.name,
+            rating=self.rating,
+            priority=self.priority,
+            site_url=self.site_url,
+            description=self.description,
+            phone=self.phone,
+            cuisine=self.cuisine.to_dto(),
+        )
 
     def to_dto(self) -> dto.Restaurant:
         return dto.Restaurant(
@@ -55,10 +58,10 @@ class Restaurant(Base):
             site_url=self.site_url,
             description=self.description,
             phone=self.phone,
-            photos=[
-                       schemas.FileSchema.from_dict(photo)
-                       for photo in self.photos
-                   ] if self.photos else [],
+            medias=[
+                _media.to_dto()
+                for _media in self.medias
+            ],
             cuisine=self.cuisine.to_dto(),
             instagram=self.instagram,
             vk=self.vk,

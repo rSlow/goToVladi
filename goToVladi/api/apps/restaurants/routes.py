@@ -6,7 +6,7 @@ from dishka.integrations.fastapi import inject
 from fastapi import APIRouter, UploadFile, Form, File, Path
 from fastapi import Depends as fDepends
 
-from goToVladi.core.data.db import forms
+from goToVladi.api.apps.restaurants.forms import RestaurantInputForm
 from goToVladi.core.data.db.dao import DaoHolder
 
 
@@ -21,10 +21,21 @@ class SimpleModel:
 @inject
 async def add_restaurant(
         dao: FromDishka[DaoHolder],
-        restaurant_form: forms.RestaurantInputForm = fDepends(),
+        restaurant_form: RestaurantInputForm = fDepends(),
 ):
-    restaurant_db = await dao.restaurant.add(restaurant_form)
+    restaurant_model = restaurant_form.to_model()
+    restaurant_db = await dao.restaurant.add(restaurant_model)
     return restaurant_db
+
+
+@inject
+async def add_media(
+        dao: FromDishka[DaoHolder],
+        medias: list[UploadFile],
+        id_: int = Path(alias="id"),
+):
+    res = await dao.restaurant.add_medias(id_, *medias)
+    return {"ok": res}
 
 
 @inject
@@ -51,5 +62,6 @@ def setup():
     router.add_api_route("/", add_restaurant, methods=["POST"])
     router.add_api_route("/{id}/", get_restaurant, methods=["GET"])
     router.add_api_route("/{id}/", delete_restaurant, methods=["DELETE"])
+    router.add_api_route("/{id}/media/", add_media, methods=["POST"])
 
     return router
