@@ -10,5 +10,5 @@ class WebConfig:
     def real_base_url(self):
         res = self.base_url
         if self.root_path:
-            res += "/" + self.root_path
+            res += self.root_path
         return res
