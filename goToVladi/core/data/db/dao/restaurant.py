@@ -19,7 +19,7 @@ class RestaurantDao(BaseDAO[db.Restaurant]):
         cuisines = result.all()
         return [cuisine.to_dto() for cuisine in cuisines]
 
-    async def get_all(
+    async def get_filtered_list(
             self, cuisine_id: int, is_delivery: bool, is_inner: bool
     ) -> list[dto.ListRestaurant]:
         result: ScalarResult[db.Restaurant] = await self.session.scalars(

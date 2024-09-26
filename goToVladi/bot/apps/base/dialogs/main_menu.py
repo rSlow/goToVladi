@@ -4,6 +4,7 @@ from aiogram_dialog.widgets.kbd import Start
 from aiogram_dialog.widgets.text import Const
 
 from goToVladi.bot.apps.base.states import MainMenuSG
+from goToVladi.bot.apps.hotels.states import HotelSG
 from goToVladi.bot.apps.restaurants.states import RestaurantSG
 from goToVladi.bot.middlewares.config import MiddlewareData
 
@@ -23,6 +24,11 @@ main_menu = Dialog(
             Const("Рестораны"),
             id="restaurants",
             state=RestaurantSG.cuisines
+        ),
+        Start(
+            Const("Отели"),
+            id="hotels",
+            state=HotelSG.district,
         ),
         # Start(
         #     Const("Админка"),

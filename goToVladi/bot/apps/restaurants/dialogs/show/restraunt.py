@@ -2,7 +2,6 @@ import asyncio
 import logging
 
 from aiogram import F, types, Bot
-from aiogram.exceptions import TelegramBadRequest
 from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.common import ManagedScroll as MScroll
 from aiogram_dialog.widgets.kbd import Group, Url, \
@@ -11,9 +10,10 @@ from aiogram_dialog.widgets.text import Const, Format
 
 from goToVladi.bot.apps.restaurants.states import RestaurantSG
 from goToVladi.bot.middlewares.config import MiddlewareData
+from goToVladi.bot.utils.message import delete_message
 from goToVladi.bot.utils.scroll import normalize_scroll
-from goToVladi.bot.views.types.scrolling_n_text import ScrollingSplitText, \
-    PageTable
+from goToVladi.bot.views.types.scrolls import ScrollingSplitText
+from goToVladi.bot.views.types.scrolls.split_text import PageTable
 from goToVladi.core.config import BaseConfig
 from goToVladi.core.data.db.dao import DaoHolder
 
@@ -33,6 +33,7 @@ async def get_restaurant(
     if restaurant.description:
         description_scroll: MScroll = dialog_manager.find(DESCRIPTION_SCROLL)
         await normalize_scroll(
+            # TODO снести page_table
             PageTable(restaurant.description, 600, "\n").pages,
             description_scroll
         )
@@ -43,32 +44,16 @@ async def get_restaurant(
     }
 
 
-async def delete_message(bot: Bot, chat_id: int, message_id: int) -> bool:
-    # TODO перенести
-    try:
-        return await bot.delete_message(
-            chat_id=chat_id,
-            message_id=message_id
-        )
-    except TelegramBadRequest as ex:
-        logger.warning(
-            f"Error while deleting additional message "
-            f"{message_id}: {ex.message}"
-        )
-
-
 async def delete_additional_messages(
         callback: types.CallbackQuery, __: Button, manager: DialogManager
 ):
-    # TODO может быть сделать контроллер дополнительных сообщений
+    # TODO сделать мидлу отлова additional_messages
     additional_messages = manager.dialog_data.pop("additional_messages", [])
     if additional_messages:
         middleware_data: MiddlewareData = manager.middleware_data
         bot: Bot = middleware_data["bot"]
         await asyncio.gather(*[
-            delete_message(
-                bot, callback.message.chat.id, additional_message
-            )
+            delete_message(bot, callback.message.chat.id, additional_message)
             for additional_message in additional_messages
         ])
 
@@ -77,13 +62,12 @@ restaurant_window = Window(
     Format("<b>{restaurant.name}</b>\n"),
     Format("<u>Оценка</u>: {restaurant.rating} / 5 ⭐️"),
     Format("<u>Средний чек</u>: {restaurant.average_check} ₽\n"),
-
     ScrollingSplitText(
         text=Format("{restaurant.description}"),
         id_=DESCRIPTION_SCROLL,
         page_size=600,
         when=F["restaurant"].description,
-        splitter="\n"
+        sep="\n"
     ),
     Row(
         PrevPage(

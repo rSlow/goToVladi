@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class ScrollingSplitText(ScrollingText):
     def __init__(
             self, text: Text, id_: str, page_size: int = 500,
-            splitter: str = "\n",
+            sep: str = "\n",
             when: WhenCondition = None,
             on_page_changed: OnPageChangedVariants = None,
 
@@ -19,7 +19,7 @@ class ScrollingSplitText(ScrollingText):
             text=text, id=id_, page_size=page_size, when=when,
             on_page_changed=on_page_changed
         )
-        self.splitter = splitter
+        self.splitter = sep
 
     def _get_page_table(self, text: str):
         return PageTable(

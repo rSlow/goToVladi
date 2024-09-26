@@ -41,7 +41,6 @@ class Restaurant(Base):
             rating=self.rating,
             priority=self.priority,
             site_url=self.site_url,
-            description=self.description,
             phone=self.phone,
             cuisine=self.cuisine.to_dto(),
         )
@@ -68,6 +67,3 @@ class Restaurant(Base):
             whatsapp=self.whatsapp,
             telegram=self.telegram,
         )
-
-    def __str__(self):
-        return f"{self.name} {self.site_url}"

@@ -1,14 +1,13 @@
 from operator import itemgetter
 
 from aiogram import types, F
-from aiogram.types import FSInputFile
-from aiogram.utils.media_group import MediaGroupBuilder
-from aiogram_dialog import Window, DialogManager, ShowMode
+from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.kbd import Select, ScrollingGroup, Group
 from aiogram_dialog.widgets.text import Const, Format
 
 from goToVladi.bot.apps.restaurants.states import RestaurantSG
 from goToVladi.bot.utils import buttons
+from goToVladi.bot.views.media_group import send_additional_media_group
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
 
@@ -81,29 +80,12 @@ async def get_restaurants(dao: DaoHolder, dialog_manager: DialogManager, **__):
     restaurant_type = dialog_manager.dialog_data["restaurant_type"]
     is_delivery = restaurant_type == "delivery"
     is_inner = restaurant_type == "inner"
-    restaurants = await dao.restaurant.get_all(
+    restaurants = await dao.restaurant.get_filtered_list(
         cuisine_id=cuisine_id,
         is_inner=is_inner,
         is_delivery=is_delivery
     )
     return {"restaurants": restaurants}
-
-
-async def send_restaurants_photos(
-        photos: list[dto.RestaurantMedia], message: types.Message,
-        manager: DialogManager
-):
-    media_builder = MediaGroupBuilder()
-
-    for photo in photos:
-        media_builder.add_photo(media=FSInputFile(path=photo.url))
-
-    additional_messages = await message. \
-        answer_media_group(media_builder.build())
-    manager.dialog_data["additional_messages"] = [
-        message.message_id for message in additional_messages
-    ]
-    manager.show_mode = ShowMode.DELETE_AND_SEND
 
 
 async def on_restaurant_click(
@@ -115,15 +97,18 @@ async def on_restaurant_click(
     restaurant = await dao.restaurant.get(restaurant_id)
 
     if restaurant.medias:
-        await send_restaurants_photos(
-            photos=restaurant.medias, message=callback.message, manager=manager
+        await send_additional_media_group(
+            medias=restaurant.medias, message=callback.message, manager=manager
         )
 
     await manager.next()
 
 
 restaurants_window = Window(
-    Const("Выберите ресторан:", when=F["restaurants"]),
+    Const(
+        "Выберите ресторан:",
+        when=F["restaurants"]
+    ),
     Const(
         f"В данной категории пока нет ресторанов, "
         f"но мы обязательно скоро добавим!",

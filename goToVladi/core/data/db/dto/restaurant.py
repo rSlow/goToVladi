@@ -34,7 +34,6 @@ class ListRestaurant:
     id_: int | None = None
     priority: float | None = None
     site_url: str | None = None
-    description: str | None = None
     phone: str | None = None
 
 
