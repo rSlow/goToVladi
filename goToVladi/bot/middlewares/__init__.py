@@ -16,4 +16,4 @@ def setup_middlewares(dp: Dispatcher, bg_manager_factory: BgManagerFactory):
     dp.business_message.middleware(additional_message_middleware)
     dp.callback_query.middleware(additional_message_middleware)
 
-    dp.update.middleware(RegionMiddleware())
+    # dp.update.middleware(RegionMiddleware())
