@@ -16,3 +16,7 @@ UPDATE = BotCommand(
     command="update",
     description="обновить"
 )
+REGION = BotCommand(
+    command="region",
+    description="выбрать город"
+)

@@ -5,9 +5,10 @@ from aiogram_dialog import StartMode
 from dishka import FromDishka
 from jinja2 import Environment
 
-from goToVladi.bot.apps.base.states import MainMenuSG
+from goToVladi.bot.apps.base.states import MainMenuSG, RegionSG
 from goToVladi.bot.views import commands
 from goToVladi.bot.views.jinja import render_template
+from goToVladi.core.data.db.dao import DaoHolder
 
 
 async def cmd_start(_: types.Message, dialog_manager: DialogManager):
@@ -36,6 +37,14 @@ async def cmd_update(message: types.Message, dialog_manager: DialogManager):
     await dialog_manager.update({}, show_mode=ShowMode.DELETE_AND_SEND)
 
 
+async def cmd_region(
+        message: types.Message,
+        dialog_manager: DialogManager, dao: DaoHolder
+):
+    region = await dao.region.get()
+    await dialog_manager.start(RegionSG.start, data={"region": region})
+
+
 def setup():
     router = Router(name=__name__)
 
@@ -43,5 +52,6 @@ def setup():
     router.message.register(cmd_help, Command(commands.HELP))
     router.message.register(cmd_about, Command(commands.ABOUT))
     router.message.register(cmd_update, Command(commands.UPDATE))
+    router.message.register(cmd_update, Command(commands.REGION))
 
     return router

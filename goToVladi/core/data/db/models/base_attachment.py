@@ -13,7 +13,6 @@ AttachmentType = TypeVar(
 
 
 class BaseAttachment:
-    id: Mapped[int] = mapped_column(primary_key=True)
     content_type: Mapped[str]
     content = mapped_column(FileField)
 

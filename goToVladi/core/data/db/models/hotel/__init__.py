@@ -4,18 +4,24 @@ from sqlalchemy_utils import URLType
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base
+from .district import HotelDistrict
 from .media import HotelMedia
 
 
 class Hotel(Base):
     __tablename__ = "hotels"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
-
     district: Mapped[str]
-    site_url = mapped_column(URLType, nullable=True)
-    description = mapped_column(Text, nullable=True)
+    site_url: Mapped[str] = mapped_column(URLType, nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    #
+    # district_id: Mapped[int] = mapped_column(
+    #     ForeignKey("hotel_districts.id"), nullable=True
+    # )
+    # district: Mapped[HotelDistrict] = relationship(
+    #     back_populates="hotels", foreign_keys=district_id
+    # )
 
     medias: Mapped[list[HotelMedia]] = relationship()
     min_price: Mapped[int]

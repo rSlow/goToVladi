@@ -13,10 +13,9 @@ class ApiAppConfig(BaseConfig):
     auth: AuthConfig
 
     @classmethod
-    def from_base(cls,
-                  base: BaseConfig,
-                  api: ApiConfig,
-                  auth: AuthConfig):
+    def from_base(
+            cls, base: BaseConfig, api: ApiConfig, auth: AuthConfig
+    ):
         return cls(
             paths=base.paths, db=base.db, redis=base.redis, api=api,
             app=base.app, web=base.web, auth=auth, static=base.static

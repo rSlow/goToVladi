@@ -3,13 +3,13 @@ from sqlalchemy.orm import mapped_column, Mapped
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base
+from goToVladi.core.data.db.models.mixins.time import TimeMixin
 
 
-class User(Base):
+class User(TimeMixin, Base):
     __tablename__ = "users"
     __mapper_args__ = {"eager_defaults": True}  # TODO eager_defaults
 
-    id: Mapped[int] = mapped_column(primary_key=True)
     tg_id = mapped_column(BigInteger, unique=True, nullable=False)
     first_name: Mapped[str] = mapped_column(nullable=True)
     last_name: Mapped[str] = mapped_column(nullable=True)

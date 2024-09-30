@@ -1,21 +1,10 @@
-from dataclasses import dataclass
-from typing import Annotated
-
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import APIRouter, UploadFile, Form, File, Path
+from fastapi import APIRouter, UploadFile, Path
 from fastapi import Depends as fDepends
 
 from goToVladi.api.apps.restaurants.forms import RestaurantInputForm
 from goToVladi.core.data.db.dao import DaoHolder
-
-
-@dataclass
-class SimpleModel:
-    username: Annotated[str, Form()]
-    password: Annotated[str, Form()]
-    photo: Annotated[UploadFile, File()]
-    file: Annotated[UploadFile, File()]
 
 
 @inject

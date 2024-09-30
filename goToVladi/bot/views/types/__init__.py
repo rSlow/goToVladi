@@ -1,7 +1,7 @@
 __all__ = [
-    "ScrollingSplitText",
+    "ScrollingSplitText", "PaginationRow",
     "JinjaTemplate",
 ]
 
 from .jinja_template import JinjaTemplate
-from .scrolling_n_text import ScrollingSplitText
+from .scrolls import ScrollingSplitText, PaginationRow

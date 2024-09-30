@@ -29,7 +29,7 @@ class FileSchema:
 class BaseAttachment(ABC):
     id_: int
     content: FileSchema
-    content_type: ContentType = ContentType.PHOTO
+    content_type: ContentType
 
     @property
     def url(self):

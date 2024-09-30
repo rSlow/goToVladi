@@ -48,5 +48,6 @@ class MiddlewareData(DialogMiddlewareData, total=False):
 
     dao: DaoHolder
     user: dto.User | None
+    region: dto.Region | None
 
     bg_manager_factory: BgManagerFactory

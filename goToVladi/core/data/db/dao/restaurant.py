@@ -1,5 +1,5 @@
 from fastapi import UploadFile
-from sqlalchemy import ScalarResult, select, delete
+from sqlalchemy import ScalarResult, select, delete, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
 
@@ -25,8 +25,10 @@ class RestaurantDao(BaseDAO[db.Restaurant]):
         result: ScalarResult[db.Restaurant] = await self.session.scalars(
             select(db.Restaurant)
             .where(db.Restaurant.cuisine_id == cuisine_id)
-            .where(db.Restaurant.is_inner == is_inner)
-            .where(db.Restaurant.is_delivery == is_delivery)
+            .where(or_(
+                db.Restaurant.is_inner == is_inner,
+                db.Restaurant.is_delivery == is_delivery
+            ))
             .options(*get_restaurant_list_options())
         )
         restaurants = result.all()
@@ -50,7 +52,6 @@ class RestaurantDao(BaseDAO[db.Restaurant]):
         self.session.add_all([
             db.RestaurantMedia(
                 restaurant_id=restaurant_id,
-                content=media,
                 content_type=media.content_type
             )
             for media in medias

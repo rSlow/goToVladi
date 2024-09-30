@@ -45,7 +45,7 @@ def set_auth_cookie(config: AuthConfig, response: Response, token: Token):
         "Authorization",
         value=f"{token.token_type} {token.token}",
         samesite=config.samesite,
-        domain=config.domain,
+        domain=config.host,
         httponly=config.httponly,
         secure=config.secure,
         max_age=config.token_expire.seconds,

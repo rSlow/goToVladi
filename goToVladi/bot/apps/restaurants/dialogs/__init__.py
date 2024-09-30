@@ -1,6 +1,6 @@
 from aiogram import Router
 
-from goToVladi.bot.apps.restaurants.dialogs.show import show_dialog
+from .show import show_dialog
 
 
 def setup():

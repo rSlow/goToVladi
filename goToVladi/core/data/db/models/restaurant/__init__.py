@@ -11,11 +11,10 @@ from .media import RestaurantMedia
 class Restaurant(Base):
     __tablename__ = "restaurants"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     average_check: Mapped[int]
-    description = mapped_column(Text, nullable=True)
-    site_url = mapped_column(URLType, nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    site_url: Mapped[str] = mapped_column(URLType, nullable=True)
     is_inner: Mapped[bool] = mapped_column(default=True)
     is_delivery: Mapped[bool] = mapped_column(default=False)
     rating: Mapped[float]
@@ -29,10 +28,10 @@ class Restaurant(Base):
     )
     cuisine: Mapped[RestaurantCuisine] = relationship(foreign_keys=cuisine_id)
 
-    vk = mapped_column(URLType, nullable=True)
-    instagram = mapped_column(URLType, nullable=True)
-    whatsapp = mapped_column(URLType, nullable=True)
-    telegram = mapped_column(URLType, nullable=True)
+    vk: Mapped[str] = mapped_column(URLType, nullable=True)
+    instagram: Mapped[str] = mapped_column(URLType, nullable=True)
+    whatsapp: Mapped[str] = mapped_column(URLType, nullable=True)
+    telegram: Mapped[str] = mapped_column(URLType, nullable=True)
 
     def to_list_dto(self) -> dto.ListRestaurant:
         return dto.ListRestaurant(

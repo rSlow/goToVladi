@@ -1,7 +1,7 @@
 from typing import Mapping
 
 from sqlalchemy import MetaData
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
 
 convention: Mapping[str, str] = {
     # "ix": "ix__%(column_0_label)s",
@@ -15,3 +15,5 @@ meta = MetaData(naming_convention=convention)  # TODO naming_convention
 
 class Base(DeclarativeBase):
     metadata = meta
+
+    id: Mapped[int] = mapped_column(primary_key=True)

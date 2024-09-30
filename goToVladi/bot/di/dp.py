@@ -13,7 +13,7 @@ from goToVladi.bot.apps import setup_handlers
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.config.models.storage import StorageConfig, StorageType
 from goToVladi.bot.middlewares import setup_middlewares
-from goToVladi.bot.utils.router import print_router_tree
+from goToVladi.bot.utils.router import print_router_tree, print_middleware_tree
 from goToVladi.core.factory.redis import create_redis
 
 logger = logging.getLogger(__name__)
@@ -34,10 +34,16 @@ class DpProvider(Provider):
         setup_aiogram_dishka(container=dishka, router=dp)
         bg_manager_factory = setup_handlers(dp, bot_config)
         setup_middlewares(dp=dp, bg_manager_factory=bg_manager_factory)
+
         logger.info(
             "Configured bot routers \n%s",
             print_router_tree(dp) + "\n"
         )
+        # logger.info(
+        #     "Configured middlewares \n%s",
+        #     print_middleware_tree(dp) + "\n"
+        # )
+
         return dp
 
     @provide

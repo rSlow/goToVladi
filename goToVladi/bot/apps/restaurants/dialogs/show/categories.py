@@ -7,7 +7,6 @@ from aiogram_dialog.widgets.text import Const, Format
 
 from goToVladi.bot.apps.restaurants.states import RestaurantSG
 from goToVladi.bot.utils import buttons
-from goToVladi.bot.views.media_group import send_additional_media_group
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
 
@@ -89,18 +88,10 @@ async def get_restaurants(dao: DaoHolder, dialog_manager: DialogManager, **__):
 
 
 async def on_restaurant_click(
-        callback: types.CallbackQuery, __: Select,
+        _: types.CallbackQuery, __: Select,
         manager: DialogManager, restaurant_id: str,
 ):
-    restaurant_id = manager.dialog_data["restaurant_id"] = int(restaurant_id)
-    dao: DaoHolder = manager.middleware_data["dao"]
-    restaurant = await dao.restaurant.get(restaurant_id)
-
-    if restaurant.medias:
-        await send_additional_media_group(
-            medias=restaurant.medias, message=callback.message, manager=manager
-        )
-
+    manager.dialog_data["restaurant_id"] = int(restaurant_id)
     await manager.next()
 
 

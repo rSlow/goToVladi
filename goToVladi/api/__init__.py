@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_app(config: ApiAppConfig) -> FastAPI:
-    app = FastAPI(root_path=config.web.root_path)
+    app = FastAPI(root_path=config.api.root_path)
 
     setup_routes(app)
     # middlewares.setup(app, config)

@@ -21,6 +21,7 @@ async def delete_message(
                 "ex": ex,
                 "message_id": message_id,
                 "chat_id": chat_id
-            }) or
-            f"Error while deleting message {message_id}: {ex.message}"
+            })
+            if error_text
+            else f"Error while deleting message {message_id}: {ex.message}"
         )

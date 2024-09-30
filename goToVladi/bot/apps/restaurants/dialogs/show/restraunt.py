@@ -1,17 +1,16 @@
-import asyncio
 import logging
 
-from aiogram import F, types, Bot
+from aiogram import F
 from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.common import ManagedScroll as MScroll
-from aiogram_dialog.widgets.kbd import Group, Url, \
-    PrevPage, CurrentPage, NextPage, Row, Back, Button
+from aiogram_dialog.widgets.kbd import Group, Url
 from aiogram_dialog.widgets.text import Const, Format
 
 from goToVladi.bot.apps.restaurants.states import RestaurantSG
-from goToVladi.bot.middlewares.config import MiddlewareData
-from goToVladi.bot.utils.message import delete_message
+from goToVladi.bot.utils import buttons
 from goToVladi.bot.utils.scroll import normalize_scroll
+from goToVladi.bot.views.media_group import send_additional_media_group
+from goToVladi.bot.views.types import PaginationRow
 from goToVladi.bot.views.types.scrolls import ScrollingSplitText
 from goToVladi.bot.views.types.scrolls.split_text import PageTable
 from goToVladi.core.config import BaseConfig
@@ -30,6 +29,11 @@ async def get_restaurant(
     restaurant_id = dialog_manager.dialog_data["restaurant_id"]
     restaurant = await dao.restaurant.get(restaurant_id)
 
+    if restaurant.medias:
+        await send_additional_media_group(
+            medias=restaurant.medias, manager=dialog_manager
+        )
+
     if restaurant.description:
         description_scroll: MScroll = dialog_manager.find(DESCRIPTION_SCROLL)
         await normalize_scroll(
@@ -44,20 +48,6 @@ async def get_restaurant(
     }
 
 
-async def delete_additional_messages(
-        callback: types.CallbackQuery, __: Button, manager: DialogManager
-):
-    # TODO сделать мидлу отлова additional_messages
-    additional_messages = manager.dialog_data.pop("additional_messages", [])
-    if additional_messages:
-        middleware_data: MiddlewareData = manager.middleware_data
-        bot: Bot = middleware_data["bot"]
-        await asyncio.gather(*[
-            delete_message(bot, callback.message.chat.id, additional_message)
-            for additional_message in additional_messages
-        ])
-
-
 restaurant_window = Window(
     Format("<b>{restaurant.name}</b>\n"),
     Format("<u>Оценка</u>: {restaurant.rating} / 5 ⭐️"),
@@ -69,25 +59,15 @@ restaurant_window = Window(
         when=F["restaurant"].description,
         sep="\n"
     ),
-    Row(
-        PrevPage(
-            id=DESCRIPTION_SCROLL + "_prev",
-            scroll=DESCRIPTION_SCROLL, text=Format("◀️")
-        ),
-        CurrentPage(
-            id=DESCRIPTION_SCROLL + "_current", scroll=DESCRIPTION_SCROLL,
-            text=Format("Описание {current_page1} / {pages}")
-        ),
-        NextPage(
-            id=DESCRIPTION_SCROLL + "_next",
-            scroll=DESCRIPTION_SCROLL, text=Format("▶️")
-        ),
-        when=F["description_length"] >= 600
-    ),
-
     Format(
         text="<u>\nТелефон:</u> <code>{restaurant.phone}</code>",
         when=F["restaurant"].phone
+    ),
+
+    PaginationRow(
+        id_=DESCRIPTION_SCROLL, scroll=DESCRIPTION_SCROLL,
+        current_text=Format("Описание {current_page1} / {pages}"),
+        when=F["description_length"] >= 600
     ),
 
     Group(
@@ -124,10 +104,11 @@ restaurant_window = Window(
         width=2,
         when=F["restaurant"]  # .paid TODO сделать фильтрацию по оплате
     ),
-    Back(
-        text=Const("Назад ◀"),
-        on_click=delete_additional_messages
-    ),
+    buttons.BACK,
+    # Back(
+    #     text=Const("Назад ◀"),
+    #     on_click=delete_additional_messages
+    # ),
     state=RestaurantSG.restaurant,
     getter=get_restaurant,
 )

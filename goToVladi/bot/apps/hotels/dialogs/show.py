@@ -15,7 +15,7 @@ from goToVladi.core.data.db.dao import DaoHolder
 async def district_getter(dao: DaoHolder, **__):
     districts = await dao.hotel.get_all_districts()
     return {
-        "districts": [*enumerate(districts, 1)]
+        "districts": [(district, district) for district in districts]
     }
 
 
@@ -55,7 +55,7 @@ async def on_hotel_click(
         _: types.CallbackQuery, __: Select,
         manager: DialogManager, hotel_id: str
 ):
-    hotel_id = manager.dialog_data["hotel_id"] = int(hotel_id)
+    manager.dialog_data["hotel_id"] = int(hotel_id)
     await manager.next()
 
 
@@ -74,19 +74,19 @@ list_hotels_window = Window(
         height=3,
         hide_on_single_page=True,
     ),
+    buttons.BACK,
     state=HotelSG.hotels,
     getter=hotels_getter
 )
 
 
-async def hotel_getter(dao: DaoHolder, dialog_manager: DialogManager,
-                       message: types.Message):
+async def hotel_getter(dao: DaoHolder, dialog_manager: DialogManager, **__):
     hotel_id = dialog_manager.dialog_data["hotel_id"]
     hotel = await dao.hotel.get(hotel_id)
 
     if hotel.medias:
         await send_additional_media_group(
-            medias=hotel.medias, message=message, manager=dialog_manager
+            medias=hotel.medias, manager=dialog_manager
         )
 
     return {"hotel": hotel}
@@ -96,10 +96,15 @@ DESCRIPTION_SCROLL = "description_scroll"
 
 hotel_window = Window(
     Format("<b>{hotel.name}</b>\n"),
-    Format("Цена номера от {hotel.min_price} ₽\n"),
+    Format("Цена номера: от {hotel.min_price} ₽\n"),
     Format(
         text="{hotel.description}",
         when=F["hotel"].description,
+    ),
+    Format(
+        text="\nИспользуй промокод <b>{hotel.promo_code}</b> "
+             "для бронирования и получи скидку!",
+        when=F["hotel"].promo_code,
     ),
 
     Group(
@@ -110,6 +115,8 @@ hotel_window = Window(
             when=F["hotel"].site_url
         ),
     ),
+    buttons.BACK,
+    getter=hotel_getter,
     state=HotelSG.hotel
 )
 

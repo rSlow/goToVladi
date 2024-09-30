@@ -1,5 +1,5 @@
-from typing import TypeVar, Generic
 from collections.abc import Sequence
+from typing import TypeVar, Generic
 
 from sqlalchemy import delete, func, ScalarResult
 from sqlalchemy import select
