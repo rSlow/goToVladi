@@ -15,4 +15,4 @@ class DaoHolder:
         self.user: UserDao = UserDao(self.session)
         self.restaurant: RestaurantDao = RestaurantDao(self.session)
         self.hotel: HotelDao = HotelDao(self.session)
-        # self.region: RegionDao = RegionDao(self.session)
+        self.region: RegionDao = RegionDao(self.session)

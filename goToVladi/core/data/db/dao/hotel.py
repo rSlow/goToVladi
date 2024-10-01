@@ -1,7 +1,7 @@
 from fastapi import UploadFile
 from sqlalchemy import ScalarResult, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 
 from goToVladi.bot.utils.media import as_aiogram_content_type
 from goToVladi.core.data.db import models as db, dto
@@ -12,9 +12,10 @@ class HotelDao(BaseDAO[db.Hotel]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(db.Hotel, session)
 
-    async def get_all_districts(self):
-        result: ScalarResult[str] = await self.session.scalars(
-            select(self.model.district).distinct()
+    async def get_all_districts(self, region_id: int):
+        result: ScalarResult[db.HotelDistrict] = await self.session.scalars(
+            select(db.HotelDistrict)
+            .where(db.HotelDistrict.region_id == region_id)
         )
         return result.all()
 
@@ -26,10 +27,11 @@ class HotelDao(BaseDAO[db.Hotel]):
         )
         return result.one().to_dto()
 
-    async def get_filtered_list(self, district: str) -> list[dto.ListHotel]:
+    async def get_filtered_list(self, district_id: str) -> list[dto.ListHotel]:
         result: ScalarResult[db.Hotel] = await self.session.scalars(
             select(db.Hotel)
-            .where(db.Hotel.district == district)
+            .where(db.Hotel.district_id == district_id)
+            .options(*get_hotel_options())
         )
         hotels = result.all()
         return [hotel.to_list_dto() for hotel in hotels]
@@ -63,4 +65,7 @@ class HotelDao(BaseDAO[db.Hotel]):
 def get_hotel_options():
     return (
         selectinload(db.Hotel.medias),
+        joinedload(db.Hotel.district).options(
+            joinedload(db.HotelDistrict.region),
+        ),
     )

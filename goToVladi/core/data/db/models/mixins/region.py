@@ -1,11 +1,14 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import mapped_column, Mapped, relationship
-
-from goToVladi.core.data.db.models import Region
+from sqlalchemy.orm import mapped_column, Mapped, relationship, declared_attr
 
 
 class RegionMixin:
     region_id: Mapped[int] = mapped_column(
-        ForeignKey("regions.id"), nullable=True
+        ForeignKey("regions.id", ondelete="SET NULL"), nullable=True
     )
-    region: Mapped[Region] = relationship(foreign_keys=region_id)
+
+    @declared_attr
+    def region(self):
+        return relationship(
+            "Region", foreign_keys=self.region_id
+        )

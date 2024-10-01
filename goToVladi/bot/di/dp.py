@@ -13,7 +13,7 @@ from goToVladi.bot.apps import setup_handlers
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.config.models.storage import StorageConfig, StorageType
 from goToVladi.bot.middlewares import setup_middlewares
-from goToVladi.bot.utils.router import print_router_tree, print_middleware_tree
+from goToVladi.bot.utils.router import print_router_tree
 from goToVladi.core.factory.redis import create_redis
 
 logger = logging.getLogger(__name__)
@@ -69,8 +69,3 @@ class DpProvider(Provider):
     @provide
     def get_event_isolation(self, redis: Redis) -> BaseEventIsolation:
         return RedisEventIsolation(redis)
-
-
-# TODO check
-def resolve_update_types(dp: Dispatcher) -> list[str]:
-    return dp.resolve_used_update_types(skip_events={"aiogd_update"})

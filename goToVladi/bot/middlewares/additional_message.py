@@ -18,10 +18,11 @@ class AdditionalMessageMiddleware(BaseMiddleware):
         bot = data["bot"]
         context = data["aiogd_context"]
         chat = data["event_chat"]
-        messages = context.dialog_data.pop("additional_messages", [])
-        await asyncio.gather(*[
-            delete_message(bot, chat.id, message)
-            for message in messages
-        ])
+        if context:
+            messages = context.dialog_data.pop("additional_messages", [])
+            await asyncio.gather(*[
+                delete_message(bot, chat.id, message)
+                for message in messages
+            ])
 
         return await handler(event, data)

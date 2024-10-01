@@ -8,5 +8,10 @@ class RegionDao(BaseDAO[db.Region]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(db.Region, session)
 
-    def get(self, id_: int):
-        ...
+    async def get(self, id_: int):
+        region = await self._get_by_id(id_)
+        return region.to_dto()
+
+    async def get_all(self):
+        regions = await self._get_all()
+        return [region.to_dto() for region in regions]

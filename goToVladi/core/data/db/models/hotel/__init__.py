@@ -1,4 +1,4 @@
-from sqlalchemy import Text
+from sqlalchemy import Text, ForeignKey
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy_utils import URLType
 
@@ -12,16 +12,13 @@ class Hotel(Base):
     __tablename__ = "hotels"
 
     name: Mapped[str]
-    district: Mapped[str]
     site_url: Mapped[str] = mapped_column(URLType, nullable=True)
     description: Mapped[str] = mapped_column(Text, nullable=True)
-    #
-    # district_id: Mapped[int] = mapped_column(
-    #     ForeignKey("hotel_districts.id"), nullable=True
-    # )
-    # district: Mapped[HotelDistrict] = relationship(
-    #     back_populates="hotels", foreign_keys=district_id
-    # )
+
+    district_id: Mapped[int] = mapped_column(
+        ForeignKey("hotel_districts.id"), nullable=True
+    )
+    district: Mapped[HotelDistrict] = relationship(foreign_keys=district_id)
 
     medias: Mapped[list[HotelMedia]] = relationship()
     min_price: Mapped[int]
@@ -31,7 +28,7 @@ class Hotel(Base):
         return dto.ListHotel(
             id_=self.id,
             name=self.name,
-            district=self.district,
+            district=self.district.to_dto(),
             min_price=self.min_price
         )
 
@@ -39,7 +36,7 @@ class Hotel(Base):
         return dto.Hotel(
             id_=self.id,
             name=self.name,
-            district=self.district,
+            district=self.district.to_dto(),
             site_url=self.site_url,
             description=self.description,
             medias=[

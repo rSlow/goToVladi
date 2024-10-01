@@ -1,8 +1,8 @@
-from sqlalchemy import BigInteger
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy import BigInteger, ForeignKey
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.models import Base
+from goToVladi.core.data.db.models import Base, Region
 from goToVladi.core.data.db.models.mixins.time import TimeMixin
 
 
@@ -17,6 +17,11 @@ class User(TimeMixin, Base):
     hashed_password: Mapped[str] = mapped_column(nullable=True)
     is_bot: Mapped[bool] = mapped_column(default=False)
     is_superuser: Mapped[bool] = mapped_column(default=False)
+
+    region_id: Mapped[int] = mapped_column(
+        ForeignKey("regions.id", ondelete="SET NULL"), nullable=True
+    )
+    region: Mapped[Region] = relationship(foreign_keys=region_id)
 
     def __repr__(self) -> str:
         rez = (
@@ -38,4 +43,5 @@ class User(TimeMixin, Base):
             last_name=self.last_name,
             is_bot=self.is_bot,
             is_superuser=self.is_superuser,
+            region=self.region.to_dto() if self.region else None
         )

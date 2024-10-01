@@ -50,7 +50,6 @@ async def send_additional_media_group(
 async def delete_additional_messages(
         callback: types.CallbackQuery, __: Button, manager: DialogManager
 ):
-    # TODO сделать мидлу отлова additional_messages
     additional_messages = manager.dialog_data.pop("additional_messages", [])
     if additional_messages:
         middleware_data: MiddlewareData = manager.middleware_data

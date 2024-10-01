@@ -47,7 +47,7 @@ district_window = Window(
 
 async def hotels_getter(dao: DaoHolder, dialog_manager: DialogManager, **__):
     district = dialog_manager.dialog_data["district"]
-    hotels = await dao.hotel.get_filtered_list(district=district)
+    hotels = await dao.hotel.get_filtered_list(district_id=district)
     return {"hotels": hotels}
 
 

@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 
 from goToVladi.core.data.db.dto import BaseAttachment
+from .region import Region
 
 
 @dataclass
@@ -9,9 +10,16 @@ class HotelMedia(BaseAttachment):
 
 
 @dataclass
+class HotelDistrict:
+    name: str
+    region_id: int | None = None
+    region: Region | None = None
+
+
+@dataclass
 class ListHotel:
     name: str
-    district: str
+    district: HotelDistrict
     min_price: int
 
     id_: int | None = None
@@ -20,7 +28,7 @@ class ListHotel:
 @dataclass
 class Hotel:
     name: str
-    district: str
+    district: HotelDistrict
     min_price: int
 
     medias: list[HotelMedia] = field(default_factory=list)

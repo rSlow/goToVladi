@@ -3,7 +3,6 @@ from aiogram_dialog import BgManagerFactory
 
 from .additional_message import AdditionalMessageMiddleware
 from .context_data import ContextDataMiddleware
-from .region import RegionMiddleware
 
 
 def setup_middlewares(dp: Dispatcher, bg_manager_factory: BgManagerFactory):
@@ -15,5 +14,3 @@ def setup_middlewares(dp: Dispatcher, bg_manager_factory: BgManagerFactory):
     dp.message.middleware(additional_message_middleware)
     dp.business_message.middleware(additional_message_middleware)
     dp.callback_query.middleware(additional_message_middleware)
-
-    # dp.update.middleware(RegionMiddleware())

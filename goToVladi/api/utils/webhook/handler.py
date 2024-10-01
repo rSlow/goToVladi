@@ -33,7 +33,6 @@ class BaseRequestHandler(ABC):
             result: TelegramMethod[TelegramType] | None
     ) -> Any:
         if result:
-            # TODO response to webhook (is it not necessary?)
             await dispatcher.silent_call_request(bot, result)
 
     async def _handle_request(

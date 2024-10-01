@@ -8,10 +8,12 @@ from jinja2 import Environment
 from goToVladi.bot.apps.base.states import MainMenuSG, RegionSG
 from goToVladi.bot.views import commands
 from goToVladi.bot.views.jinja import render_template
-from goToVladi.core.data.db.dao import DaoHolder
 
 
-async def cmd_start(_: types.Message, dialog_manager: DialogManager):
+async def cmd_start(message: types.Message, dialog_manager: DialogManager):
+    await message.answer(
+        text="Добро пожаловать в бот GoToVladi!"
+    )
     await dialog_manager.start(
         state=MainMenuSG.state, mode=StartMode.RESET_STACK
     )
@@ -37,12 +39,8 @@ async def cmd_update(message: types.Message, dialog_manager: DialogManager):
     await dialog_manager.update({}, show_mode=ShowMode.DELETE_AND_SEND)
 
 
-async def cmd_region(
-        message: types.Message,
-        dialog_manager: DialogManager, dao: DaoHolder
-):
-    region = await dao.region.get()
-    await dialog_manager.start(RegionSG.start, data={"region": region})
+async def cmd_region(_: types.Message, dialog_manager: DialogManager):
+    await dialog_manager.start(RegionSG.start)
 
 
 def setup():
@@ -52,6 +50,6 @@ def setup():
     router.message.register(cmd_help, Command(commands.HELP))
     router.message.register(cmd_about, Command(commands.ABOUT))
     router.message.register(cmd_update, Command(commands.UPDATE))
-    router.message.register(cmd_update, Command(commands.REGION))
+    router.message.register(cmd_region, Command(commands.REGION))
 
     return router

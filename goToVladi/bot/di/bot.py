@@ -25,7 +25,8 @@ class BotProvider(Provider):
             commands.START,
             commands.HELP,
             commands.ABOUT,
-            commands.UPDATE
+            commands.UPDATE,
+            commands.REGION,
         ])
 
     @provide

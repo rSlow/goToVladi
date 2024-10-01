@@ -1,41 +1,44 @@
-from aiogram_dialog import Window, Dialog, DialogManager
-from aiogram_dialog.widgets.common import Whenable
-from aiogram_dialog.widgets.kbd import Start
+from aiogram import F
+from aiogram_dialog import Window, Dialog
+from aiogram_dialog.widgets.kbd import Start, Group
 from aiogram_dialog.widgets.text import Const
 
-from goToVladi.bot.apps.base.states import MainMenuSG
+from goToVladi.bot.apps.base.states import MainMenuSG, RegionSG
 from goToVladi.bot.apps.hotels.states import HotelSG
 from goToVladi.bot.apps.restaurants.states import RestaurantSG
-from goToVladi.bot.middlewares.config import MiddlewareData
 
-
-def is_superuser(data: dict, _: Whenable, __: DialogManager):
-    middleware_data: MiddlewareData = data["middleware_data"]
-    user = middleware_data["user"]
-    superusers = middleware_data["bot_config"].superusers
-    return user.tg_id in superusers
-
+has_region = F["middleware_data"]["user"].region.is_not(None)
 
 main_menu = Dialog(
     Window(
-        Const("Добро пожаловать в бот GoToVladi!"),
-        Const("Выберите категорию:"),
-        Start(
-            Const("Рестораны"),
-            id="restaurants",
-            state=RestaurantSG.cuisines
+        Const(
+            "Выберите категорию:",
+            when=has_region
+        ),
+        Group(
+            Start(
+                text=Const("Рестораны"),
+                id="restaurants",
+                state=RestaurantSG.cuisines
+            ),
+            Start(
+                text=Const("Отели"),
+                id="hotels",
+                state=HotelSG.district,
+            ),
+            when=has_region
+        ),
+
+        Const(
+            "Регион поиска не установлен. Нажмите кнопку 'Установить регион'.",
+            when=~has_region
         ),
         Start(
-            Const("Отели"),
-            id="hotels",
-            state=HotelSG.district,
+            text=Const("Установить регион"),
+            id="set_region",
+            state=RegionSG.set,
+            when=~has_region
         ),
-        # Start(
-        #     Const("Админка"),
-        #     id="admin",
-        #     state=AdminMainSG.main_state,
-        #     when=is_superuser
-        # ),
         state=MainMenuSG.state
     )
 )

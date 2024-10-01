@@ -2,7 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from adaptix import Retort
 from aiogram import types as tg
+
+from goToVladi.core.data.db.dto import Region
+
+user_retort = Retort()
 
 
 @dataclass
@@ -14,6 +19,7 @@ class User:
     last_name: str | None = None
     is_bot: bool | None = None
     is_superuser: bool | None = None
+    region: Region | None = None
 
     @property
     def fullname(self) -> str:
@@ -41,17 +47,10 @@ class User:
             is_bot=user.is_bot,
         )
 
-    def add_password(self, hashed_password: str) -> UserWithCreds:
-        return UserWithCreds(
-            tg_id=self.tg_id,
-            id_=self.id_,
-            username=self.username,
-            first_name=self.first_name,
-            last_name=self.last_name,
-            is_bot=self.is_bot,
-            is_superuser=self.is_superuser,
-            hashed_password=hashed_password,
-        )
+    def with_password(self, hashed_password: str) -> UserWithCreds:
+        user_data = user_retort.dump(self, User)
+        user_data["hashed_password"] = hashed_password
+        return user_retort.load(user_data, UserWithCreds)
 
 
 @dataclass
@@ -59,12 +58,5 @@ class UserWithCreds(User):
     hashed_password: str | None = None
 
     def without_password(self) -> User:
-        return User(
-            tg_id=self.tg_id,
-            id_=self.id_,
-            username=self.username,
-            first_name=self.first_name,
-            last_name=self.last_name,
-            is_bot=self.is_bot,
-            is_superuser=self.is_superuser
-        )
+        user_data = user_retort.dump(self, UserWithCreds)
+        return user_retort.load(user_data, User)

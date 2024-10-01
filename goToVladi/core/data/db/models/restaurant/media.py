@@ -9,7 +9,9 @@ from goToVladi.core.data.db.models.base_attachment import BaseAttachment
 class RestaurantMedia(BaseAttachment, Base):
     __tablename__ = 'restaurant_medias'
 
-    restaurant_id: Mapped[int] = mapped_column(ForeignKey('restaurants.id'))
+    restaurant_id: Mapped[int] = mapped_column(
+        ForeignKey('restaurants.id'), ondelete="CASCADE"
+    )
 
     def to_dto(self) -> dto.RestaurantMedia:
         return dto.RestaurantMedia(
