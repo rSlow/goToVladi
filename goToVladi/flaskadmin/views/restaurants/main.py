@@ -10,3 +10,20 @@ class RestaurantView(ModelView):
     inline_models = [
         MediaInline(db.RestaurantMedia)
     ]
+    column_labels = {
+        "name": "Название",
+        "average_check": "Средний чек",
+        "is_inner": "Можно внутри",
+        "is_delivery": "Есть доставка",
+        "rating": "Рейтинг",
+        "priority": "Приоритет",
+        "site_url": "Сайт",
+        "description": "Описание",
+        "phone": "Телефон",
+        "medias": "Медиафайлы",
+        "cuisine": "Кухня",
+        "instagram": "Instagram",
+        "vk": "ВК",
+        "whatsapp": "Whatsapp",
+        "telegram": "Telegram",
+    }

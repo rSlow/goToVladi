@@ -1,10 +1,7 @@
-from goToVladi.core.config.parser.paths import get_paths
-from goToVladi.flaskadmin.fields.file import file_upload_field
-
-paths = get_paths()
+from goToVladi.flaskadmin.fields.file import SQLAlchemyFileUploadField
 
 
 class MediaMixin:
     form_overrides = {
-        "content": file_upload_field(paths)
+        "content": SQLAlchemyFileUploadField
     }

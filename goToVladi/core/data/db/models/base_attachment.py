@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import TypeVar
 
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import mapped_column
 from sqlalchemy_file import FileField
 
 from goToVladi.core.data.db import dto
@@ -13,7 +13,7 @@ AttachmentDtoType = TypeVar(
 
 
 class BaseAttachment:
-    content = mapped_column(FileField)
+    content = mapped_column(FileField())
 
     # need to set ForeignKey and relationship attribute in subclass
     # parent_model_id: Mapped[int] = mapped_column(ForeignKey('model.id'))
