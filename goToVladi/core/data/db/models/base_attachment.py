@@ -13,11 +13,13 @@ AttachmentDtoType = TypeVar(
 
 
 class BaseAttachment:
-    content_type: Mapped[str]
     content = mapped_column(FileField)
 
-    # need to set ForeignKey attribute in subclass
-    # model_id: Mapped[int] = mapped_column(ForeignKey('model.id'))
+    # need to set ForeignKey and relationship attribute in subclass
+    # parent_model_id: Mapped[int] = mapped_column(ForeignKey('model.id'))
+    # parent_model = relationship(
+    #     "Parent", back_populates="medias", uselist=False
+    # )
 
     def convert_content(self) -> dto.FileSchema:
         return dto.FileSchema.from_dict(self.content)

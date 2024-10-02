@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base
@@ -10,13 +10,15 @@ class RestaurantMedia(BaseAttachment, Base):
     __tablename__ = 'restaurant_medias'
 
     restaurant_id: Mapped[int] = mapped_column(
-        ForeignKey('restaurants.id'), ondelete="CASCADE"
+        ForeignKey('restaurants.id', ondelete="CASCADE")
+    )
+    restaurant = relationship(
+        "Restaurant", back_populates="medias", uselist=False
     )
 
     def to_dto(self) -> dto.RestaurantMedia:
         return dto.RestaurantMedia(
             id_=self.id,
-            content_type=self.content_type,
             content=self.convert_content(),
             restaurant_id=self.restaurant_id
         )

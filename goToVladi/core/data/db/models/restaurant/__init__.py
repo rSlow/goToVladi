@@ -21,7 +21,9 @@ class Restaurant(Base):
     priority: Mapped[float] = mapped_column(default=0)
     phone: Mapped[str] = mapped_column(PhoneNumberType, nullable=True)
 
-    medias: Mapped[list[RestaurantMedia]] = relationship()
+    medias: Mapped[list[RestaurantMedia]] = relationship(
+        back_populates="restaurant"
+    )
 
     cuisine_id: Mapped[int] = mapped_column(
         ForeignKey('restaurant_cuisines.id'), nullable=True

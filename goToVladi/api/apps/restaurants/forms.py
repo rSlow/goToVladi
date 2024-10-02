@@ -5,7 +5,6 @@ from pydantic import AnyHttpUrl
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
 from goToVladi.api.utils.url import url_to_str
-from goToVladi.bot.utils.media import as_aiogram_content_type
 from goToVladi.core.data.db import models as db
 
 
@@ -39,13 +38,7 @@ class RestaurantInputForm:
             is_inner=self.is_inner,
             rating=self.rating,
             cuisine_id=self.cuisine_id,
-            medias=[
-                db.RestaurantMedia(
-                    content_type=as_aiogram_content_type(media.content_type),
-                    content=media
-                )
-                for media in self.medias
-            ],
+            medias=[db.RestaurantMedia(content=media) for media in self.medias],
             priority=self.priority,
             site_url=url_to_str(self.site_url),
             description=self.description,

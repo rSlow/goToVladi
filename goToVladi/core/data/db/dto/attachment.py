@@ -2,7 +2,6 @@ from abc import ABC
 from dataclasses import dataclass
 
 from adaptix import Retort
-from aiogram.enums import ContentType
 
 file_retort = Retort()
 
@@ -29,7 +28,6 @@ class FileSchema:
 class BaseAttachment(ABC):
     id_: int
     content: FileSchema
-    content_type: ContentType
 
     @property
     def url(self):

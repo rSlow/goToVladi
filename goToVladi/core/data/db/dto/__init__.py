@@ -5,6 +5,7 @@ __all__ = [
     "BaseAttachment", "FileSchema",
     "RestaurantMedia",
     "Hotel", "ListHotel", "HotelMedia", "HotelDistrict",
+    "Trip", "ListTrip", "TripMedia",
     "id_getter"
 ]
 
@@ -16,6 +17,7 @@ from .hotel import HotelDistrict
 from .region import Region
 from .restaurant import (Restaurant, RestaurantCuisine,
                          RestaurantMedia, ListRestaurant)
+from .trip import Trip, ListTrip, TripMedia
 from .user import User, UserWithCreds
 
 id_getter = attrgetter("id_")

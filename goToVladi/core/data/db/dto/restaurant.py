@@ -1,17 +1,6 @@
 from dataclasses import dataclass, field
-from enum import Enum
 
 from .attachment import BaseAttachment
-
-
-class HintedEnum(Enum):
-    @property
-    def _hints(self) -> dict[Enum, str]:
-        raise {}
-
-    @property
-    def hint(self):
-        return self._hints[self]
 
 
 @dataclass

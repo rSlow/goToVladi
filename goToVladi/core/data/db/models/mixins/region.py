@@ -10,5 +10,5 @@ class RegionMixin:
     @declared_attr
     def region(self):
         return relationship(
-            "Region", foreign_keys=self.region_id
+            "Region", foreign_keys=self.region_id, uselist=False
         )

@@ -1,19 +1,17 @@
 __all__ = [
     "Base",
-    "Restaurant", "RestaurantCuisine", "RestaurantMedia",
-    "Hotel", "HotelMedia", "HotelDistrict",
     "User",
     "Region",
+    "Restaurant", "RestaurantCuisine", "RestaurantMedia",
+    "Hotel", "HotelMedia", "HotelDistrict",
+    "Trip", "TripMedia",
     "mixins",
 ]
 
 from . import mixins
 from .base import Base
-from .hotel import Hotel
-from .hotel.district import HotelDistrict
-from .hotel.media import HotelMedia
+from .hotel import Hotel, HotelDistrict, HotelMedia
 from .region import Region
-from .restaurant import Restaurant
-from .restaurant.cuisine import RestaurantCuisine
-from .restaurant.media import RestaurantMedia
+from .restaurant import Restaurant, RestaurantCuisine, RestaurantMedia
+from .trips import Trip, TripMedia
 from .user import User

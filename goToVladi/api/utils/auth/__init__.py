@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 class AuthService:
     def __init__(self, config: AuthConfig) -> None:
         super().__init__()
-        self.config = config
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         self.secret_key = config.secret_key
         self.algorythm = config.algorythm

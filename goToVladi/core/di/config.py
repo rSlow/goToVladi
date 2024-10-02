@@ -10,8 +10,10 @@ from goToVladi.core.config.models.web import WebConfig
 from goToVladi.core.config.parser.paths import get_paths
 
 
-class BaseConfigProvider(Provider):
+class ConfigProvider(Provider):  # TODO все переделать
     scope = Scope.APP
+
+    # config = from_context(BaseConfig) # TODO create pass config from context
 
     @provide
     def get_paths(self) -> Paths:

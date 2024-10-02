@@ -8,6 +8,7 @@ from aiogram_dialog import DialogManager, ShowMode
 from aiogram_dialog.widgets.kbd import Button
 
 from goToVladi.bot.middlewares.config import MiddlewareData
+from goToVladi.bot.utils.media import as_aiogram_content_type
 from goToVladi.bot.utils.message import delete_message
 from goToVladi.core.data.db import dto
 
@@ -23,7 +24,7 @@ async def send_additional_media_group(
     for media in medias:
         try:
             media_builder.add(
-                type=media.content_type,
+                type=as_aiogram_content_type(media.content.content_type),
                 media=FSInputFile(path=media.url)
             )
         except ValueError as ex:

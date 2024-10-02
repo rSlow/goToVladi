@@ -6,6 +6,7 @@ from aiogram_dialog.widgets.text import Const
 from goToVladi.bot.apps.base.states import MainMenuSG, RegionSG
 from goToVladi.bot.apps.hotels.states import HotelSG
 from goToVladi.bot.apps.restaurants.states import RestaurantSG
+from goToVladi.bot.apps.trips.states import TripSG
 
 has_region = F["middleware_data"]["user"].region.is_not(None)
 
@@ -25,6 +26,11 @@ main_menu = Dialog(
                 text=Const("Отели"),
                 id="hotels",
                 state=HotelSG.district,
+            ),
+            Start(
+                text=Const("Экскурсии"),
+                id="trips",
+                state=TripSG.trip_list,
             ),
             when=has_region
         ),

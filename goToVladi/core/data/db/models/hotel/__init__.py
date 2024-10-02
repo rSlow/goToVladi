@@ -16,7 +16,8 @@ class Hotel(Base):
     description: Mapped[str] = mapped_column(Text, nullable=True)
 
     district_id: Mapped[int] = mapped_column(
-        ForeignKey("hotel_districts.id"), nullable=True
+        ForeignKey("hotel_districts.id", ondelete="SET NULL"),
+        nullable=True
     )
     district: Mapped[HotelDistrict] = relationship(foreign_keys=district_id)
 
@@ -36,7 +37,8 @@ class Hotel(Base):
         return dto.Hotel(
             id_=self.id,
             name=self.name,
-            district=self.district.to_dto(),
+            district=self.district.to_dto() if self.district else None,
+            district_id=self.district_id,
             site_url=self.site_url,
             description=self.description,
             medias=[

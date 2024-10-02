@@ -14,3 +14,6 @@ class Region(Base):
             id_=self.id,
             name=self.name
         )
+
+    def __str__(self):
+        return self.name

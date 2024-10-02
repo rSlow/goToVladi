@@ -28,11 +28,12 @@ class ListHotel:
 @dataclass
 class Hotel:
     name: str
-    district: HotelDistrict
     min_price: int
 
     medias: list[HotelMedia] = field(default_factory=list)
 
+    district: HotelDistrict | None = None
+    district_id: int | None = None
     id_: int | None = None
     promo_code: str | None = None
     site_url: str | None = None

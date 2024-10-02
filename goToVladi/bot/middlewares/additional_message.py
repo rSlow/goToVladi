@@ -16,8 +16,8 @@ class AdditionalMessageMiddleware(BaseMiddleware):
             data: MiddlewareData
     ) -> Any:
         bot = data["bot"]
-        context = data["aiogd_context"]
         chat = data["event_chat"]
+        context = data["aiogd_context"]
         if context:
             messages = context.dialog_data.pop("additional_messages", [])
             await asyncio.gather(*[

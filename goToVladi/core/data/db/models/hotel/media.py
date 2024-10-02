@@ -16,7 +16,6 @@ class HotelMedia(BaseAttachment, Base):
     def to_dto(self) -> dto.HotelMedia:
         return dto.HotelMedia(
             id_=self.id,
-            content_type=self.content_type,
             content=self.convert_content(),
             hotel_id=self.hotel_id
         )

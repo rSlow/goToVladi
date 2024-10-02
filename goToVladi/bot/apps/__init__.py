@@ -4,7 +4,7 @@ from aiogram import Dispatcher, Router
 from aiogram_dialog import setup_dialogs as setup_aiogram_dialogs
 
 from goToVladi.bot.config.models.bot import BotConfig
-from . import base, hotels
+from . import base, hotels, trips
 from . import restaurants
 from .base.handlers import error
 
@@ -30,8 +30,10 @@ def setup_dialogs():
 
     dialogs_router.include_router(base.dialogs.setup())
     # dialogs_router.include_router(admin.dialogs.setup())
+
     dialogs_router.include_router(restaurants.dialogs.setup())
     dialogs_router.include_router(hotels.dialogs.setup())
+    dialogs_router.include_router(trips.dialogs.setup())
 
     logger.debug("dialogs configured successfully")
     return dialogs_router

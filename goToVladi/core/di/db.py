@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, AsyncEngine
 from goToVladi.core.config.models import BaseConfig
 from goToVladi.core.config.models.db import DBConfig
 from goToVladi.core.data.db.dao import DaoHolder
-from goToVladi.core.factory.db import create_engine, create_session_maker
+from goToVladi.core.factory.db.a_sync import create_engine, create_session_maker
 
 
 class DbProvider(Provider):
