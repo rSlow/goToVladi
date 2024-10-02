@@ -18,7 +18,8 @@ class SQLAlchemyFileUploadInput:
     input_type = 'file'
     file_template = (
         "<div> "
-        "  <a %(a)s>%(url)s</a>"  # TODO mount static endpoint 
+        "  <a %(a)s>%(url)s</a> | "
+        "  <a %(a)s download>Скачать</a>"
         "</div>"
         "<input %(file)s>"
     )
@@ -44,7 +45,7 @@ class SQLAlchemyFileUploadInput:
             ),
             "file": html_params(type="file", value=value, **kwargs),
             "marker": '_%s-delete' % field.name,
-            "a": html_params(href=f"/static/{url}"),
+            "a": html_params(href=f"/static/{url}", target="_blank"),
             "url": url
         }
         return Markup(template % args)

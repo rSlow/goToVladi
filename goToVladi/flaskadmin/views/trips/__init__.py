@@ -13,7 +13,7 @@ def mount_trips_views(admin_app: Admin, session: scoped_session[Session]):
     admin_app.add_view(
         TripView(
             db.Trip, session,
-            category="Экскурсии",
+            # category="Экскурсии",
             name="Экскурсии"
         )
     )

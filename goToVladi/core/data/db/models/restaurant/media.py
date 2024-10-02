@@ -10,7 +10,7 @@ class RestaurantMedia(BaseAttachment, Base):
     __tablename__ = 'restaurant_medias'
 
     restaurant_id: Mapped[int] = mapped_column(
-        ForeignKey('restaurants.id', ondelete="CASCADE")
+        ForeignKey('restaurants.id', ondelete="CASCADE"),
     )
     restaurant = relationship(
         "Restaurant", back_populates="medias", uselist=False

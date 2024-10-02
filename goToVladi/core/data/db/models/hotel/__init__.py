@@ -19,9 +19,13 @@ class Hotel(Base):
         ForeignKey("hotel_districts.id", ondelete="SET NULL"),
         nullable=True
     )
-    district: Mapped[HotelDistrict] = relationship(foreign_keys=district_id)
+    district: Mapped[HotelDistrict] = relationship(
+        foreign_keys=district_id, back_populates="hotels"
+    )
 
-    medias: Mapped[list[HotelMedia]] = relationship()
+    medias: Mapped[list[HotelMedia]] = relationship(
+        cascade="all, delete-orphan"
+    )
     min_price: Mapped[int]
     promo_code: Mapped[str] = mapped_column(nullable=True)
 

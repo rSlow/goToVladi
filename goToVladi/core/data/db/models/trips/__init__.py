@@ -15,7 +15,7 @@ class Trip(RegionMixin, Base):
     description: Mapped[str] = mapped_column(Text, nullable=True)
     site_url: Mapped[str] = mapped_column(PydanticURLType, nullable=True)
     medias: Mapped[list[TripMedia]] = relationship(
-        "TripMedia", back_populates="trip"
+        cascade="all, delete-orphan"
     )
 
     def to_dto(self):

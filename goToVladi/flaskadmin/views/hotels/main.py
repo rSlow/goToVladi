@@ -4,14 +4,16 @@ from goToVladi.core.data.db import models as db
 from goToVladi.flaskadmin.views.media import MediaInline
 
 
-class TripView(ModelView):
+class HotelView(ModelView):
     inline_models = [
-        MediaInline(db.TripMedia),
+        MediaInline(db.HotelMedia),
     ]
     column_labels = {
         "name": "Название",
-        "description": "Описание",
+        "district": "Район",
         "site_url": "Сайт",
+        "description": "Описание",
         "medias": "Медиафайлы",
-        "region": "Город / регион",
+        "min_price": "Минимальная цена",
+        "promo_code": "Промокод",
     }

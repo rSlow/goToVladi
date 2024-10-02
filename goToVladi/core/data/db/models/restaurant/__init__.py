@@ -22,7 +22,7 @@ class Restaurant(Base):
     phone: Mapped[str] = mapped_column(PhoneNumberType, nullable=True)
 
     medias: Mapped[list[RestaurantMedia]] = relationship(
-        back_populates="restaurant"
+        cascade="all, delete-orphan"
     )
 
     cuisine_id: Mapped[int] = mapped_column(

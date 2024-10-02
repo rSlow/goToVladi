@@ -1,7 +1,7 @@
 from flask_admin.contrib.sqla import ModelView
 
 from goToVladi.core.data.db import models as db
-from goToVladi.flaskadmin.views.trips.media import MediaInline
+from goToVladi.flaskadmin.views.media import MediaInline
 
 
 class RestaurantView(ModelView):
@@ -26,4 +26,5 @@ class RestaurantView(ModelView):
         "vk": "ВК",
         "whatsapp": "Whatsapp",
         "telegram": "Telegram",
+        "region": "Город / регион",
     }
