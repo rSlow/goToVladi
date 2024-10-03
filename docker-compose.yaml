@@ -23,6 +23,29 @@ services:
     entrypoint:
       [ "poetry", "run", "python", "-m", "goToVladi" ]
 
+  flask-admin:
+    build: .
+    ports:
+      - "127.0.0.1:${EXPOSE_FLASK:-5000}:5000"
+    volumes:
+      - type: "bind"
+        source: "./config/"
+        target: "/app/config/"
+        read_only: true
+      - type: "bind"
+        source: "./static/"
+        target: "/app/static/"
+      - type: "bind"
+        source: "./gunicorn.conf.py"
+        target: "/app/gunicorn.conf.py"
+        read_only: true
+    depends_on:
+      - postgres
+      - migrations
+    restart: always
+    entrypoint:
+      [ "poetry", "run", "gunicorn" ]
+
   postgres:
     image: postgres
     restart: always
