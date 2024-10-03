@@ -15,6 +15,7 @@ class TripDao(BaseDAO[db.Trip]):
         result: ScalarResult[db.Trip] = await self.session.scalars(
             select(self.model)
             .where(self.model.region_id == region_id)
+            .options(*get_trip_options())
         )
         trips = result.all()
         return [trip.to_list_dto() for trip in trips]
