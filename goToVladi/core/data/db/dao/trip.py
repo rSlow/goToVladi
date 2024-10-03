@@ -1,7 +1,7 @@
 from fastapi import UploadFile
 from sqlalchemy import ScalarResult, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 from goToVladi.core.data.db import models as db, dto
 from goToVladi.core.data.db.dao.base import BaseDAO
@@ -36,10 +36,7 @@ class TripDao(BaseDAO[db.Trip]):
 
     async def add_medias(self, trip_id: int, *medias: UploadFile) -> bool:
         self.session.add_all([
-            db.TripMedia(
-                trip_id=trip_id,
-                content=media
-            )
+            db.TripMedia(trip_id=trip_id, content=media)
             for media in medias
         ])
         await self.session.commit()
@@ -56,4 +53,5 @@ class TripDao(BaseDAO[db.Trip]):
 def get_trip_options():
     return (
         joinedload(db.Trip.region),
+        selectinload(db.Trip.medias),
     )
