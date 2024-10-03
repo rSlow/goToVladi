@@ -3,6 +3,7 @@ from aiogram.filters import Command
 from aiogram_dialog import DialogManager, ShowMode
 from aiogram_dialog import StartMode
 from dishka import FromDishka
+from dishka.integrations.aiogram import inject
 from jinja2 import Environment
 
 from goToVladi.bot.apps.base.states import MainMenuSG, RegionSG
@@ -19,6 +20,7 @@ async def cmd_start(message: types.Message, dialog_manager: DialogManager):
     )
 
 
+@inject
 async def cmd_help(
         message: types.Message, dialog_manager: DialogManager,
         jinja: FromDishka[Environment]
