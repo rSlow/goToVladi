@@ -1,7 +1,7 @@
 from aiogram import types, F
 from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Select, ScrollingGroup
-from aiogram_dialog.widgets.text import Format, Const
+from aiogram_dialog.widgets.text import Format
 from aiogram_dialog.window import Window
 
 from goToVladi.bot.apps.trips.states import TripSG

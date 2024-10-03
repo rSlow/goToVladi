@@ -19,6 +19,7 @@ class RestaurantDao(BaseDAO[db.Restaurant]):
             select(db.RestaurantCuisine)
             .join(db.Restaurant)
             .where(db.Restaurant.region_id == region_id)
+            .distinct()
         )
         cuisines = result.all()
         return [cuisine.to_dto() for cuisine in cuisines]
