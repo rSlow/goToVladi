@@ -1,6 +1,9 @@
 from flask_admin.contrib.sqla import ModelView
+from wtforms.fields import TelField
 
 from goToVladi.core.data.db import models as db
+from goToVladi.flaskadmin.fields.multiple_file import \
+    SQLAlchemyMultipleFileUploadField
 from goToVladi.flaskadmin.views.media import MediaInline
 
 
@@ -29,3 +32,10 @@ class RestaurantView(ModelView):
     }
     column_list = ["region", "name", "rating", "cuisine"]
     column_filters = column_list
+    form_overrides = {"phone": TelField}
+    form_extra_fields = {
+        "multi_media": SQLAlchemyMultipleFileUploadField(
+            field_name="medias", relation_class=db.RestaurantMedia,
+            label="Загрузка медиафайлов"
+        )
+    }

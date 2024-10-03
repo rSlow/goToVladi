@@ -20,7 +20,9 @@ class Restaurant(RegionMixin, Base):
     is_delivery: Mapped[bool] = mapped_column(default=False)
     rating: Mapped[float]
     priority: Mapped[float] = mapped_column(default=0)
-    phone: Mapped[str] = mapped_column(PhoneNumberType, nullable=True)
+    phone: Mapped[str] = mapped_column(
+        PhoneNumberType(region="RU"), nullable=True
+    )
 
     medias: Mapped[list[RestaurantMedia]] = relationship(
         cascade="all, delete-orphan"
