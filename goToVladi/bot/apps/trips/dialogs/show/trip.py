@@ -29,5 +29,6 @@ trip_window = Window(
         ),
         width=2,
     ),
+    getter=trip_getter,
     state=TripSG.trip
 )
