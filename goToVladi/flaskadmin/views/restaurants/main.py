@@ -28,3 +28,4 @@ class RestaurantView(ModelView):
         "telegram": "Telegram",
         "region": "Город / регион",
     }
+    column_filters = ["region"]

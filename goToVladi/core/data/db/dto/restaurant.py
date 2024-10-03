@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 
+from . import Region
 from .attachment import BaseAttachment
 
 
@@ -22,6 +23,8 @@ class ListRestaurant:
 
     id_: int | None = None
     priority: float | None = None
+    region_id: int | None = None
+    region: Region | None = None
     site_url: str | None = None
     phone: str | None = None
 
@@ -40,6 +43,8 @@ class Restaurant:
 
     id_: int | None = None
     priority: float | None = None
+    region_id: int | None = None
+    region: Region | None = None
     site_url: str | None = None
     description: str | None = None
     phone: str | None = None

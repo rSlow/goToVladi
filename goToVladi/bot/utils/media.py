@@ -2,22 +2,36 @@ from aiogram.enums import ContentType
 
 TYPES_MATCHING = {
     ContentType.VIDEO: [
-        "video/mp4"
+        "video/mpeg",
+        "video/webm",
+        "video/3gpp",
+        "video/mp4",
     ],
     ContentType.PHOTO: [
         "image/jpeg",
         "image/png",
         "image/webp",
+        "image/bmp",
+        "image/gif",
+        "image/tiff",
+
     ],
     ContentType.AUDIO: [
         "audio/mpeg",
         "audio/wav",
-        "audio/x-wav",
+        "audio/webm",
+        "audio/aac",
+        "audio/ogg",
+        "audio/opus",
+        "audio/3gpp"
+
     ],
     ContentType.DOCUMENT: [
-        "document/pdf",
-        "document/docx",
-        "document/odt",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/pdf",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ]
 }
 
@@ -37,7 +51,7 @@ def as_aiogram_content_type(file_content_type: str) -> ContentType:
             return ContentType.VIDEO
         if file_content_type.startswith("audio"):
             return ContentType.AUDIO
-        if file_content_type.startswith("document"):
-            return ContentType.DOCUMENT
+        # if file_content_type.startswith("document"):
+        #     return ContentType.DOCUMENT
         raise TypeError(f"Unknown content type '{file_content_type}'")
     return matched_content_type

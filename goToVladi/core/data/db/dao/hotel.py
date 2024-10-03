@@ -3,7 +3,6 @@ from sqlalchemy import ScalarResult, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, joinedload
 
-from goToVladi.bot.utils.media import as_aiogram_content_type
 from goToVladi.core.data.db import models as db, dto
 from goToVladi.core.data.db.dao.base import BaseDAO
 
@@ -46,7 +45,6 @@ class HotelDao(BaseDAO[db.Hotel]):
         self.session.add_all([
             db.HotelMedia(
                 hotel_id=hotel_id,
-                content_type=as_aiogram_content_type(media.content_type),
                 content=media
             )
             for media in medias

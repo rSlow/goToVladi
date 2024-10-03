@@ -31,3 +31,22 @@ class BaseInjectContext(ABC):
                 return await wrapped(*args, **kwargs)
 
         return wrapper
+
+    @classmethod
+    def sync_inject(cls, func):
+        def wrapper(*args, **kwargs):
+            if cls.container is None:
+                raise RuntimeError(
+                    "Inject context container has not been initialized"
+                )
+
+            with cls.container() as request_container:
+                wrapped = wrap_injection(
+                    func=func,
+                    remove_depends=True,
+                    container_getter=lambda _, __: request_container,
+                    is_async=False,
+                )
+                return wrapped(*args, **kwargs)
+
+        return wrapper

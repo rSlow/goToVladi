@@ -17,3 +17,4 @@ class HotelView(ModelView):
         "min_price": "Минимальная цена",
         "promo_code": "Промокод",
     }
+    column_filters = ["district", "name"]

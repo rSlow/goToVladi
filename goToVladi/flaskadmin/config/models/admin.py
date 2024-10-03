@@ -11,3 +11,4 @@ class TemplateMode(str, Enum):
 @dataclass
 class FlaskAdminConfig:
     template_mode: TemplateMode = TemplateMode.bootstrap4
+    static_path: str = "/static"

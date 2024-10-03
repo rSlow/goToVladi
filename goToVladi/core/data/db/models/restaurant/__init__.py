@@ -4,11 +4,12 @@ from sqlalchemy_utils import URLType, PhoneNumberType
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base
-from .cuisine import RestaurantCuisine
-from .media import RestaurantMedia
+from goToVladi.core.data.db.models.mixins import RegionMixin
+from goToVladi.core.data.db.models.restaurant.cuisine import RestaurantCuisine
+from goToVladi.core.data.db.models.restaurant.media import RestaurantMedia
 
 
-class Restaurant(Base):
+class Restaurant(RegionMixin, Base):
     __tablename__ = "restaurants"
 
     name: Mapped[str]

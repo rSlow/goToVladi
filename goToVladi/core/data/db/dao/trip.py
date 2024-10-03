@@ -1,8 +1,8 @@
 from fastapi import UploadFile
 from sqlalchemy import ScalarResult, select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
-from goToVladi.bot.utils.media import as_aiogram_content_type
 from goToVladi.core.data.db import models as db, dto
 from goToVladi.core.data.db.dao.base import BaseDAO
 
@@ -37,7 +37,6 @@ class TripDao(BaseDAO[db.Trip]):
         self.session.add_all([
             db.TripMedia(
                 trip_id=trip_id,
-                content_type=as_aiogram_content_type(media.content_type),
                 content=media
             )
             for media in medias
@@ -54,4 +53,6 @@ class TripDao(BaseDAO[db.Trip]):
 
 
 def get_trip_options():
-    return ()
+    return (
+        joinedload(db.Trip.region),
+    )

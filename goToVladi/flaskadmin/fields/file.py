@@ -1,5 +1,7 @@
 import os.path as op
+import typing
 
+from dishka import FromDishka
 from flask_admin.babel import gettext
 from flask_admin.form import FileUploadField, BaseForm
 from markupsafe import Markup
@@ -11,9 +13,11 @@ from wtforms.widgets import html_params
 
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.data.db.models.base_attachment import BaseAttachment
+from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
+from goToVladi.flaskadmin.di.context import FlaskInjectContext
 
 
-class SQLAlchemyFileUploadInput:
+class SQLAlchemyUploadInput:
     empty_template = '<input %(file)s>'
     input_type = 'file'
     file_template = (
@@ -23,42 +27,100 @@ class SQLAlchemyFileUploadInput:
         "</div>"
         "<input %(file)s>"
     )
+    image_template = (
+        "<div>"
+        "  <a %(a)s>"
+        "    <img %(img)s>"
+        "  </a>"
+        "  <a %(a)s download>Скачать</a>"
+        "</div>"
+        "<input %(file)s>"
+    )
+    image_extensions = ('gif', 'jpg', 'jpeg', 'png', 'tiff')
+
+    @staticmethod
+    def _get_base_args(field: FileUploadField, **kwargs) -> dict:
+        value = field.data or ""
+        return {
+            "text": html_params(
+                type="text", readonly="readonly", value=value,
+                name=field.name
+            ),
+            "file": html_params(
+                type="file", value=value,
+                style="padding: 10px 0 0",
+                **kwargs
+            ),
+            "marker": '_%s-delete' % field.name,
+        }
 
     def __call__(self, field: FileUploadField, **kwargs):
         kwargs.setdefault('id', field.id)
         kwargs.setdefault('name', field.name)
 
+        data = field.data
+        if data and isinstance(data, File):
+            if self._is_file_image(data.file.filename):
+                return self._render_image(field, **kwargs)
+        return self._render_file(field, **kwargs)
+
+    def _render_file(self, field: FileUploadField, **kwargs):
         template = self.file_template if field.data else self.empty_template
         if field.errors:
             template = self.empty_template
 
-        value = field.data or ""
-        if isinstance(value, File):
-            url = value.path
-        else:
-            url = ""
+        args = self._get_base_args(field, **kwargs)
+        if isinstance(field.data, File):
+            url = field.data.path
+            static_url = self._get_static_prefix() + url
 
-        args = {
-            "text": html_params(
-                type="text", readonly="readonly", value=value,
-                name=field.name
-            ),
-            "file": html_params(type="file", value=value, **kwargs),
-            "marker": '_%s-delete' % field.name,
-            "a": html_params(href=f"/static/{url}", target="_blank"),
-            "url": url
-        }
+            args["a"] = html_params(href=static_url, target="_blank")
+            args["url"] = url
+
         return Markup(template % args)
+
+    def _render_image(self, field: FileUploadField, **kwargs):
+        template = self.image_template if field.data else self.empty_template
+        if field.errors:
+            template = self.empty_template
+
+        value = typing.cast(File, field.data)
+        url = value.path
+        static_url = self._get_static_prefix() + url
+
+        args = self._get_base_args(field, **kwargs)
+        args["a"] = html_params(href=static_url, target="_blank")
+        args["url"] = url
+        args["img"] = html_params(
+            src=static_url, style="width:200px; height: auto"
+        )
+
+        return Markup(template % args)
+
+    @staticmethod
+    @FlaskInjectContext.sync_inject
+    def _get_static_prefix(config: FromDishka[FlaskAppConfig]):
+        return config.flask.root_path + config.admin.static_path + "/"
+
+    @staticmethod
+    def _get_file_extension(filename):
+        if '.' in filename:
+            return filename.rsplit('.', 1)[1].lower()
+
+    def _is_file_image(self, filename: str):
+        return self._get_file_extension(filename) in self.image_extensions
 
 
 class SQLAlchemyFileUploadField(FileUploadField):
-    widget = SQLAlchemyFileUploadInput()
+    widget = SQLAlchemyUploadInput()
     data: FileStorage | None
 
     def __init__(
             self, label=None, validators=None, base_path=None,
             relative_path=None, namegen=None, allowed_extensions=None,
-            permission=0o666, allow_overwrite=True, **kwargs
+            permission=0o666, allow_overwrite=True,
+            render_image: bool = True, max_size: int = 200,
+            **kwargs
     ):
         """
             The field form to use in conjunction with sqlalchemy_file.
@@ -72,24 +134,27 @@ class SQLAlchemyFileUploadField(FileUploadField):
             **kwargs
         )
         self.base_path = base_path or get_paths().upload_file_path
+        self.render_image = render_image
+        self.max_size = max_size
 
     @staticmethod
-    def __is_uploaded_file(data: FileStorage):
+    def _is_file_uploaded(data: FileStorage):
         if data:
             return any((
                 isinstance(data, FileStorage) and data.filename,
                 isinstance(data, File) and not data["saved"]
             ))
+        return False
 
     def pre_validate(self, form: BaseForm):
         if all((
-                self.__is_uploaded_file(self.data),
+                self._is_file_uploaded(self.data),
                 not self.is_file_allowed(self.data.filename)
         )):
             raise ValidationError(gettext('Invalid file extension'))
 
         # Handle overwriting existing content
-        if not self.__is_uploaded_file(self.data):
+        if not self._is_uploaded_file(self.data):
             return
 
         if not self._allow_overwrite and self._check_exists(self.data.url):
@@ -112,7 +177,7 @@ class SQLAlchemyFileUploadField(FileUploadField):
             self.data = None
         elif valuelist:
             for data in valuelist:
-                if self.__is_uploaded_file(data):
+                if self._is_file_uploaded(data):
                     self.data = data
                     break
 
@@ -124,7 +189,7 @@ class SQLAlchemyFileUploadField(FileUploadField):
                 setattr(obj, name, None)
                 return
 
-        if self.__is_uploaded_file(self.data):
+        if self._is_file_uploaded(self.data):
             setattr(
                 obj, name,
                 File(
