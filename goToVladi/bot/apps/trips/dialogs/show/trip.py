@@ -4,6 +4,7 @@ from aiogram_dialog.widgets.kbd import Url, Group
 from aiogram_dialog.widgets.text import Const, Format
 
 from goToVladi.bot.apps.trips.states import TripSG
+from goToVladi.bot.utils import buttons
 from goToVladi.bot.views.media_group import send_additional_media_group
 from goToVladi.core.data.db.dao import DaoHolder
 
@@ -35,6 +36,7 @@ trip_window = Window(
         ),
         width=2,
     ),
+    buttons.BACK,
     getter=trip_getter,
     state=TripSG.trip
 )
