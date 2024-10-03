@@ -11,8 +11,8 @@ from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
 
 
-async def get_cuisines(dao: DaoHolder, **__):
-    cuisines = await dao.restaurant.get_all_cuisines()
+async def get_cuisines(dao: DaoHolder, user: dto.User, **__):
+    cuisines = await dao.restaurant.get_all_cuisines(region_id=user.region.id_)
     return {"cuisines": cuisines}
 
 
@@ -74,7 +74,9 @@ type_restaurant_window = Window(
 )
 
 
-async def get_restaurants(dao: DaoHolder, dialog_manager: DialogManager, **__):
+async def get_restaurants(
+        dao: DaoHolder, dialog_manager: DialogManager, user: dto.User, **__
+):
     cuisine_id = dialog_manager.dialog_data["cuisine_id"]
     restaurant_type = dialog_manager.dialog_data["restaurant_type"]
     is_delivery = restaurant_type == "delivery"
@@ -82,7 +84,8 @@ async def get_restaurants(dao: DaoHolder, dialog_manager: DialogManager, **__):
     restaurants = await dao.restaurant.get_filtered_list(
         cuisine_id=cuisine_id,
         is_inner=is_inner,
-        is_delivery=is_delivery
+        is_delivery=is_delivery,
+        region_id=user.region.id_
     )
     return {"restaurants": restaurants}
 

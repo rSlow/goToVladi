@@ -12,15 +12,20 @@ class RestaurantDao(BaseDAO[db.Restaurant]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(db.Restaurant, session)
 
-    async def get_all_cuisines(self) -> list[db.RestaurantCuisine]:
+    async def get_all_cuisines(
+            self, region_id: int
+    ) -> list[dto.RestaurantCuisine]:
         result: ScalarResult[db.RestaurantCuisine] = await self.session.scalars(
             select(db.RestaurantCuisine)
+            .join(db.Restaurant)
+            .where(db.Restaurant.region_id == region_id)
         )
         cuisines = result.all()
         return [cuisine.to_dto() for cuisine in cuisines]
 
     async def get_filtered_list(
-            self, cuisine_id: int, is_delivery: bool, is_inner: bool
+            self, cuisine_id: int, is_delivery: bool, is_inner: bool,
+            region_id: int
     ) -> list[dto.ListRestaurant]:
         result: ScalarResult[db.Restaurant] = await self.session.scalars(
             select(db.Restaurant)
@@ -29,6 +34,7 @@ class RestaurantDao(BaseDAO[db.Restaurant]):
                 db.Restaurant.is_inner == is_inner,
                 db.Restaurant.is_delivery == is_delivery
             ))
+            .where(db.Restaurant.region_id == region_id)
             .options(*get_restaurant_list_options())
         )
         restaurants = result.all()

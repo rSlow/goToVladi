@@ -15,8 +15,10 @@ class HotelDao(BaseDAO[db.Hotel]):
         result: ScalarResult[db.HotelDistrict] = await self.session.scalars(
             select(db.HotelDistrict)
             .where(db.HotelDistrict.region_id == region_id)
+            .options(joinedload(db.HotelDistrict.region))
         )
-        return result.all()
+        hotel_districts = result.all()
+        return [district.to_dto() for district in hotel_districts]
 
     async def get(self, id_: int) -> dto.Hotel:
         result: ScalarResult[db.Hotel] = await self.session.scalars(
@@ -43,10 +45,7 @@ class HotelDao(BaseDAO[db.Hotel]):
 
     async def add_medias(self, hotel_id: int, *medias: UploadFile) -> bool:
         self.session.add_all([
-            db.HotelMedia(
-                hotel_id=hotel_id,
-                content=media
-            )
+            db.HotelMedia(hotel_id=hotel_id, content=media)
             for media in medias
         ])
         await self.session.commit()

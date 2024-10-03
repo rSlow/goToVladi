@@ -12,6 +12,7 @@ class HotelDistrict(mixins.RegionMixin, Base):
 
     def to_dto(self):
         return dto.HotelDistrict(
+            id_=self.id,
             name=self.name,
             region_id=self.region_id,
             region=self.region.to_dto() if self.region else None,

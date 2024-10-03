@@ -12,6 +12,7 @@ class HotelMedia(BaseAttachment):
 @dataclass
 class HotelDistrict:
     name: str
+    id_: int | None = None
     region_id: int | None = None
     region: Region | None = None
 

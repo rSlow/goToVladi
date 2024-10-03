@@ -1,7 +1,7 @@
-from aiogram import types
+from aiogram import types, F
 from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Select, ScrollingGroup
-from aiogram_dialog.widgets.text import Const, Format
+from aiogram_dialog.widgets.text import Format, Const
 from aiogram_dialog.window import Window
 
 from goToVladi.bot.apps.trips.states import TripSG
@@ -28,7 +28,15 @@ async def on_trip_click(
 
 
 list_trips_window = Window(
-    Const("Доступные экскурсии в <b>{region.name}</b>:"),
+    Format(
+        "Доступные экскурсии в <b>{region.name}</b>:",
+        when=F["trips"]
+    ),
+    Format(
+        "К сожалению, в <b>{region.name}</b> мы еще не добавили экскурсий, "
+        "но мы уже усердно отбираем для Вас лучшие маршруты!",
+        when=~F["trips"]
+    ),
     ScrollingGroup(
         Select(
             text=Format("{item.name}"),

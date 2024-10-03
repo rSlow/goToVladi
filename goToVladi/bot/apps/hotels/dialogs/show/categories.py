@@ -1,6 +1,4 @@
-from operator import itemgetter
-
-from aiogram import types
+from aiogram import types, F
 from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.kbd import Group, Select, ScrollingGroup
 from aiogram_dialog.widgets.text import Const, Format
@@ -13,16 +11,14 @@ from goToVladi.core.data.db.dao import DaoHolder
 
 async def district_getter(dao: DaoHolder, user: dto.User, **__):
     districts = await dao.hotel.get_all_districts(user.region.id_)
-    return {
-        "districts": [(district, district) for district in districts]
-    }
+    return {"districts": districts}
 
 
 async def set_district(
         _: types.CallbackQuery, __: Select,
-        manager: DialogManager, district: str
+        manager: DialogManager, district_id: str
 ):
-    manager.dialog_data["district"] = district
+    manager.dialog_data["district_id"] = int(district_id)
     await manager.next()
 
 
@@ -30,9 +26,9 @@ district_window = Window(
     Const("Выберите район отеля:"),
     Group(
         Select(
-            Format("{item[1]}"),
+            Format("{item.name}"),
             id="districts",
-            item_id_getter=itemgetter(0),
+            item_id_getter=dto.id_getter,
             items="districts",
             on_click=set_district
         ),
@@ -45,8 +41,8 @@ district_window = Window(
 
 
 async def hotels_getter(dao: DaoHolder, dialog_manager: DialogManager, **__):
-    district = dialog_manager.dialog_data["district"]
-    hotels = await dao.hotel.get_filtered_list(district_id=district)
+    district_id = dialog_manager.dialog_data["district_id"]
+    hotels = await dao.hotel.get_filtered_list(district_id=district_id)
     return {"hotels": hotels}
 
 
@@ -59,7 +55,15 @@ async def on_hotel_click(
 
 
 list_hotels_window = Window(
-    Const("Выберите отель:"),
+    Const(
+        "Выберите отель:",
+        when=F["hotels"]
+    ),
+    Const(
+        "К сожалению, в этот район мы пока еще не добавили отели, "
+        "но сделаем это в самое ближайшее время!",
+        when=~F["hotels"]
+    ),
     ScrollingGroup(
         Select(
             text=Format("{item.name}"),
