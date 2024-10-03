@@ -4,12 +4,18 @@ from aiogram_dialog.widgets.kbd import Url, Group
 from aiogram_dialog.widgets.text import Const, Format
 
 from goToVladi.bot.apps.trips.states import TripSG
+from goToVladi.bot.views.media_group import send_additional_media_group
 from goToVladi.core.data.db.dao import DaoHolder
 
 
 async def trip_getter(dialog_manager: DialogManager, dao: DaoHolder, **__):
     trip_id = dialog_manager.dialog_data["trip_id"]
     trip = await dao.trip.get(trip_id)
+    if trip.medias:
+        await send_additional_media_group(
+            medias=trip.medias, manager=dialog_manager
+        )
+
     return {"trip": trip}
 
 
