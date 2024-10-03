@@ -5,8 +5,7 @@ from goToVladi.flaskadmin.views.media import MediaInline
 
 
 class RestaurantView(ModelView):
-    page_size = 5
-    column_list = ["name", "priority"]
+    page_size = 10
     inline_models = [
         MediaInline(db.RestaurantMedia)
     ]
@@ -28,4 +27,5 @@ class RestaurantView(ModelView):
         "telegram": "Telegram",
         "region": "Город / регион",
     }
-    column_filters = ["region"]
+    column_list = ["region", "name", "rating", "cuisine"]
+    column_filters = column_list

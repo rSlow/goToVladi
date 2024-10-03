@@ -5,6 +5,7 @@ from goToVladi.flaskadmin.views.media import MediaInline
 
 
 class HotelView(ModelView):
+    page_size = 10
     inline_models = [
         MediaInline(db.HotelMedia),
     ]
@@ -18,3 +19,4 @@ class HotelView(ModelView):
         "promo_code": "Промокод",
     }
     column_filters = ["district", "name"]
+    column_list = column_filters

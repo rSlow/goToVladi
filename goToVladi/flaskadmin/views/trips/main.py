@@ -5,6 +5,7 @@ from goToVladi.flaskadmin.views.media import MediaInline
 
 
 class TripView(ModelView):
+    page_size = 10
     inline_models = [
         MediaInline(db.TripMedia),
     ]
@@ -15,3 +16,5 @@ class TripView(ModelView):
         "medias": "Медиафайлы",
         "region": "Город / регион",
     }
+    column_list = ["region", "name"]
+    column_filters = column_list
