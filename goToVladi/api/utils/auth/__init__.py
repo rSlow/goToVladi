@@ -57,7 +57,7 @@ class AuthService:
         hashed_password = self.get_password_hash(password)
         await dao.user.set_password(user, hashed_password)
 
-    def _create_access_token(
+    def _get_token(
             self, data: dict, expires_delta: timedelta
     ) -> Token:
         to_encode = data.copy()
@@ -69,7 +69,7 @@ class AuthService:
         return Token(token=encoded_jwt, token_type="bearer")
 
     def create_user_token(self, user: dto.User) -> Token:
-        return self._create_access_token(
+        return self._get_token(
             data={"sub": str(user.id_)},
             expires_delta=self.access_token_expire
         )

@@ -1,7 +1,7 @@
-from flask_admin.contrib.sqla import ModelView
+from goToVladi.flaskadmin.utils.secure_view import SecureModelView
 
 
-class HotelDistrictView(ModelView):
+class HotelDistrictView(SecureModelView):
     column_labels = {
         "name": "Название района",
         "region": "Регион / город"

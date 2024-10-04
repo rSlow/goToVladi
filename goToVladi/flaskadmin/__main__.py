@@ -13,8 +13,11 @@ from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
 from goToVladi.flaskadmin.config.parser.main import load_config
 from goToVladi.flaskadmin.di.config import ConfigProvider
 from goToVladi.flaskadmin.di.context import FlaskInjectContext
+from goToVladi.flaskadmin.di.db import SyncDbProvider
 from goToVladi.flaskadmin.utils.logging import setup_logging
+from goToVladi.flaskadmin.utils.login import init_flask_login
 from goToVladi.flaskadmin.views import mount_admin_views, mount_views
+from goToVladi.flaskadmin.views.admin import AdminIndexView
 
 
 def main():
@@ -25,11 +28,15 @@ def main():
     retort = get_base_retort()
     flask_config = load_config(config, paths, retort)
 
-    flask_app = Flask(flask_config.app.name)
+    flask_app = Flask(
+        import_name=flask_config.app.name,
+        template_folder=flask_config.paths.src_path / "flaskadmin" / "templates",
+    )
     flask_app.secret_key = flask_config.flask.secret_key
 
     di_container = make_container(
         ConfigProvider(),
+        SyncDbProvider(),
         context={FlaskAppConfig: flask_config}
     )
     FlaskInjectContext.container = di_container  # for use in admin
@@ -39,14 +46,16 @@ def main():
 
     admin = Admin(
         flask_app,
-        url=flask_config.flask.root_path + "/",
+        # url=flask_config.flask.root_path + "/",
         name=flask_config.app.name,
+        index_view=AdminIndexView(),
         template_mode=flask_config.admin.template_mode,
     )
     mount_admin_views(admin, sqlalchemy_session)
     mount_views(flask_app, flask_config)
 
     configure_storage(paths.upload_file_path)
+    init_flask_login(flask_app)
 
     return flask_app
 

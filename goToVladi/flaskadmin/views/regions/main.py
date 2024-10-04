@@ -1,7 +1,7 @@
-from flask_admin.contrib.sqla.view import ModelView
+from goToVladi.flaskadmin.utils.secure_view import SecureModelView
 
 
-class RegionView(ModelView):
+class RegionView(SecureModelView):
     column_labels = {
         "name": "Название"
     }

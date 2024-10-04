@@ -3,10 +3,11 @@ from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base, Region
+from goToVladi.core.data.db.models.mixins.flask_login import FlaskLoginMixin
 from goToVladi.core.data.db.models.mixins.time import TimeMixin
 
 
-class User(TimeMixin, Base):
+class User(FlaskLoginMixin, TimeMixin, Base):
     __tablename__ = "users"
     __mapper_args__ = {"eager_defaults": True}  # TODO eager_defaults
 

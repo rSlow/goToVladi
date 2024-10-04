@@ -1,10 +1,9 @@
-from flask_admin.contrib.sqla import ModelView
-
 from goToVladi.core.data.db import models as db
-from goToVladi.flaskadmin.views.media import MediaInline
+from goToVladi.flaskadmin.utils.secure_view import SecureModelView
+from goToVladi.flaskadmin.utils.media_inline import MediaInline
 
 
-class HotelView(ModelView):
+class HotelView(SecureModelView):
     page_size = 10
     inline_models = [
         MediaInline(db.HotelMedia),

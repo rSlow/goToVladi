@@ -1,9 +1,8 @@
-from flask_admin.contrib.sqla import ModelView
+from goToVladi.flaskadmin.utils.secure_view import SecureModelView
 
 
-class RestaurantCuisineView(ModelView):
+class RestaurantCuisineView(SecureModelView):
     form_columns = ["name"]
     column_labels = {
         "name": "Вид кухни",
     }
-

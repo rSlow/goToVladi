@@ -3,3 +3,11 @@
 {% block body %}
     <p>Go To Vladi: панель администратора</p>
 {% endblock %}
+
+{% block menu_links %}
+	{{ super() }}
+{% endblock %}
+
+{% if current_user.is_authenticated %}
+    User {{ current_user.username }}
+{% endif %}

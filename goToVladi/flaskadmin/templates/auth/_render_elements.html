@@ -1,0 +1,22 @@
+{% macro render_field(field) %}
+    <p>{{ field.label }} : {{ field(**kwargs)|safe }}</p>
+    {% if field.errors %}
+        <ul>
+            {% for error in field.errors %}
+                <li style="color:red;">{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% macro render_messages(messages) %}
+    {% with messages = get_flashed_messages(messages) %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+{% endmacro %}

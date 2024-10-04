@@ -38,6 +38,8 @@ flask-admin = {extras = ["export", "images", "s3", "sqlalchemy", "translation"],
 flask-sqlalchemy = "^3.1.1"
 psycopg2-binary = "^2.9.9"
 gunicorn = "^23.0.0"
+faststream = "^0.5.25"
+flask-login = "^0.6.3"
 
 
 [build-system]
