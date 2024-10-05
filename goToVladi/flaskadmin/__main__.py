@@ -30,7 +30,8 @@ def main():
 
     flask_app = Flask(
         import_name=flask_config.app.name,
-        template_folder=flask_config.paths.src_path / "flaskadmin" / "templates",
+        template_folder=flask_config.paths.admin_path / "templates",
+        static_folder=flask_config.paths.admin_path / "static",
     )
     flask_app.secret_key = flask_config.flask.secret_key
 
@@ -46,9 +47,9 @@ def main():
 
     admin = Admin(
         flask_app,
-        # url=flask_config.flask.root_path + "/",
+        url=flask_config.flask.root_path,
         name=flask_config.app.name,
-        index_view=AdminIndexView(),
+        index_view=AdminIndexView(url=flask_config.flask.root_path),
         template_mode=flask_config.admin.template_mode,
     )
     mount_admin_views(admin, sqlalchemy_session)

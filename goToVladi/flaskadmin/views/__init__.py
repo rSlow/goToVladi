@@ -1,9 +1,9 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from flask_admin import Admin
 from sqlalchemy.orm import scoped_session, Session, configure_mappers
 
 from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
-from goToVladi.flaskadmin.views import static
+from goToVladi.flaskadmin.views import media
 from goToVladi.flaskadmin.views.hotels import mount_hotel_views
 from goToVladi.flaskadmin.views.regions import mount_region_views
 from goToVladi.flaskadmin.views.restaurants import mount_restaurant_views
@@ -20,9 +20,13 @@ def mount_admin_views(admin_app: Admin, session: scoped_session[Session]):
 
 
 def mount_views(app: Flask, cfg: FlaskAppConfig):
-    # mount views ONLY with root_path_param
-    app.add_url_rule(
-        cfg.flask.root_path + cfg.admin.static_path + '/<storage>/<file_id>',
+    root_router = Blueprint('root', __name__, url_prefix=cfg.flask.root_path)
+
+    # mount views to the root router
+    root_router.add_url_rule(
+        cfg.admin.media_url + '/<storage>/<file_id>',
         None,
-        static.serve_files, methods=["GET"]
+        media.serve_media, methods=["GET"]
     )
+
+    app.register_blueprint(root_router)

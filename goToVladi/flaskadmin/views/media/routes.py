@@ -5,7 +5,7 @@ from libcloud.storage.types import ObjectDoesNotExistError
 from sqlalchemy_file.storage import StorageManager
 
 
-async def serve_files(storage: str, file_id: str):
+async def serve_media(storage: str, file_id: str):
     try:
         file = StorageManager.get_file(f"{storage}/{file_id}")
         if isinstance(file.object.driver, LocalStorageDriver):

@@ -72,9 +72,9 @@ class SQLAlchemyUploadInput:
         args = self._get_base_args(field, **kwargs)
         if isinstance(field.data, File):
             url = field.data.path
-            static_url = self._get_static_prefix() + url
+            media_url = self._get_media_prefix() + url
 
-            args["a"] = html_params(href=static_url, target="_blank")
+            args["a"] = html_params(href=media_url, target="_blank")
             args["url"] = url
 
         return Markup(template % args)
@@ -86,21 +86,21 @@ class SQLAlchemyUploadInput:
 
         value = typing.cast(File, field.data)
         url = value.path
-        static_url = self._get_static_prefix() + url
+        media_url = self._get_media_prefix() + url
 
         args = self._get_base_args(field, **kwargs)
-        args["a"] = html_params(href=static_url, target="_blank")
+        args["a"] = html_params(href=media_url, target="_blank")
         args["url"] = url
         args["img"] = html_params(
-            src=static_url, style="width:200px; height: auto"
+            src=media_url, style="width:200px; height: auto"
         )
 
         return Markup(template % args)
 
     @staticmethod
     @FlaskInjectContext.sync_inject
-    def _get_static_prefix(config: FromDishka[FlaskAppConfig]):
-        return config.flask.root_path + config.admin.static_path + "/"
+    def _get_media_prefix(config: FromDishka[FlaskAppConfig]):
+        return config.flask.root_path + config.admin.media_url + "/"
 
     @staticmethod
     def _get_file_extension(filename):

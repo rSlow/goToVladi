@@ -35,3 +35,23 @@ class Paths:
     @property
     def upload_file_path(self) -> Path:
         return self.app_dir / "static"
+
+    @property
+    def core_path(self) -> Path:
+        return self.src_path / "core"
+
+    @property
+    def bot_path(self) -> Path:
+        return self.src_path / "bot"
+
+    @property
+    def api_path(self) -> Path:
+        return self.src_path / "api"
+
+    @property
+    def admin_path(self) -> Path:
+        return self.src_path / "flaskadmin"
+
+    @property
+    def faststream_path(self) -> Path:
+        return self.src_path / "mq"
