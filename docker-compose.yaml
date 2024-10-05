@@ -13,8 +13,8 @@ services:
         target: "/app/config/"
         read_only: true
       - type: "bind"
-        source: "./static/"
-        target: "/app/static/"
+        source: "./media/"
+        target: "/app/media/"
     depends_on:
       - postgres
       - redis
@@ -33,8 +33,8 @@ services:
         target: "/app/config/"
         read_only: true
       - type: "bind"
-        source: "./static/"
-        target: "/app/static/"
+        source: "./media/"
+        target: "/app/media/"
       - type: "bind"
         source: "./gunicorn.conf.py"
         target: "/app/gunicorn.conf.py"

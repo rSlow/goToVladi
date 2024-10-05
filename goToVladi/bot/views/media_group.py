@@ -30,7 +30,7 @@ async def send_additional_media_group(
         except ValueError as ex:
             logger.error(
                 ex.args[0],
-                media.content_type
+                media.content.content_type
             )
 
     middleware_data: MiddlewareData = manager.middleware_data

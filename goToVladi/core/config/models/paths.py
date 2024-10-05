@@ -34,7 +34,7 @@ class Paths:
 
     @property
     def upload_file_path(self) -> Path:
-        return self.app_dir / "static"
+        return self.app_dir / "media"
 
     @property
     def core_path(self) -> Path:

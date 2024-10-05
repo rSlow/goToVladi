@@ -159,5 +159,5 @@ cython_debug/
 /config/
 /docker-compose-dev.yaml
 /alembic.ini
-/static/
+/media/
 /nginx/

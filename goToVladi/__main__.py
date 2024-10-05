@@ -19,7 +19,7 @@ from goToVladi.core.config.models.web import WebConfig
 from goToVladi.core.config.parser.config_logging import setup_logging
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.config.parser.retort import get_base_retort
-from goToVladi.core.data.db.utils.file_field import configure_storage
+from goToVladi.core.data.db.utils.file_field import configure_storages
 from goToVladi.core.di import get_common_providers
 from goToVladi.core.utils import di_visual
 
@@ -31,7 +31,6 @@ def main():
     retort = get_base_retort()
 
     setup_logging(paths)
-    configure_storage(paths.upload_file_path)
 
     api_config = load_api_config(paths, retort)
     bot_config = load_bot_config(paths, retort)
@@ -58,6 +57,11 @@ def main():
     api_app.add_event_handler("startup", startup_callback)
     api_app.add_event_handler("shutdown", shutdown_callback)
 
+    configure_storages(
+        upload_path=paths.upload_file_path,
+        storages=bot_config.db.file_storages
+    )
+
     logger.info(
         "app prepared with dishka:\n%s",
         di_visual.render(
@@ -77,13 +81,13 @@ async def on_startup(
     ) + webhook_config.path
 
     bot = await dishka.get(Bot)
-    dp = await dishka.get(Dispatcher)
     await bot.set_webhook(
         url=webhook_url,
         secret_token=webhook_config.secret,
-        # allowed_updates=resolve_update_types(dp),
     )
     logger.info("as webhook url used %s", webhook_url)
+
+    await dishka.get(Dispatcher)  # initialize dispatcher
 
 
 async def on_shutdown(dishka: AsyncContainer):

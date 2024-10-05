@@ -3,7 +3,7 @@ from werkzeug.datastructures import FileStorage
 from wtforms.fields import MultipleFileField
 
 from goToVladi.core.data.db.dao.base import ModelType
-from goToVladi.core.data.db.models.base_attachment import BaseAttachment
+from goToVladi.core.data.db.models.base_attachment import AttachmentProtocol
 
 
 class SQLAlchemyMultipleFileUploadField(MultipleFileField):
@@ -11,7 +11,7 @@ class SQLAlchemyMultipleFileUploadField(MultipleFileField):
 
     def __init__(
             self,
-            field_name: str, relation_class: type[BaseAttachment],
+            field_name: str, relation_class: type[AttachmentProtocol],
             **kwargs
     ):
         super().__init__(**kwargs)

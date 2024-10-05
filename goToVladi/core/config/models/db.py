@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +19,7 @@ class DBConfig:
     name: str | None = None
     path: str | None = None
     echo: bool = False
+    file_storages: list[str] = field(default_factory=list)
 
     def _get_uri(self, connector: str | None = None):
         if self.type in ("mysql", "postgresql"):

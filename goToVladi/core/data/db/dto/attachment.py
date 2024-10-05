@@ -1,4 +1,3 @@
-from abc import ABC
 from dataclasses import dataclass
 
 from adaptix import Retort
@@ -25,7 +24,7 @@ class FileSchema:
 
 
 @dataclass
-class BaseAttachment(ABC):
+class BaseAttachment:
     id_: int
     content: FileSchema
 

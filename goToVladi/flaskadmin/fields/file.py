@@ -12,7 +12,7 @@ from wtforms.utils import unset_value
 from wtforms.widgets import html_params
 
 from goToVladi.core.config.parser.paths import get_paths
-from goToVladi.core.data.db.models.base_attachment import BaseAttachment
+from goToVladi.core.data.db.models.base_attachment import AttachmentProtocol
 from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
 from goToVladi.flaskadmin.di.context import FlaskInjectContext
 
@@ -181,7 +181,7 @@ class SQLAlchemyFileUploadField(FileUploadField):
                     self.data = data
                     break
 
-    def populate_obj(self, obj: BaseAttachment, name: str):
+    def populate_obj(self, obj: AttachmentProtocol, name: str):
         field = getattr(obj, name, None)
         if field:
             # If field should be deleted, clean it up
