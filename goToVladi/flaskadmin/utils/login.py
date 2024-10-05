@@ -1,4 +1,3 @@
-# Initialize flask-login
 import flask_login
 from dishka import FromDishka
 from flask import Flask

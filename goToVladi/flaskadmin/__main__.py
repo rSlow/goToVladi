@@ -17,7 +17,7 @@ from goToVladi.flaskadmin.di.context import FlaskInjectContext
 from goToVladi.flaskadmin.di.db import SyncDbProvider
 from goToVladi.flaskadmin.utils.login import init_flask_login
 from goToVladi.flaskadmin.views import mount_admin_views, mount_views
-from goToVladi.flaskadmin.views.admin import AdminIndexView
+from goToVladi.flaskadmin.views.index import AdminIndexView
 
 
 def main():
@@ -49,7 +49,10 @@ def main():
         flask_app,
         url=flask_config.flask.root_path,
         name=flask_config.app.name,
-        index_view=AdminIndexView(url=flask_config.flask.root_path),
+        index_view=AdminIndexView(
+            name="Главная страница",
+            url=flask_config.flask.root_path
+        ),
         template_mode=flask_config.admin.template_mode,
     )
     mount_admin_views(admin, sqlalchemy_session)
@@ -66,4 +69,4 @@ def main():
 
 if __name__ == '__main__':
     app = main()
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)

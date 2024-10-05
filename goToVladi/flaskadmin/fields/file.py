@@ -22,7 +22,7 @@ class SQLAlchemyUploadInput:
     input_type = 'file'
     file_template = (
         "<div> "
-        "  <a %(a)s>%(url)s</a> | "
+        "  <a %(a)s>%(filename)s</a> | "
         "  <a %(a)s download>Скачать</a>"
         "</div>"
         "<input %(file)s>"
@@ -72,10 +72,11 @@ class SQLAlchemyUploadInput:
         args = self._get_base_args(field, **kwargs)
         if isinstance(field.data, File):
             url = field.data.path
+            filename = field.data.file.filename
             media_url = self._get_media_prefix() + url
 
             args["a"] = html_params(href=media_url, target="_blank")
-            args["url"] = url
+            args["filename"] = filename
 
         return Markup(template % args)
 

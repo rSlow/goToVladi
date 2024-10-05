@@ -3,8 +3,8 @@ from wtforms.fields import TelField
 from goToVladi.core.data.db import models as db
 from goToVladi.flaskadmin.fields.multiple_file import \
     SQLAlchemyMultipleFileUploadField
-from goToVladi.flaskadmin.utils.secure_view import SecureModelView
 from goToVladi.flaskadmin.utils.media_inline import MediaInline
+from goToVladi.flaskadmin.utils.secure_view import SecureModelView
 
 
 class RestaurantView(SecureModelView):
@@ -38,4 +38,9 @@ class RestaurantView(SecureModelView):
             field_name="medias", relation_class=db.RestaurantMedia,
             label="Загрузка медиафайлов"
         )
+    }
+    form_widget_args = {
+        'description': {
+            'rows': 8,
+        }
     }
