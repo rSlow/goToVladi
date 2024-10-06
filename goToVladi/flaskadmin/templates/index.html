@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ mde.css }}
+</head>
+<body>
+<form method="POST">
+    {{ form.csrf_token }}
+{#    {{ mde.editor_with_preview() }}#}
+    {{ form.editor }}
+    {{ mde.preview }}
+    {{ form.submit }}
+</form>
+
+{{ mde.js }}
+</body>
+</html>

@@ -1,0 +1,45 @@
+@import "bstr-button";
+
+.inline-field {
+  & > a[id$="-button"],
+  & input.form-control-file[type="file"] {
+    display: none;
+  }
+
+  & .inline-field .pull-right {
+    @include bootstrap-button;
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+
+    cursor: pointer;
+
+    & > * {
+      display: block !important;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    & > label {
+      padding-left: 5px;
+    }
+  }
+}
+
+.inline-field > .inline-form-field > .form-group {
+  & a {
+    display: block;
+
+    &[download] {
+      @include bootstrap-button;
+      color: #fff;
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+  }
+
+  a:first-child {
+    margin-bottom: 5px;
+  }
+}

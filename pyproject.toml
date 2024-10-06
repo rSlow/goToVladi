@@ -40,6 +40,8 @@ psycopg2-binary = "^2.9.9"
 gunicorn = "^23.0.0"
 faststream = "^0.5.25"
 flask-login = "^0.6.3"
+flask-babel = "^4.0.0"
+libsass = "^0.23.0"
 
 
 [build-system]

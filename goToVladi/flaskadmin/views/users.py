@@ -2,7 +2,6 @@ __all__ = [
     "mount_users_views"
 ]
 
-from dishka import FromDishka
 from flask import flash
 from flask_admin import Admin
 from flask_admin.actions import action
@@ -11,7 +10,6 @@ from sqlalchemy import update
 from sqlalchemy.orm import scoped_session, Session
 
 from goToVladi.core.data.db import models as db
-from goToVladi.flaskadmin.di.context import FlaskInjectContext
 from goToVladi.flaskadmin.utils.secure_view import SecureModelView
 
 
@@ -45,17 +43,9 @@ class UserView(SecureModelView):
         confirmation="Вы действительно хотите дать этим пользователям "
                      "права администратора?"
     )
-    @FlaskInjectContext.sync_inject
-    def set_as_admin(
-            self, id_list: list[str], session: FromDishka[Session]
-    ):
+    def set_as_admin(self, id_list: list[str]):
         id_list = [*map(int, id_list)]
-        session.execute(
-            update(db.User)
-            .where(db.User.id.in_(id_list))
-            .values(is_superuser=True)
-        )
-        session.commit()
+        self._set_admin_rights(id_list, True)
         flash(f"Обновлены права {len(id_list)} пользователям.", "info")
 
     @action(
@@ -64,10 +54,7 @@ class UserView(SecureModelView):
         confirmation="Вы действительно забрать у этих пользователей "
                      "права администратора?"
     )
-    @FlaskInjectContext.sync_inject
-    def set_as_not_admin(
-            self, id_list: list[str], session: FromDishka[Session]
-    ):
+    def set_as_not_admin(self, id_list: list[str]):
         id_list = [*map(int, id_list)]
         try:
             current_user_id_index = id_list.index(current_user.id)
@@ -77,13 +64,16 @@ class UserView(SecureModelView):
         if current_user_id:
             flash("Не убирайте права у себя :)", "error")
         if id_list:
-            session.execute(
-                update(db.User)
-                .where(db.User.id.in_(id_list))
-                .values(is_superuser=False)
-            )
-            session.commit()
+            self._set_admin_rights(id_list, False)
             flash(f"Обновлены права {len(id_list)} пользователям.", "info")
+
+    def _set_admin_rights(self, ids: list[int], is_superuser: bool) -> None:
+        self.session.execute(
+            update(db.User)
+            .where(db.User.id.in_(ids))
+            .values(is_superuser=is_superuser)
+        )
+        self.session.commit()
 
 
 def mount_users_views(admin_app: Admin, session: scoped_session[Session]):

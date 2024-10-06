@@ -1,7 +1,13 @@
-from flask import jsonify, abort, send_file, redirect, Response
+__all__ = [
+    "setup"
+]
+
+from flask import jsonify, abort, send_file, redirect, Response, Blueprint
 from libcloud.storage.drivers.local import LocalStorageDriver
 from libcloud.storage.types import ObjectDoesNotExistError
 from sqlalchemy_file.storage import StorageManager
+
+from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
 
 
 async def serve_media(storage: str, file_id: str):
@@ -30,3 +36,18 @@ async def serve_media(storage: str, file_id: str):
 
     except ObjectDoesNotExistError:
         return abort(404, jsonify({"detail": "File not found"}))
+
+
+def setup(config: FlaskAppConfig):
+    router = Blueprint(
+        'media', __name__,
+        url_prefix=config.admin.media_url
+    )
+
+    router.add_url_rule(
+        '/<storage>/<file_id>',
+        None,
+        serve_media, methods=["GET"]
+    )
+
+    return router

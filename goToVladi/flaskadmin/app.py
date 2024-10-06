@@ -15,7 +15,7 @@ from goToVladi.flaskadmin.config.parser.main import load_config
 from goToVladi.flaskadmin.di.config import ConfigProvider
 from goToVladi.flaskadmin.di.context import FlaskInjectContext
 from goToVladi.flaskadmin.di.db import SyncDbProvider
-from goToVladi.flaskadmin.utils.login import init_flask_login
+from goToVladi.flaskadmin.utils import i18n, scss, login
 from goToVladi.flaskadmin.views import mount_admin_views, mount_views
 from goToVladi.flaskadmin.views.index import AdminIndexView
 
@@ -27,9 +27,8 @@ def main():
     cfg_dict = read_config_yaml(paths)
     retort = get_base_retort()
     flask_config = load_config(cfg_dict, paths, retort)
-
     flask_app = Flask(
-        import_name=flask_config.app.name,
+        flask_config.app.name,
         template_folder=flask_config.paths.admin_path / "templates",
         static_folder=flask_config.paths.admin_path / "static",
     )
@@ -51,18 +50,23 @@ def main():
         name=flask_config.app.name,
         index_view=AdminIndexView(
             name="Главная страница",
-            url=flask_config.flask.root_path
+            url=flask_config.flask.root_path,
+            template="custom_admin/index.html",
         ),
+        base_template="custom_admin/base.html",
         template_mode=flask_config.admin.template_mode,
     )
-    mount_admin_views(admin, sqlalchemy_session)
+
+    mount_admin_views(admin, sqlalchemy_session, flask_config)
     mount_views(flask_app, flask_config)
 
     configure_storages(
         upload_path=paths.upload_file_path,
         storages=flask_config.db.file_storages
     )
-    init_flask_login(flask_app)
+    login.setup(flask_app)
+    i18n.setup(flask_app)
+    scss.setup(flask_app, flask_config)
 
     return flask_app
 

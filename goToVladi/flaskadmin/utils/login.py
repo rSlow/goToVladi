@@ -7,7 +7,7 @@ from goToVladi.core.data.db import models as db
 from goToVladi.flaskadmin.di.context import FlaskInjectContext
 
 
-def init_flask_login(app: Flask):
+def setup(app: Flask):
     login_manager = flask_login.LoginManager()
     login_manager.init_app(app)
 
