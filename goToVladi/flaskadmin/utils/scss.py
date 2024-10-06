@@ -10,10 +10,10 @@ def setup(app: Flask, config: FlaskAppConfig):
     app.wsgi_app = SassMiddleware(
         app=app.wsgi_app,
         manifests={
-            "app": Manifest(
+            "goToVladi.flaskadmin.app": Manifest(
                 sass_path=(static_path / "sass").as_posix(),
                 css_path=(static_path / "css" / "c").as_posix(),
-                wsgi_path='/static/css/c',
+                wsgi_path=config.flask.root_path + "/static/css/c",
                 strip_extension=False
             ),
         },

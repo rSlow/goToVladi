@@ -1,8 +1,9 @@
 {% extends "admin/base.html" %}
+{% import 'admin/static.html' as admin_static with context %}
 
 {% block head_css %}
     {{ super() }}
-    <link rel="stylesheet" href="{{ url_for("static", filename="css/c/base.scss.css") }}">
-    <link rel="stylesheet" href="{{ url_for("static", filename="css/c/inline-form.scss.css") }}">
-    <link rel="stylesheet" href="{{ url_for("static", filename="css/c/forms.scss.css") }}">
+    <link rel="stylesheet" href="{{ admin_static.url(filename="css/c/base.scss.css") }}">
+    <link rel="stylesheet" href="{{ admin_static.url(filename="css/c/inline-form.scss.css") }}">
+    <link rel="stylesheet" href="{{ admin_static.url(filename="css/c/forms.scss.css") }}">
 {% endblock %}
