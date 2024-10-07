@@ -23,7 +23,10 @@ class SQLAlchemyMultipleFileUploadField(MultipleFileField):
     def populate_obj(self, obj: ModelType, _):
         if any([
             not self.data,
-            len(self.data) == 1 and self.data[0].content_length == 0
+            len(self.data) == 1 and (
+                    not self.data[0].filename
+                    and self.data[0].content_type == "application/octet-stream"
+            )
         ]):
             return
 
