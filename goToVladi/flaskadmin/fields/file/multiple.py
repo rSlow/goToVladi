@@ -4,9 +4,11 @@ from wtforms.fields import MultipleFileField
 
 from goToVladi.core.data.db.dao.base import ModelType
 from goToVladi.core.data.db.models.base_attachment import AttachmentProtocol
+from goToVladi.flaskadmin.fields.file import SQLAlchemyFileUploadInput
 
 
 class SQLAlchemyMultipleFileUploadField(MultipleFileField):
+    widget = SQLAlchemyFileUploadInput(multiple=True)
     data: list[FileStorage]
 
     def __init__(

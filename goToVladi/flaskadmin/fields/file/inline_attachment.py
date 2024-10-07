@@ -15,26 +15,23 @@ from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.data.db.models.base_attachment import AttachmentProtocol
 from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
 from goToVladi.flaskadmin.di.context import FlaskInjectContext
+from .main import SQLAlchemyFileUploadInput
 
 
-class SQLAlchemyUploadInput:
-    empty_template = '<input %(file)s>'
-    input_type = 'file'
+class SQLAlchemyInlineAttachmentUploadInput(SQLAlchemyFileUploadInput):
     file_template = (
-        "<div> "
-        "  <a %(a)s>%(filename)s</a> | "
-        "  <a %(a)s download>Скачать</a>"
-        "</div>"
-        "<input %(file)s>"
+            "<div class='file-widget'> "
+            "  <a %(a)s class='file-link'>%(filename)s</a> | "
+            "  <a %(a)s download>Скачать</a>"
+            "</div>" + SQLAlchemyFileUploadInput.empty_template
     )
     image_template = (
-        "<div>"
-        "  <a %(a)s>"
-        "    <img %(img)s>"
-        "  </a>"
-        "  <a %(a)s download>Скачать</a>"
-        "</div>"
-        "<input %(file)s>"
+            "<div class='file-widget'>"
+            "  <a %(a)s class='image-container'>"
+            "    <img %(img)s>"
+            "  </a>"
+            "  <a %(a)s download>Скачать</a>"
+            "</div>" + SQLAlchemyFileUploadInput.empty_template
     )
     image_extensions = ('gif', 'jpg', 'jpeg', 'png', 'tiff')
 
@@ -92,9 +89,7 @@ class SQLAlchemyUploadInput:
         args = self._get_base_args(field, **kwargs)
         args["a"] = html_params(href=media_url, target="_blank")
         args["url"] = url
-        args["img"] = html_params(
-            src=media_url, style="width:200px; height: auto"
-        )
+        args["img"] = html_params(src=media_url)
 
         return Markup(template % args)
 
@@ -112,8 +107,8 @@ class SQLAlchemyUploadInput:
         return self._get_file_extension(filename) in self.image_extensions
 
 
-class SQLAlchemyFileUploadField(FileUploadField):
-    widget = SQLAlchemyUploadInput()
+class SQLAlchemyInlineAttachmentField(FileUploadField):
+    widget = SQLAlchemyInlineAttachmentUploadInput()
     data: FileStorage | None
 
     def __init__(
