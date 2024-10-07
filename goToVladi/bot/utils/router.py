@@ -14,8 +14,7 @@ def print_router_tree(router: Router, indent: int = 0) -> str:
 
 
 def print_middleware_tree(router: Router, indent: int = 0) -> str:
-    router_middlewares = []
-    outer_router_middlewares = []
+    # TODO delete or fix
     if isinstance(router, Dispatcher):
         result = " " * indent + "dispatcher"
     else:

@@ -1,14 +1,16 @@
-from flask_admin.form import FileUploadField, FileUploadInput
+from flask_admin.form import FileUploadField
+from markupsafe import Markup
+from wtforms.widgets import html_params
 
 
-class SQLAlchemyFileUploadInput(FileUploadInput):
-    def __init__(self, multiple: bool = True):
-        super().__init__()
-        self.multiple = multiple
-
+class SQLAlchemyFileUploadInput:
+    input_type = 'file'
     empty_template = (
-        "<div class='input-wrapper'>"
+        "<div class='input-container'>"
         "  <input %(file)s>"
+        "  <label %(label)s>"
+        "    %(label_text)s"
+        "  </label>"
         "</div>"
     )
     data_template = (
@@ -18,10 +20,45 @@ class SQLAlchemyFileUploadInput(FileUploadInput):
             "</div>" + empty_template
     )
 
-    def __call__(self, *args, **kwargs):
+    def __init__(self, multiple: bool = False):
+        super().__init__()
+        self.multiple = multiple
+
+    def _get_base_args(self, field: FileUploadField, **kwargs) -> dict:
+        kwargs.setdefault('id', field.id)
+        kwargs.setdefault('name', field.name)
+
+        value = field.data or ""
+        return {
+            "text": html_params(
+                type="text", readonly="readonly", value=value,
+                name=field.name
+            ),
+            "file": html_params(
+                type="file", value=value,
+                hidden="True",
+                **kwargs
+            ),
+            "marker": '_%s-delete' % field.name,
+            "label_text": "Выбрать файл" + self.multiple * "ы",
+            "label": html_params(**{
+                "for": field.id,
+                "class": "file-upload-label",
+            })
+        }
+
+    def verify_template(self, field: FileUploadField, template: str):
+        template = template if field.data else self.empty_template
+        if field.errors:
+            template = self.empty_template
+        return template
+
+    def __call__(self, field: FileUploadField, **kwargs):
+        template = self.verify_template(field, self.data_template)
         if self.multiple:
             kwargs["multiple"] = True
-        return super().__call__(*args, **kwargs)
+        args = self._get_base_args(field, **kwargs)
+        return Markup(template % args)
 
 
 class SQLAlchemyFileUploadField(FileUploadField):

@@ -21,7 +21,7 @@ from .main import SQLAlchemyFileUploadInput
 class SQLAlchemyInlineAttachmentUploadInput(SQLAlchemyFileUploadInput):
     file_template = (
             "<div class='file-widget'> "
-            "  <a %(a)s class='file-link'>%(filename)s</a> | "
+            "  <a %(a)s class='file-link'>%(filename)s</a>"
             "  <a %(a)s download>Скачать</a>"
             "</div>" + SQLAlchemyFileUploadInput.empty_template
     )
@@ -35,26 +35,7 @@ class SQLAlchemyInlineAttachmentUploadInput(SQLAlchemyFileUploadInput):
     )
     image_extensions = ('gif', 'jpg', 'jpeg', 'png', 'tiff')
 
-    @staticmethod
-    def _get_base_args(field: FileUploadField, **kwargs) -> dict:
-        value = field.data or ""
-        return {
-            "text": html_params(
-                type="text", readonly="readonly", value=value,
-                name=field.name
-            ),
-            "file": html_params(
-                type="file", value=value,
-                style="padding: 10px 0 0",
-                **kwargs
-            ),
-            "marker": '_%s-delete' % field.name,
-        }
-
     def __call__(self, field: FileUploadField, **kwargs):
-        kwargs.setdefault('id', field.id)
-        kwargs.setdefault('name', field.name)
-
         data = field.data
         if data and isinstance(data, File):
             if self._is_file_image(data.file.filename):
@@ -62,10 +43,7 @@ class SQLAlchemyInlineAttachmentUploadInput(SQLAlchemyFileUploadInput):
         return self._render_file(field, **kwargs)
 
     def _render_file(self, field: FileUploadField, **kwargs):
-        template = self.file_template if field.data else self.empty_template
-        if field.errors:
-            template = self.empty_template
-
+        template = self.verify_template(field, self.file_template)
         args = self._get_base_args(field, **kwargs)
         if isinstance(field.data, File):
             url = field.data.path
@@ -78,10 +56,7 @@ class SQLAlchemyInlineAttachmentUploadInput(SQLAlchemyFileUploadInput):
         return Markup(template % args)
 
     def _render_image(self, field: FileUploadField, **kwargs):
-        template = self.image_template if field.data else self.empty_template
-        if field.errors:
-            template = self.empty_template
-
+        template = self.verify_template(field, self.image_template)
         value = typing.cast(File, field.data)
         url = value.path
         media_url = self._get_media_prefix() + url

@@ -1,4 +1,6 @@
-.submit-row {
+@import "bstr-button";
+
+.submit-row { // страница редактирования, нижняя строка с кнопками
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -11,7 +13,7 @@
   }
 }
 
-.form-group > input[type="checkbox"] {
+.form-group > input[type="checkbox"] { // checkbox
   appearance: none;
   background-color: #fff;
   margin: 0;
@@ -38,4 +40,18 @@
   &:checked::before {
     transform: scale(1);
   }
+}
+
+.input-container { // кастомный input (empty template в SQLAlchemyFileUploadInput)
+  & > label.file-upload-label {
+    @include bootstrap-button;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    cursor: pointer;
+  }
+}
+
+.form-group > .select2-container.form-control { // select поля формы
+  width: 100% !important;
 }

@@ -6,14 +6,16 @@ from goToVladi.flaskadmin.utils.sass.wsgi import SassMiddleware
 
 
 def setup(app: Flask, config: FlaskAppConfig):
-    static_path = config.paths.admin_path / "static"
+    static_url = config.flask.root_path + config.flask.static_path
+    static_folder = config.paths.admin_path / "static"
+
     app.wsgi_app = SassMiddleware(
         app=app.wsgi_app,
         manifests={
             "goToVladi.flaskadmin.app": Manifest(
-                sass_path=(static_path / "sass").as_posix(),
-                css_path=(static_path / "css" / "c").as_posix(),
-                wsgi_path=config.flask.root_path + "/static/css/c",
+                sass_path=(static_folder / "sass").as_posix(),
+                css_path=(static_folder / "css" / "c").as_posix(),
+                wsgi_path=static_url + "/css/c",
                 strip_extension=False
             ),
         },

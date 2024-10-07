@@ -1,45 +1,103 @@
 @import "bstr-button";
 
-.inline-field {
-  & > a[id$="-button"],
-  & input.form-control-file[type="file"] {
+.form-group:has(.inline-field):not(:has(.inline-field.card)) { // скрытие label инлайн формы при отсутствии элементов
+  display: none;
+}
+
+.form-group > .inline-field { // управляющий контейнер вместе с кнопкой "Добавить inline element"
+  & > a[id$="-button"] { // кнопка "Добавить inline element"
     display: none;
   }
 
-  & .inline-field .pull-right {
-    @include bootstrap-button;
-    color: #fff;
-    background-color: #dc3545;
-    border-color: #dc3545;
 
-    cursor: pointer;
+  & > .inline-field-list { // все inline карточки
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 
-    & > * {
-      display: block !important;
-      margin: 0;
-      padding: 0;
-      cursor: pointer;
+    & > .inline-field.card { // карточка
+      margin-bottom: 0 !important;
+      min-width: 300px;
+      max-width: 500px;
+      //flex-basis: auto; /* default value */
+      flex: 1 1 auto;
+      position: relative;
+
+      & > legend > small { // контейнер заголовка и кнопки "Удалить?"
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        & > .pull-right { // кнопка "Удалить?"
+          @include bootstrap-button;
+          color: #fff;
+          background-color: #dc3545;
+          border-color: #dc3545;
+
+          display: flex;
+          cursor: pointer;
+
+          & > * {
+            display: block !important;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+          }
+
+          & > label {
+            padding-left: 5px;
+          }
+
+          & > input[type="checkbox"] { // checkbox кнопки "Удалить?"
+            // TODO наверное надо че то придумать
+          }
+        }
+      }
+
+      & > .inline-form-field > .form-group { // все что ниже заголовка
+        margin-bottom: 0;
+
+        & > label.control-label { // label для Markup div.file-field
+          display: none;
+        }
+
+        & > .file-widget { // Markup
+          & > a { // файл и кнопка "Скачать"
+            display: block;
+
+            &:first-child { // файл (первый элемент по структуре)
+              margin-bottom: .75rem;
+            }
+
+            &[download] { // отдельно кнопка "Скачать"
+              @include bootstrap-button;
+              color: #fff;
+              background-color: #28a745;
+              border-color: #28a745;
+            }
+
+            &.image-container { // контейнер для картинки
+              position: relative;
+              display: flex;
+              justify-content: center;
+
+              & > img { // картинка
+                object-fit: contain;
+                max-width: 100%;
+                max-height: 300px;
+              }
+            }
+
+            a.file-link { // ссылка с именем файла
+              // TODO наверное надо че то придумать
+            }
+          }
+        }
+
+        & > .input-container { // input замены загруженного файла
+          display: none;
+        }
+      }
     }
-
-    & > label {
-      padding-left: 5px;
-    }
-  }
-}
-
-.inline-field > .inline-form-field > .form-group {
-  & a {
-    display: block;
-
-    &[download] {
-      @include bootstrap-button;
-      color: #fff;
-      background-color: #28a745;
-      border-color: #28a745;
-    }
-  }
-
-  a:first-child {
-    margin-bottom: 5px;
   }
 }
