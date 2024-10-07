@@ -12,3 +12,4 @@ class TemplateMode(str, Enum):
 class FlaskAdminConfig:
     template_mode: TemplateMode = TemplateMode.bootstrap4
     media_url: str = "/media"
+    static_path: str = "/static"

@@ -32,7 +32,7 @@ def main():
         template_folder=flask_config.paths.admin_path / "templates",
         static_folder=flask_config.paths.admin_path / "static",
         static_url_path=(
-                flask_config.flask.root_path + flask_config.flask.static_path
+                flask_config.flask.root_path + flask_config.admin.static_path
         )
     )
     flask_app.secret_key = flask_config.flask.secret_key
@@ -58,7 +58,7 @@ def main():
         ),
         base_template="custom_admin/base.html",
         template_mode=flask_config.admin.template_mode,
-        static_url_path=flask_config.flask.static_path + "-admin"
+        static_url_path=flask_config.admin.static_path + "-admin"
         # "-admin" prefix for not matching as base static, cause in admin
         # templates is used `admin_static.url()` marco
     )
