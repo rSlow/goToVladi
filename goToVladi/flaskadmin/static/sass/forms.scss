@@ -1,4 +1,4 @@
-@import "bstr-button";
+@import "mixins/buttons";
 
 .submit-row { // страница редактирования, нижняя строка с кнопками
   display: flex;
@@ -44,10 +44,7 @@
 
 .input-container { // кастомный input (empty template в SQLAlchemyFileUploadInput)
   & > label.file-upload-label {
-    @include bootstrap-button;
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+    @include bootstrap-button-primary;
     cursor: pointer;
   }
 }
