@@ -1,32 +1,40 @@
 import flask_login
 from dishka import FromDishka
-from flask import redirect, url_for, request, render_template, flash
+from dishka.integrations.flask import inject
+from flask import redirect, url_for, request
 from flask_admin import AdminIndexView as BaseAdminIndexView, expose, helpers
 from passlib.context import CryptContext
 from sqlalchemy import select
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.orm import Session
 from wtforms import form as forms, fields, validators
+from wtforms.fields.core import Field
+from wtforms.validators import ValidationError
 
 from goToVladi.core.data.db import models as db
-from goToVladi.flaskadmin.di.context import FlaskInjectContext
 
 
 class LoginForm(forms.Form):
     username = fields.StringField(
         label="Логин",
-        validators=[validators.InputRequired()]
+        validators=[validators.InputRequired()],
+        render_kw={"placeholder": "Введите логин"}
     )
     password = fields.PasswordField(
         label="Пароль",
-        validators=[validators.InputRequired()]
+        validators=[validators.InputRequired()],
+        render_kw={"placeholder": "Введите пароль"}
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-    @FlaskInjectContext.sync_inject
+    def validate_password(self, _: Field):
+        if not self.get_user():
+            raise ValidationError("Неверные учетные данные.")
+
+    @inject
     def get_user(self, session: FromDishka[Session]):
         username = self.username.data
         password = self.password.data
@@ -61,12 +69,10 @@ class AdminIndexView(BaseAdminIndexView):
             user = form.get_user()
             if user:
                 flask_login.login_user(user)
-            else:
-                flash("Invalid credentials", category="error")
         if flask_login.current_user.is_authenticated:
             return redirect(url_for(".index"))
 
-        return render_template("auth/login.html", form=form)
+        return self.render("auth/login.html", form=form)
 
     @expose("/logout/")
     def logout_view(self):

@@ -2,6 +2,7 @@ import os.path as op
 import typing
 
 from dishka import FromDishka
+from dishka.integrations.flask import inject
 from flask_admin.babel import gettext
 from flask_admin.form import FileUploadField, BaseForm
 from markupsafe import Markup
@@ -14,7 +15,6 @@ from wtforms.widgets import html_params
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.data.db.models.base_attachment import AttachmentProtocol
 from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
-from goToVladi.flaskadmin.di.context import FlaskInjectContext
 from .main import SQLAlchemyFileUploadInput
 
 
@@ -69,7 +69,7 @@ class SQLAlchemyInlineAttachmentUploadInput(SQLAlchemyFileUploadInput):
         return Markup(template % args)
 
     @staticmethod
-    @FlaskInjectContext.sync_inject
+    @inject
     def _get_media_prefix(config: FromDishka[FlaskAppConfig]):
         return config.flask.root_path + config.admin.media_url + "/"
 

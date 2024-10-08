@@ -9,4 +9,3 @@
 
 админка:
   - генерация aiogram-dialog админок
-  - flask-admin
