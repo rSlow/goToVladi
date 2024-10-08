@@ -26,7 +26,7 @@ class UserDao(BaseDAO[db.User]):
     async def get_by_id(self, id_: int) -> dto.User:
         result = await self.session.scalars(
             select(self.model)
-            .where(id=id_)
+            .where(self.model.id == id_)
             .options(*get_user_options())
         )
         return result.one().to_dto()
@@ -88,6 +88,14 @@ class UserDao(BaseDAO[db.User]):
             .values(region_id=region_id)
         )
         await self.session.commit()
+
+    async def get_all_active(self):
+        result = await self.session.execute(
+            select(self.model.tg_id)
+            # .where(self.model.is_active == True)
+        )
+        user_ids = result.scalars().all()
+        return user_ids
 
 
 def get_user_options():
