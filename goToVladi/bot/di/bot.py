@@ -5,11 +5,13 @@ from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats
-from dishka import Provider, Scope, provide
+from dishka import Provider, Scope, provide, from_context
 
-from ..config.models.bot import BotConfig
-from ..views.alert import BotAlert
-from ..views import commands
+from goToVladi.bot.config.models.bot import BotConfig
+from goToVladi.bot.config.models.main import BotAppConfig
+from goToVladi.bot.config.models.storage import StorageConfig
+from goToVladi.bot.views import commands
+from goToVladi.bot.views.alert import BotAlert
 
 BotCommandsList = NewType('CommandsList', list[BotCommand])
 
@@ -18,6 +20,16 @@ logger = logging.getLogger(__name__)
 
 class BotProvider(Provider):
     scope = Scope.APP
+
+    bot_config = from_context(BotAppConfig)
+
+    @provide
+    def get_bot_config(self, config: BotAppConfig) -> BotConfig:
+        return config.bot
+
+    @provide
+    def get_bot_storage_config(self, config: BotAppConfig) -> StorageConfig:
+        return config.storage
 
     @provide
     async def get_common_commands(self) -> BotCommandsList:

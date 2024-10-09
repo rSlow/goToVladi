@@ -1,6 +1,7 @@
 @import "mixins/buttons";
 
-.form-group:has(.inline-field):not(:has(.inline-field.card)) { // скрытие label инлайн формы при отсутствии инлайн элементов
+.form-group:has(.inline-field):not(:has(.inline-field.card)) {
+  // скрытие label инлайн формы при отсутствии инлайн элементов
   display: none;
 }
 
@@ -8,7 +9,6 @@
   & > a[id$="-button"] { // кнопка "Добавить inline element"
     display: none;
   }
-
 
   & > .inline-field-list { // все inline карточки
     display: flex;
@@ -29,7 +29,7 @@
         align-items: center;
 
         & > .pull-right { // кнопка "Удалить?"
-          @include bootstrap-button-danger;
+          @include bootstrap-button-warning;
           display: flex;
           cursor: pointer;
 
@@ -47,6 +47,11 @@
           & > input[type="checkbox"] { // checkbox кнопки "Удалить?"
             // TODO наверное надо че то придумать
           }
+
+          &:has(input[type="checkbox"]:checked) {
+            @include bootstrap-button-danger;
+            display: flex;
+          }
         }
       }
 
@@ -57,7 +62,7 @@
           display: none;
         }
 
-        & > .file-widget { // Markup
+        & > .file-widget { // Markup div.file-field
           & > a { // файл и кнопка "Скачать"
             display: block;
 

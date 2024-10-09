@@ -1,40 +1,36 @@
-from adaptix import Retort
-from dishka import Provider, provide, Scope
+from dishka import Provider, provide, Scope, from_context
 
-from goToVladi.bot.config.models.bot import BotConfig
-from goToVladi.bot.config.models.main import BotAppConfig
-from goToVladi.bot.config.models.storage import StorageConfig
-from goToVladi.bot.config.parser.main import load_config as load_bot_config
-from goToVladi.core.config import Paths, BaseConfig
-from goToVladi.core.config.models.web import WebConfig
-from goToVladi.core.config.parser.paths import get_paths
+from goToVladi.core.config.models import (
+    Paths, BaseConfig, WebConfig, MQConfig, SecurityConfig, AppConfig,
+    StaticConfig
+)
 
 
-class ConfigProvider(Provider):  # TODO все переделать
+class BaseConfigProvider(Provider):
     scope = Scope.APP
 
-    # config = from_context(BaseConfig) # TODO create pass config from context
+    config = from_context(BaseConfig)
 
     @provide
-    def get_paths(self) -> Paths:
-        return get_paths()
+    def get_paths(self, config: BaseConfig) -> Paths:
+        return config.paths
 
     @provide
-    def get_bot_app_config(self, paths: Paths, retort: Retort) -> BotAppConfig:
-        return load_bot_config(paths, retort)
-
-    @provide
-    def get_base_config(self, config: BotAppConfig) -> BaseConfig:
-        return config
-
-    @provide
-    def get_bot_config(self, config: BotAppConfig) -> BotConfig:
-        return config.bot
-
-    @provide
-    def get_bot_storage_config(self, config: BotAppConfig) -> StorageConfig:
-        return config.storage
-
-    @provide
-    def get_web_config(self, config: BotAppConfig) -> WebConfig:
+    def get_web_config(self, config: BaseConfig) -> WebConfig:
         return config.web
+
+    @provide
+    def get_mq_config(self, config: BaseConfig) -> MQConfig:
+        return config.mq
+
+    @provide
+    def get_auth_config(self, config: BaseConfig) -> SecurityConfig:
+        return config.auth
+
+    @provide
+    def get_app_config(self, config: BaseConfig) -> AppConfig:
+        return config.app
+
+    @provide
+    def get_static_config(self, config: BaseConfig) -> StaticConfig:
+        return config.static

@@ -9,8 +9,8 @@ from fastapi.security import OAuth2
 from fastapi.security.utils import get_authorization_scheme_param
 from starlette.responses import Response
 
-from goToVladi.api.config.models.auth import AuthConfig
-from goToVladi.api.config.models.token import Token
+from goToVladi.core.config.models.auth import SecurityConfig
+from goToVladi.core.utils.auth.token import Token
 
 
 class OAuth2PasswordBearerWithCookie(OAuth2):
@@ -35,15 +35,15 @@ class OAuth2PasswordBearerWithCookie(OAuth2):
                 detail="Not authenticated",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        return Token(token=param, token_type="bearer")
+        return Token(value=param, type_="bearer")
 
     __call__ = get_token
 
 
-def set_auth_cookie(config: AuthConfig, response: Response, token: Token):
+def set_auth_cookie(config: SecurityConfig, response: Response, token: Token):
     response.set_cookie(
         "Authorization",
-        value=f"{token.token_type} {token.token}",
+        value=f"{token.type_} {token.value}",
         samesite=config.samesite,
         domain=config.host,
         httponly=config.httponly,

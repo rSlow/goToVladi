@@ -6,15 +6,17 @@ from aiogram import Bot, Dispatcher
 from dishka import make_async_container, AsyncContainer
 from dishka.integrations.fastapi import setup_dishka as setup_fastapi_dishka
 
-from goToVladi.api import create_app as create_api_app
+from goToVladi.api import create_app as create_api_app, ApiAppConfig
 from goToVladi.api.config.models.api import ApiConfig
 from goToVladi.api.config.parser.main import load_config as load_api_config
 from goToVladi.api.di import get_api_providers
 from goToVladi.api.utils.webhook.handler import SimpleRequestHandler
 from goToVladi.api.utils.webhook.setup import setup_lifespan
+from goToVladi.bot.config.models import BotAppConfig
 from goToVladi.bot.config.models.webhook import WebhookConfig
 from goToVladi.bot.config.parser.main import load_config as load_bot_config
 from goToVladi.bot.di import get_bot_providers
+from goToVladi.core.config import BaseConfig
 from goToVladi.core.config.models.web import WebConfig
 from goToVladi.core.config.parser.config_logging import setup_logging
 from goToVladi.core.config.parser.paths import get_paths
@@ -28,10 +30,9 @@ logger = logging.getLogger("goToVladi")
 
 def main():
     paths = get_paths()
-    retort = get_base_retort()
-
     setup_logging(paths)
 
+    retort = get_base_retort()
     api_config = load_api_config(paths, retort)
     bot_config = load_bot_config(paths, retort)
     webhook_config = bot_config.bot.webhook
@@ -40,6 +41,11 @@ def main():
         *get_common_providers(),
         *get_bot_providers(),
         *get_api_providers(),
+        context={
+            BaseConfig: api_config.as_base(),
+            ApiAppConfig: api_config,
+            BotAppConfig: bot_config,
+        }
     )
     api_app = create_api_app(api_config)
     setup_lifespan(api_app, di_container)

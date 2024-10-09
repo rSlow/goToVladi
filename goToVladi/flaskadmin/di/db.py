@@ -9,10 +9,15 @@ from sqlalchemy.orm import (
 
 from goToVladi.core.config.models.db import DBConfig
 from goToVladi.core.factory import db
+from goToVladi.flaskadmin.config.models import FlaskAppConfig
 
 
 class SyncDbProvider(Provider):
     scope = Scope.APP
+
+    @provide
+    def get_db_config(self, config: FlaskAppConfig) -> DBConfig:
+        return config.db
 
     @provide
     def get_engine(self, db_config: DBConfig) -> Iterable[SyncEngine]:

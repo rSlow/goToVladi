@@ -8,8 +8,7 @@ from goToVladi.core.config.parser.config_file_reader import read_config_yaml
 from goToVladi.core.config.parser.main import load_base_config
 
 
-def load_config(paths: Paths,
-                retort: Retort) -> BotAppConfig:
+def load_config(paths: Paths, retort: Retort) -> BotAppConfig:
     config_dct = read_config_yaml(paths)
     return BotAppConfig.from_base(
         base=load_base_config(config_dct, paths, retort),
@@ -18,5 +17,5 @@ def load_config(paths: Paths,
             config_dct["web"]["base-url"],
             retort
         ),
-        storage=load_storage_config(config_dct["bot"]["storage"], retort),
+        storage=load_storage_config(config_dct, retort),
     )

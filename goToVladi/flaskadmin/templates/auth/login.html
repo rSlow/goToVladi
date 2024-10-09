@@ -1,4 +1,4 @@
-{% from "auth/_render_elements.html" import render_field %}
+{% from "auth/includes/_render_elements.html" import render_field %}
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -22,19 +22,34 @@
     <div class="form-container">
         <h3>Go To Vladi: Администрирование</h3>
 
-        <form method="post" action="{{ url_for('.login_view') }}">
+        <form method="post" action="{{ url_for(".login_view") }}">
             <div class="fields-container">
                 {{ form.csrf_token }}
                 {{ render_field(form.username) }}
                 {{ render_field(form.password) }}
             </div>
+            {% if form.form_errors %}
+                <div class="form-errors">
+                    {% for error in form.form_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <button type="submit">Войти</button>
         </form>
         <div class="socials">
-            <a class="social" href="/tg">
-                <img src="{{ url_for("static", filename="img/icons/telegram.png") }}" alt="">
-                Login via Telegram
-            </a>
+            {% if tg_auth_config %}
+                <div class="social-tg">
+                    <script
+                            async src="https://telegram.org/js/telegram-widget.js?21"
+                            data-telegram-login="{{ tg_auth_config.bot_username }}"
+                            data-radius="10"
+                            data-size="large"
+                            data-auth-url="{{ tg_auth_config.auth_url }}"
+                            data-request-access="write"
+                    ></script>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

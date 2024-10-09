@@ -9,7 +9,8 @@ from ..models.storage import StorageConfig, StorageType
 def load_storage_config(
         dct: dict[str, Any], retort: Retort
 ) -> StorageConfig:
-    config = StorageConfig(type_=StorageType[dct["type"]])
+    storage_type = dct["bot"]["storage"]["type"]
+    config = StorageConfig(type_=StorageType[storage_type])
     if config.type_ == StorageType.redis:
         config.redis = load_redis_config(dct["redis"], retort)
     return config

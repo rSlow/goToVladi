@@ -17,6 +17,7 @@ body {
 
 .app-root {
   min-height: calc(var(--vh) * 100);
+  min-width: 100%;
   position: relative;
   display: flex;
   flex-direction: column;

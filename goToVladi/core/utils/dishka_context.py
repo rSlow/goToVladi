@@ -1,6 +1,6 @@
 from abc import ABC
 
-from dishka import AsyncContainer
+from dishka import AsyncContainer, Container
 from dishka.integrations.base import wrap_injection
 
 
@@ -11,16 +11,35 @@ class BaseInjectContext(ABC):
     GLOBAL VARIABLE!
     """
 
-    container: AsyncContainer | None = None
+    container: Container | AsyncContainer | None = None
+
+    @classmethod
+    def _check_container(cls, is_async: bool) -> None:
+        if cls.container is None:
+            raise RuntimeError(
+                "Inject context container has not been initialized"
+            )
+        if isinstance(cls.container, Container) and is_async:
+            raise AttributeError(
+                "For `@inject` decorator you have to use AsyncContainer. "
+                "Use `@sync_inject` decorator instead."
+            )
+        elif isinstance(cls.container, AsyncContainer) and not is_async:
+            raise AttributeError(
+                "For `@sync_inject` decorator you have to use Container (sync)."
+                " Use `@inject` decorator instead."
+            )
+        else:
+            raise TypeError(
+                f"{cls.container} is {cls.container.__class__.__name__}, "
+                "not Container or AsyncContainer"
+            )
 
     @classmethod
     def inject(cls, func):
-        async def wrapper(*args, **kwargs):
-            if cls.container is None:
-                raise RuntimeError(
-                    "Inject context container has not been initialized"
-                )
+        cls._check_container(is_async=True)
 
+        async def wrapper(*args, **kwargs):
             async with cls.container() as request_container:
                 wrapped = wrap_injection(
                     func=func,
@@ -34,12 +53,9 @@ class BaseInjectContext(ABC):
 
     @classmethod
     def sync_inject(cls, func):
-        def wrapper(*args, **kwargs):
-            if cls.container is None:
-                raise RuntimeError(
-                    "Inject context container has not been initialized"
-                )
+        cls._check_container(is_async=False)
 
+        def wrapper(*args, **kwargs):
             with cls.container() as request_container:
                 wrapped = wrap_injection(
                     func=func,

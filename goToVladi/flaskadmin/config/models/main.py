@@ -15,12 +15,7 @@ class FlaskAppConfig(BaseConfig):
             cls, base: BaseConfig, flask: FlaskConfig, admin: FlaskAdminConfig
     ):
         return FlaskAppConfig(
-            app=base.app,
-            paths=base.paths,
-            db=base.db,
-            redis=base.redis,
-            web=base.web,
-            static=base.static,
-            flask=flask,
-            admin=admin
+            app=base.app, paths=base.paths, db=base.db, redis=base.redis,
+            web=base.web, static=base.static, mq=base.mq, auth=base.auth,
+            flask=flask, admin=admin
         )

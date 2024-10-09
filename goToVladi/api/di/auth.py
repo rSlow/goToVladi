@@ -2,20 +2,20 @@ from dishka import Provider, provide, Scope, from_context
 from fastapi import HTTPException, Request
 from jwt import PyJWTError
 
-from goToVladi.api.config.models.auth import AuthConfig
 from goToVladi.api.utils.auth import AuthService
 from goToVladi.api.utils.auth.cookie import OAuth2PasswordBearerWithCookie
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.utils.auth import SecurityService
 
 
 class AuthProvider(Provider):
     scope = Scope.APP
-    request = from_context(provides=Request)
+    request = from_context(provides=Request, scope=Scope.REQUEST)
 
     @provide
-    def get_auth_service(self, config: AuthConfig) -> AuthService:
-        return AuthService(config)
+    def get_auth_service(self, security: SecurityService) -> AuthService:
+        return AuthService(security)
 
     @provide
     def get_cookie_auth(self) -> OAuth2PasswordBearerWithCookie:

@@ -1,10 +1,14 @@
-from flask_admin import BaseView, expose, Admin
+from flask import url_for, request, flash, redirect
+from flask_admin import expose, Admin
+from flask_admin.helpers import validate_form_on_submit
 from sqlalchemy.orm import Session, scoped_session
 
 from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
+from goToVladi.flaskadmin.forms.mailing import MailingForm
+from goToVladi.flaskadmin.utils.secure_view import SecureView
 
 
-class MailingView(BaseView):
+class MailingView(SecureView):
     def __init__(
             self, session: scoped_session[Session], config: FlaskAppConfig,
             **kwargs
@@ -13,12 +17,26 @@ class MailingView(BaseView):
         self.session = session
         self.config = config
 
-    @expose('/')
+    @expose('/', methods=["GET", "POST"])
     def index(self):
-        return self.render("custom_admin/base.html")
+        if request.method == "POST":
+            form = MailingForm(request.form)
+        else:
+            form = MailingForm()
 
-    @expose("/send", methods=["GET", "POST"])
-    def send_mailing(self):
+        if validate_form_on_submit(form):
+            mail_data = form.message.data
+            ...
+            flash("Сообщение успешно отправлено!", "success")
+            return redirect(url_for("admin.index"))
+
+        return self.render(
+            "mailing/index.html",
+            form=form, return_url=url_for("admin.index"),
+        )
+
+    @expose("/pre-send", methods=["GET", "POST"])
+    def pre_send_mailing(self):
         ...
 
 

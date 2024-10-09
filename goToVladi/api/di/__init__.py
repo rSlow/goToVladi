@@ -1,9 +1,9 @@
-from .config import ApiConfigProvider
+from .config import ApiProvider
 from .auth import AuthProvider
 
 
 def get_api_providers():
     return [
-        ApiConfigProvider(),
+        ApiProvider(),
         AuthProvider()
     ]

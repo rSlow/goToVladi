@@ -2,11 +2,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import final
 
-from .db import DBConfig
-from .redis import RedisConfig
 from .app import AppConfig
+from .auth import SecurityConfig
+from .db import DBConfig
+from .mq import MQConfig
 from .paths import Paths
+from .redis import RedisConfig
 from .static import StaticConfig
 from .web import WebConfig
 
@@ -17,8 +20,10 @@ class BaseConfig:
     paths: Paths
     db: DBConfig
     redis: RedisConfig
+    mq: MQConfig
     web: WebConfig
     static: StaticConfig
+    auth: SecurityConfig
 
     @property
     def app_dir(self) -> Path:
@@ -35,3 +40,10 @@ class BaseConfig:
     @property
     def upload_file_path(self) -> Path:
         return self.paths.upload_file_path
+
+    @final
+    def as_base(self):
+        return BaseConfig(
+            app=self.app, paths=self.paths, db=self.db, redis=self.redis,
+            mq=self.mq, web=self.web, static=self.static, auth=self.auth,
+        )

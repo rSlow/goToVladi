@@ -62,7 +62,7 @@ class UserView(SecureModelView):
         except (IndexError, ValueError):
             current_user_id = None
         if current_user_id:
-            flash("Не убирайте права у себя :)", "error")
+            flash("Не убирайте права у себя :)", "warning")
         if id_list:
             self._set_admin_rights(id_list, False)
             flash(f"Обновлены права {len(id_list)} пользователям.", "info")
