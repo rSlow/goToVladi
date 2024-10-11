@@ -4,10 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
 
 from goToVladi.core.data.db import models as db, dto
-from goToVladi.core.data.db.dao.base import BaseDAO
+from goToVladi.core.data.db.dao.base import BaseDao
 
 
-class TripDao(BaseDAO[db.Trip]):
+class TripDao(BaseDao[db.Trip]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(db.Trip, session)
 

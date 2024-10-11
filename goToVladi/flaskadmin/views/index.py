@@ -1,14 +1,14 @@
 import flask_login
-from adaptix import Retort
 from dishka import FromDishka
 from dishka.integrations.flask import inject
-from flask import redirect, url_for, request
+from flask import redirect, url_for, request, flash, get_flashed_messages
 from flask_admin import AdminIndexView as BaseAdminIndexView, expose, helpers
 from flask_login import login_required, current_user
 from sqlalchemy.orm import Session
 
+from goToVladi.core.utils import exceptions as exc
+from goToVladi.core.utils.auth.hash import check_tg_auth
 from goToVladi.core.utils.auth.models import UserTgAuth
-from goToVladi.core.utils.exceptions.auth import AuthError
 from goToVladi.flaskadmin import crud
 from goToVladi.flaskadmin.config.models import FlaskAppConfig
 from goToVladi.flaskadmin.forms.login import LoginForm
@@ -16,10 +16,6 @@ from goToVladi.flaskadmin.utils.auth import AuthService
 
 
 class AdminIndexView(BaseAdminIndexView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.retort = Retort()
-
     @expose("/")
     def index(self):
         if not current_user.is_authenticated or not current_user.is_superuser:
@@ -44,8 +40,13 @@ class AdminIndexView(BaseAdminIndexView):
                 )
                 if user:
                     flask_login.login_user(user)
-            except AuthError as ex:
-                form.form_errors.append(ex.args[0])
+            except exc.AuthError as ex:
+                form.form_errors.append(ex.message)
+
+        form_errors = get_flashed_messages(
+            with_categories=True, category_filter=["form-error"]
+        )
+        form.form_errors.extend([error for _, error in form_errors])
 
         if current_user.is_authenticated and current_user.is_superuser:
             return redirect(url_for(".index"))
@@ -66,18 +67,21 @@ class AdminIndexView(BaseAdminIndexView):
 
     @expose("/tg-auth/data/", methods=["GET", "POST"])
     @inject
-    def tg_auth_data(self, session: FromDishka[Session]):
-        user_data = request.args
-        user = UserTgAuth(
-            id=user_data.get("id"),
-            first_name=user_data.get("first_name"),
-            auth_date=user_data.get("auth_date"),
-            hash=user_data.get("hash"),
-            photo_url=user_data.get("photo_url"),
-            username=user_data.get("username"),
-            last_name=user_data.get("last_name"),
-        ).to_dto()
-        saved_user = crud.upsert_user(user, session)
-        if saved_user.is_superuser:
-            flask_login.login_user(saved_user)
-        return redirect(url_for(".index"))
+    def tg_auth_data(
+            self, session: FromDishka[Session],
+            config: FromDishka[FlaskAppConfig]
+    ):
+        if user_data := dict(request.args):
+            try:
+                user = UserTgAuth.model_validate(user_data)
+                check_tg_auth(user, config.auth.tg_bot_token)
+                saved_user = crud.upsert_user(user.to_dto(), session)
+                if not saved_user.is_superuser:
+                    raise exc.AccessDeniedError
+                flask_login.login_user(saved_user)
+                return redirect(url_for(".index"))
+
+            except exc.AuthError as ex:
+                flash(ex.message, category="form-error")
+
+        return redirect(url_for(".login_view"))

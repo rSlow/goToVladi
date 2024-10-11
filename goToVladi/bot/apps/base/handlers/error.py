@@ -4,7 +4,7 @@ import typing
 from functools import partial
 
 from aiogram import Dispatcher, Bot
-from aiogram.exceptions import AiogramError
+from aiogram.exceptions import AiogramError, TelegramForbiddenError
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types.error_event import ErrorEvent
 from aiogram.utils.markdown import html_decoration as hd
@@ -12,6 +12,7 @@ from aiogram_dialog import DialogManager, StartMode, ShowMode
 from aiogram_dialog.api.exceptions import UnknownIntent, NoContextError
 
 from goToVladi.bot.apps.base.states import MainMenuSG
+from goToVladi.core.data.db.dao import DaoHolder
 from goToVladi.core.utils.exceptions.base import BaseError
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 async def handle_sh_error(error: ErrorEvent, log_chat_id: int, bot: Bot):
     exception: BaseError = typing.cast(BaseError, error.exception)
     if callback := error.update.callback_query:
-        await callback.answer(exception.notify_user, show_alert=True)
+        await callback.answer(exception.message, show_alert=True)
     else:
         chat_id = exception.chat_id or exception.user_id
         if chat_id is None and exception.user:
@@ -51,8 +52,9 @@ async def clear_unknown_intent(error: ErrorEvent, bot: Bot):
     )
 
 
-async def no_context(error: ErrorEvent, bot: Bot,
-                     dialog_manager: DialogManager):
+async def no_context(
+        error: ErrorEvent, bot: Bot, dialog_manager: DialogManager
+):
     logger.exception(
         "No dialog context found",
         error.exception.__class__.__name__,
@@ -70,6 +72,13 @@ async def no_context(error: ErrorEvent, bot: Bot,
             MainMenuSG.main_state, mode=StartMode.RESET_STACK,
             show_mode=ShowMode.DELETE_AND_SEND
         )
+
+
+async def bot_blocked(error: ErrorEvent, dao: DaoHolder):
+    message = error.update.message or error.update.callback_query.message
+    user_id = message.from_user.id
+    await dao.user.deactivate(user_id)
+    logger.info("Deactivated user with id %s", user_id)
 
 
 async def handle(error: ErrorEvent, log_chat_id: int, bot: Bot):
@@ -108,6 +117,10 @@ def setup(dp: Dispatcher, log_chat_id: int):
     dp.errors.register(
         no_context,
         ExceptionTypeFilter(NoContextError)
+    )
+    dp.errors.register(
+        bot_blocked,
+        ExceptionTypeFilter(TelegramForbiddenError)
     )
     dp.errors.register(
         partial(handle, log_chat_id=log_chat_id)

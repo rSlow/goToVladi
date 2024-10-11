@@ -1,6 +1,5 @@
 from typing import Callable, Any, Awaitable
 
-from adaptix import Retort
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 from aiogram_dialog import BgManagerFactory
@@ -29,7 +28,6 @@ class ContextDataMiddleware(BaseMiddleware):
         dao_holder: DaoHolder = await dishka.get(DaoHolder)
         data["bot_config"] = await dishka.get(BotConfig)
         data["base_config"] = await dishka.get(BaseConfig)
-        data["retort"] = await dishka.get(Retort)
         data["locker"] = await dishka.get(LockFactory)
         data["scheduler"] = await dishka.get(Scheduler)
         data["dao"] = dao_holder

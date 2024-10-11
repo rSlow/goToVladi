@@ -16,6 +16,7 @@ from goToVladi.bot.config.models import BotAppConfig
 from goToVladi.bot.config.models.webhook import WebhookConfig
 from goToVladi.bot.config.parser.main import load_config as load_bot_config
 from goToVladi.bot.di import get_bot_providers
+from goToVladi.bot.utils import ui
 from goToVladi.core.config import BaseConfig
 from goToVladi.core.config.models.web import WebConfig
 from goToVladi.core.config.parser.config_logging import setup_logging
@@ -33,6 +34,7 @@ def main():
     setup_logging(paths)
 
     retort = get_base_retort()
+
     api_config = load_api_config(paths, retort)
     bot_config = load_bot_config(paths, retort)
     webhook_config = bot_config.bot.webhook
@@ -93,6 +95,7 @@ async def on_startup(
     )
     logger.info("as webhook url used %s", webhook_url)
 
+    await ui.setup(bot)
     await dishka.get(Dispatcher)  # initialize dispatcher
 
 

@@ -13,7 +13,7 @@ ModelType = TypeVar(
 )
 
 
-class BaseDAO(Generic[ModelType]):
+class BaseDao(Generic[ModelType]):
     def __init__(self, model: type[ModelType], session: AsyncSession) -> None:
         self.model = model
         self.session = session

@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, ForeignKey
+from sqlalchemy import BigInteger, ForeignKey, sql
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from goToVladi.core.data.db import dto
@@ -11,13 +11,20 @@ class User(FlaskLoginMixin, TimeMixin, Base):
     __tablename__ = "users"
     __mapper_args__ = {"eager_defaults": True}  # TODO eager_defaults
 
-    tg_id = mapped_column(BigInteger, unique=True, nullable=False)
-    first_name: Mapped[str] = mapped_column(nullable=True)
-    last_name: Mapped[str] = mapped_column(nullable=True)
-    username: Mapped[str] = mapped_column(nullable=True, unique=True)
-    hashed_password: Mapped[str] = mapped_column(nullable=True)
-    is_bot: Mapped[bool] = mapped_column(default=False)
-    is_superuser: Mapped[bool] = mapped_column(default=False)
+    tg_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
+    first_name: Mapped[str | None]
+    last_name: Mapped[str | None]
+    username: Mapped[str | None] = mapped_column(nullable=True, unique=True)
+    hashed_password: Mapped[str | None]
+    is_bot: Mapped[bool] = mapped_column(
+        default=False, server_default=sql.false()
+    )
+    is_superuser: Mapped[bool] = mapped_column(
+        default=False, server_default=sql.false()
+    )
+    is_active: Mapped[bool] = mapped_column(
+        default=True, server_default=sql.true()
+    )
 
     region_id: Mapped[int] = mapped_column(
         ForeignKey("regions.id", ondelete="SET NULL"), nullable=True

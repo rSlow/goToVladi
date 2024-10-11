@@ -26,7 +26,8 @@ def load_base_config(
         mq=load_mq_config(config_dct["mq"], retort),
         auth=load_auth_config(
             config_dct["auth"],
-            config_dct["web"]["base-url"],
-            retort
+            base_url=config_dct["web"]["base-url"],
+            bot_token=config_dct["bot"]["token"],
+            retort=retort
         )
     )

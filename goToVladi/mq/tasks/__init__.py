@@ -1,7 +1,7 @@
-from faststream.broker.core.usecase import BrokerUsecase
+from faststream.broker.core.abc import ABCBroker
 
 from . import mailing
 
 
-def setup(broker: BrokerUsecase):
+def setup(broker: ABCBroker):
     broker.include_router(mailing.router)

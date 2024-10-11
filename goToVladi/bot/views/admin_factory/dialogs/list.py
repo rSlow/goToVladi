@@ -6,7 +6,7 @@ from aiogram_dialog.widgets.text import Format
 
 from goToVladi.bot.views.admin_factory import AdminSGFactory
 from goToVladi.core.data.db.dao import DaoHolder
-from goToVladi.core.data.db.dao.base import BaseDAO
+from goToVladi.core.data.db.dao.base import BaseDao
 
 
 def get_list_admin_dialog(
@@ -14,7 +14,7 @@ def get_list_admin_dialog(
         admin_dto:AdminDTO
 ) -> Dialog:
     async def list_window_getter(dao: DaoHolder, **__):
-        app_dao: BaseDAO = getattr(dao, dao_name)
+        app_dao: BaseDao = getattr(dao, dao_name)
 
     async def search(
             message: types.Message, widget: ManagedTextInput[str],

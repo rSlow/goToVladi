@@ -1,24 +1,19 @@
+from dishka import FromDishka
+from dishka.integrations.flask import inject
 from flask import url_for, request, flash, redirect
 from flask_admin import expose, Admin
 from flask_admin.helpers import validate_form_on_submit
-from sqlalchemy.orm import Session, scoped_session
+from pika.adapters.blocking_connection import BlockingChannel
 
-from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
 from goToVladi.flaskadmin.forms.mailing import MailingForm
 from goToVladi.flaskadmin.utils.secure_view import SecureView
 
 
 class MailingView(SecureView):
-    def __init__(
-            self, session: scoped_session[Session], config: FlaskAppConfig,
-            **kwargs
-    ):
-        super().__init__(**kwargs)
-        self.session = session
-        self.config = config
 
     @expose('/', methods=["GET", "POST"])
-    def index(self):
+    @inject
+    def index(self, mq: FromDishka[BlockingChannel]):
         if request.method == "POST":
             form = MailingForm(request.form)
         else:
@@ -26,7 +21,7 @@ class MailingView(SecureView):
 
         if validate_form_on_submit(form):
             mail_data = form.message.data
-            ...
+            mq.basic_publish("mail", "all", mail_data)
             flash("Сообщение успешно отправлено!", "success")
             return redirect(url_for("admin.index"))
 
@@ -40,15 +35,7 @@ class MailingView(SecureView):
         ...
 
 
-def mount_mailing_view(
-        admin_app: Admin, session: scoped_session[Session],
-        config: FlaskAppConfig
-):
+def mount_mailing_view(admin_app: Admin):
     admin_app.add_view(
-        MailingView(
-            session=session, config=config,
-            name="Рассылка",
-            # category="Рассылка",
-            endpoint="mailing",
-        )
+        MailingView(name="Рассылка", endpoint="mailing")
     )

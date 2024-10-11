@@ -19,6 +19,7 @@ class User:
     last_name: str | None = None
     is_bot: bool | None = None
     is_superuser: bool | None = None
+    is_active: bool | None = None
     region: Region | None = None
 
     @property
@@ -45,6 +46,7 @@ class User:
             first_name=user.first_name,
             last_name=user.last_name,
             is_bot=user.is_bot,
+            is_active=True
         )
 
     def with_password(self, hashed_password: str) -> UserWithCreds:

@@ -1,7 +1,7 @@
 from dishka import Provider, Scope, provide
 
 from goToVladi.core.config.models import SecurityConfig
-from goToVladi.core.utils.auth.service import SecurityService
+from goToVladi.core.utils.auth.security import SecurityService
 
 
 class SecurityProvider(Provider):

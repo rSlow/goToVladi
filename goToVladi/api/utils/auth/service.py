@@ -8,7 +8,7 @@ from starlette import status
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
-from goToVladi.core.utils.auth.service import SecurityService
+from goToVladi.core.utils.auth.security import SecurityService
 from goToVladi.core.utils.auth.token import Token
 from goToVladi.core.utils.exceptions.user import NoUsernameFound
 

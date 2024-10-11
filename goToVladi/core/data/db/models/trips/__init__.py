@@ -12,8 +12,8 @@ class Trip(RegionMixin, Base):
     __tablename__ = 'trips'
 
     name: Mapped[str]
-    description: Mapped[str] = mapped_column(Text, nullable=True)
-    site_url: Mapped[str] = mapped_column(PydanticURLType, nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    site_url: Mapped[str | None] = mapped_column(PydanticURLType, nullable=True)
     medias: Mapped[list[TripMedia]] = relationship(
         cascade="all, delete-orphan"
     )

@@ -4,14 +4,14 @@ from aiogram_dialog.widgets.text import Const, Format
 
 from goToVladi.bot.views.admin_factory import AdminSGFactory
 from goToVladi.core.data.db.dao import DaoHolder
-from goToVladi.core.data.db.dao.base import BaseDAO
+from goToVladi.core.data.db.dao.base import BaseDao
 
 
 def get_main_admin_dialog(
         admin_states_group: AdminSGFactory, dao_name: str
 ) -> Dialog:
     async def main_window_getter(dao: DaoHolder, **__):
-        app_dao: BaseDAO = getattr(dao, dao_name)
+        app_dao: BaseDao = getattr(dao, dao_name)
         count = await app_dao.count()
         return {"count": count}
 

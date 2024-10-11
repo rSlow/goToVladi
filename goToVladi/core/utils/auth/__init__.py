@@ -3,5 +3,5 @@ __all__ = [
     "TG_WIDGET_HTML"
 ]
 
-from .service import SecurityService
+from .security import SecurityService
 from .template import TG_WIDGET_HTML

@@ -1,8 +1,9 @@
-from aiogram import Dispatcher
+from aiogram import Dispatcher, BaseMiddleware
 from aiogram_dialog import BgManagerFactory
 
 from .additional_message import AdditionalMessageMiddleware
 from .context_data import ContextDataMiddleware
+from .logging import EventLoggingMiddleware
 
 
 def setup_middlewares(dp: Dispatcher, bg_manager_factory: BgManagerFactory):
@@ -10,7 +11,11 @@ def setup_middlewares(dp: Dispatcher, bg_manager_factory: BgManagerFactory):
         ContextDataMiddleware(bg_manager_factory=bg_manager_factory)
     )
 
-    additional_message_middleware = AdditionalMessageMiddleware()
-    dp.message.middleware(additional_message_middleware)
-    dp.business_message.middleware(additional_message_middleware)
-    dp.callback_query.middleware(additional_message_middleware)
+    _base_setup_middleware(dp, AdditionalMessageMiddleware())
+    _base_setup_middleware(dp, EventLoggingMiddleware())
+
+
+def _base_setup_middleware(dp: Dispatcher, middleware: BaseMiddleware):
+    dp.message.middleware(middleware)
+    dp.business_message.middleware(middleware)
+    dp.callback_query.middleware(middleware)

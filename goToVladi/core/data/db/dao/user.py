@@ -5,12 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from goToVladi.core.data.db import models as db, dto
-from goToVladi.core.data.db.dao.base import BaseDAO
+from goToVladi.core.data.db.dao.base import BaseDao
 from goToVladi.core.utils.exceptions.user import NoUsernameFound, \
     MultipleUsernameFound
 
 
-class UserDao(BaseDAO[db.User]):
+class UserDao(BaseDao[db.User]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(db.User, session)
 
@@ -92,10 +92,18 @@ class UserDao(BaseDAO[db.User]):
     async def get_all_active(self):
         result = await self.session.execute(
             select(self.model.tg_id)
-            # .where(self.model.is_active == True)
+            .where(self.model.is_active.is_(True))
         )
         user_ids = result.scalars().all()
         return user_ids
+
+    async def deactivate(self, tg_id: int):
+        await self.session.execute(
+            update(self.model)
+            .where(self.model.tg_id == tg_id)
+            .values(is_active=False)
+        )
+        await self.session.commit()
 
 
 def get_user_options():

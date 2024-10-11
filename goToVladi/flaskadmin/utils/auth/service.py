@@ -4,8 +4,7 @@ from sqlalchemy.orm import Session
 
 from goToVladi.core.data.db import models as db
 from goToVladi.core.utils.auth import SecurityService
-from goToVladi.core.utils.exceptions.auth import InvalidCredentialsError, \
-    UserIsNotSuperuserError
+from goToVladi.core.utils import exceptions as exc
 
 
 class AuthService:
@@ -22,9 +21,9 @@ class AuthService:
         try:
             user = result.one()
         except (MultipleResultsFound, NoResultFound):
-            return
+            raise exc.InvalidCredentialsError
         if not self.security.pwd_context.verify(password, user.hashed_password):
-            raise InvalidCredentialsError
+            raise exc.InvalidCredentialsError
         if not user.is_superuser or user.id is None:
-            raise UserIsNotSuperuserError
+            raise exc.AccessDeniedError
         return user

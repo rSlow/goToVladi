@@ -2,6 +2,7 @@ from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .hotel import HotelDao
+from .log import EventLogDao
 from .region import RegionDao
 from .restaurant import RestaurantDao
 from .trip import TripDao
@@ -15,6 +16,7 @@ class DaoHolder:
 
         self.user: UserDao = UserDao(self.session)
         self.region: RegionDao = RegionDao(self.session)
+        self.log: EventLogDao = EventLogDao(self.session)
 
         self.restaurant: RestaurantDao = RestaurantDao(self.session)
         self.hotel: HotelDao = HotelDao(self.session)

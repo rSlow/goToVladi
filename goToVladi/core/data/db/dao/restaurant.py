@@ -5,10 +5,10 @@ from sqlalchemy.orm import joinedload, selectinload
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db import models as db
-from goToVladi.core.data.db.dao.base import BaseDAO
+from goToVladi.core.data.db.dao.base import BaseDao
 
 
-class RestaurantDao(BaseDAO[db.Restaurant]):
+class RestaurantDao(BaseDao[db.Restaurant]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(db.Restaurant, session)
 

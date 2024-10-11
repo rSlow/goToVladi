@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Text
+from sqlalchemy import ForeignKey, Text, sql
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy_utils import URLType, PhoneNumberType
 
@@ -14,13 +14,17 @@ class Restaurant(RegionMixin, Base):
 
     name: Mapped[str]
     average_check: Mapped[int]
-    description: Mapped[str] = mapped_column(Text, nullable=True)
-    site_url: Mapped[str] = mapped_column(URLType, nullable=True)
-    is_inner: Mapped[bool] = mapped_column(default=True)
-    is_delivery: Mapped[bool] = mapped_column(default=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    site_url: Mapped[str | None] = mapped_column(URLType, nullable=True)
+    is_inner: Mapped[bool] = mapped_column(
+        default=True, server_default=sql.true()
+    )
+    is_delivery: Mapped[bool] = mapped_column(
+        default=False, server_default=sql.false()
+    )
     rating: Mapped[float]
     priority: Mapped[float] = mapped_column(default=0)
-    phone: Mapped[str] = mapped_column(
+    phone: Mapped[str | None] = mapped_column(
         PhoneNumberType(region="RU"), nullable=True
     )
 
@@ -28,15 +32,15 @@ class Restaurant(RegionMixin, Base):
         cascade="all, delete-orphan"
     )
 
-    cuisine_id: Mapped[int] = mapped_column(
+    cuisine_id: Mapped[int | None] = mapped_column(
         ForeignKey('restaurant_cuisines.id'), nullable=True
     )
     cuisine: Mapped[RestaurantCuisine] = relationship(foreign_keys=cuisine_id)
 
-    vk: Mapped[str] = mapped_column(URLType, nullable=True)
-    instagram: Mapped[str] = mapped_column(URLType, nullable=True)
-    whatsapp: Mapped[str] = mapped_column(URLType, nullable=True)
-    telegram: Mapped[str] = mapped_column(URLType, nullable=True)
+    vk: Mapped[str | None] = mapped_column(URLType, nullable=True)
+    instagram: Mapped[str | None] = mapped_column(URLType, nullable=True)
+    whatsapp: Mapped[str | None] = mapped_column(URLType, nullable=True)
+    telegram: Mapped[str | None] = mapped_column(URLType, nullable=True)
 
     def to_list_dto(self) -> dto.ListRestaurant:
         return dto.ListRestaurant(

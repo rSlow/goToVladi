@@ -12,10 +12,10 @@ class Hotel(Base):
     __tablename__ = "hotels"
 
     name: Mapped[str]
-    site_url: Mapped[str] = mapped_column(URLType, nullable=True)
-    description: Mapped[str] = mapped_column(Text, nullable=True)
+    site_url: Mapped[str | None] = mapped_column(URLType, nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    district_id: Mapped[int] = mapped_column(
+    district_id: Mapped[int | None] = mapped_column(
         ForeignKey("hotel_districts.id", ondelete="SET NULL"),
         nullable=True
     )
@@ -27,7 +27,7 @@ class Hotel(Base):
         cascade="all, delete-orphan"
     )
     min_price: Mapped[int]
-    promo_code: Mapped[str] = mapped_column(nullable=True)
+    promo_code: Mapped[str | None]
 
     def to_list_dto(self) -> dto.ListHotel:
         return dto.ListHotel(

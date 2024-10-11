@@ -6,35 +6,49 @@ from dishka.integrations.faststream import \
 from faststream import FastStream
 from faststream.rabbit import RabbitBroker
 
-from goToVladi.core.config import setup_logging
-from goToVladi.core.config.parser.config_file_reader import read_config_yaml
+from goToVladi.bot.config.models import BotAppConfig
+from goToVladi.bot.config.parser.main import load_config
+from goToVladi.bot.di import BotProvider
+from goToVladi.core.config import setup_logging, BaseConfig
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.config.parser.retort import get_base_retort
 from goToVladi.core.di import get_common_providers
 from goToVladi.mq import tasks
 from goToVladi.mq.config.models.main import MQAppConfig
-from goToVladi.mq.config.parser.main import load_config
+from goToVladi.mq.config.parser.main import load_config as load_mq_config
+from goToVladi.mq.di.context import FastStreamInjectContext
+from goToVladi.mq.utils import middlewares
 
 
 def main():
     paths = get_paths()
     setup_logging(paths)
 
-    cfg_dict = read_config_yaml(paths)
     retort = get_base_retort()
-    mq_config = load_config(cfg_dict, paths, retort)
+    mq_config = load_mq_config(paths, retort)
+    bot_config = load_config(paths, retort)
 
-    rabbit_broker = RabbitBroker(url=mq_config.mq.uri)
+    rabbit_broker = RabbitBroker(
+        url=mq_config.mq.uri,
+        max_consumers=30
+    )
     mq_app = FastStream(rabbit_broker)
 
     di_container = make_async_container(
         *get_common_providers(),
+        BotProvider(),
         FastStreamProvider(),
-        context={MQAppConfig: mq_config}
+        context={
+            BaseConfig: mq_config.as_base(),
+            MQAppConfig: mq_config,
+            BotAppConfig: bot_config
+        }
     )
     setup_dishka_faststream(di_container, mq_app)
+    FastStreamInjectContext.container = di_container  # for exception handlers
 
     tasks.setup(rabbit_broker)
+    middlewares.setup(rabbit_broker)
 
     return mq_app
 

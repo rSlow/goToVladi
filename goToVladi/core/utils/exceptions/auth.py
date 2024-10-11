@@ -1,12 +1,17 @@
-class AuthError(Exception):
+from .base import BaseError
+
+
+class AuthError(BaseError):
     pass
 
 
-class InvalidCredentialsError(AuthError):
-    def __init__(self):
-        super().__init__("Неверные учётные данные.")
+class AccessDeniedError(AuthError):
+    message = "Доступ запрещен."
 
 
-class UserIsNotSuperuserError(AuthError):
-    def __init__(self):
-        super().__init__("Доступ запрещен.")
+class InvalidCredentialsError(AccessDeniedError):
+    message = "Неверные учётные данные."
+
+
+class OutdatedCredentialsError(AccessDeniedError):
+    message = "Устаревшие данные авторизации. Попробуйте войти еще раз."

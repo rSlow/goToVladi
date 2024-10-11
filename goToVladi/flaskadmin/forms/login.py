@@ -12,6 +12,3 @@ class LoginForm(forms.Form):
         validators=[validators.InputRequired()],
         render_kw={"placeholder": "Введите пароль"}
     )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)

@@ -10,6 +10,7 @@ from goToVladi.core.config.parser.main import load_base_config
 
 def load_config(paths: Paths, retort: Retort) -> BotAppConfig:
     config_dct = read_config_yaml(paths)
+
     return BotAppConfig.from_base(
         base=load_base_config(config_dct, paths, retort),
         bot=load_bot_config(

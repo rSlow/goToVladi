@@ -1,10 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from goToVladi.core.data.db import models as db
-from goToVladi.core.data.db.dao.base import BaseDAO
+from goToVladi.core.data.db.dao.base import BaseDao
 
 
-class RegionDao(BaseDAO[db.Region]):
+class RegionDao(BaseDao[db.Region]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(db.Region, session)
 

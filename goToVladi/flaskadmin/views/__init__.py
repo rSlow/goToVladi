@@ -9,18 +9,15 @@ from sqlalchemy.orm import scoped_session, Session, configure_mappers
 
 from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
 from goToVladi.flaskadmin.views import media
-from goToVladi.flaskadmin.views.hotels import mount_hotel_views
-from goToVladi.flaskadmin.views.mailing import mount_mailing_view
-from goToVladi.flaskadmin.views.regions import mount_region_views
-from goToVladi.flaskadmin.views.restaurants import mount_restaurant_views
-from goToVladi.flaskadmin.views.trips import mount_trips_views
-from goToVladi.flaskadmin.views.users import mount_users_views
+from .hotels import mount_hotel_views
+from .mailing import mount_mailing_view
+from .regions import mount_region_views
+from .restaurants import mount_restaurant_views
+from .trips import mount_trips_views
+from .users import mount_users_views
 
 
-def mount_admin_views(
-        admin_app: Admin, session: scoped_session[Session],
-        config: FlaskAppConfig,
-):
+def mount_admin_views(admin_app: Admin, session: scoped_session[Session]):
     configure_mappers()
 
     mount_region_views(admin_app, session)
@@ -29,7 +26,7 @@ def mount_admin_views(
     mount_trips_views(admin_app, session)
     mount_users_views(admin_app, session)
 
-    mount_mailing_view(admin_app, session, config)
+    mount_mailing_view(admin_app)
 
 
 def mount_views(app: Flask, config: FlaskAppConfig):

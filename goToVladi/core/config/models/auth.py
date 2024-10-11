@@ -8,12 +8,13 @@ from urllib.parse import urlparse
 class SecurityConfig:
     secret_key: str
     domain: str
-    tg_bot_username: str
     token_expire: timedelta
-    samesite: Literal["lax", "strict", "none"] | None
     httponly: bool
     secure: bool
+    tg_bot_username: str
+    tg_bot_token: str
     algorythm: str = "HS256"
+    samesite: Literal["lax", "strict", "none"] | None = None
     disable_cors: bool = False
 
     @property

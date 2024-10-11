@@ -1,6 +1,7 @@
 __all__ = [
     "User", "UserWithCreds",
     "Region",
+    "LogEvent",
     "Restaurant", "RestaurantCuisine", "ListRestaurant",
     "BaseAttachment", "FileSchema",
     "RestaurantMedia",
@@ -14,6 +15,7 @@ from operator import attrgetter
 from .attachment import BaseAttachment, FileSchema
 from .hotel import Hotel, ListHotel, HotelMedia
 from .hotel import HotelDistrict
+from .log_event import LogEvent
 from .region import Region
 from .restaurant import (Restaurant, RestaurantCuisine,
                          RestaurantMedia, ListRestaurant)

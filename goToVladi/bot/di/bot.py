@@ -4,13 +4,12 @@ from typing import AsyncIterable, NewType
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats
+from aiogram.types import BotCommand
 from dishka import Provider, Scope, provide, from_context
 
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.config.models.main import BotAppConfig
 from goToVladi.bot.config.models.storage import StorageConfig
-from goToVladi.bot.views import commands
 from goToVladi.bot.views.alert import BotAlert
 
 BotCommandsList = NewType('CommandsList', list[BotCommand])
@@ -32,28 +31,12 @@ class BotProvider(Provider):
         return config.storage
 
     @provide
-    async def get_common_commands(self) -> BotCommandsList:
-        return BotCommandsList([
-            commands.START,
-            commands.HELP,
-            commands.ABOUT,
-            commands.UPDATE,
-            commands.REGION,
-        ])
-
-    @provide
-    async def get_bot(
-            self, bot_config: BotConfig, bot_commands: BotCommandsList
-    ) -> AsyncIterable[Bot]:
+    async def get_bot(self, bot_config: BotConfig) -> AsyncIterable[Bot]:
         bot = Bot(
             token=bot_config.token,
             default=DefaultBotProperties(
                 parse_mode=ParseMode.HTML, allow_sending_without_reply=True
             )
-        )
-        await bot.set_my_commands(
-            commands=bot_commands,
-            scope=BotCommandScopeAllPrivateChats()
         )
         yield bot
         await bot.session.close()

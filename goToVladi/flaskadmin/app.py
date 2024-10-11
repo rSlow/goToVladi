@@ -64,7 +64,7 @@ def main():
         # templates is used `admin_static.url()` marco
     )
 
-    mount_admin_views(admin, sqlalchemy_session, flask_config)
+    mount_admin_views(admin, sqlalchemy_session)
     mount_views(flask_app, flask_config)
 
     configure_storages(
@@ -80,4 +80,4 @@ def main():
 
 if __name__ == '__main__':
     app = main()
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8000)
