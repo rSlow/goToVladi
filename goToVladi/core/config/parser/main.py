@@ -22,7 +22,7 @@ def load_base_config(
         redis=load_redis_config(config_dct["redis"], retort),
         app=retort.load(config_dct["app"], AppConfig),
         web=retort.load(config_dct["web"], WebConfig),
-        static=load_static_config(config_dct["static"], web_config, retort),
+        media=load_static_config(config_dct["media"], web_config, retort),
         mq=load_mq_config(config_dct["mq"], retort),
         auth=load_auth_config(
             config_dct["auth"],

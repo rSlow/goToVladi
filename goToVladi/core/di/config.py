@@ -2,7 +2,7 @@ from dishka import Provider, provide, Scope, from_context
 
 from goToVladi.core.config.models import (
     Paths, BaseConfig, WebConfig, MQConfig, SecurityConfig, AppConfig,
-    StaticConfig
+    MediaConfig
 )
 
 
@@ -32,5 +32,5 @@ class BaseConfigProvider(Provider):
         return config.app
 
     @provide
-    def get_static_config(self, config: BaseConfig) -> StaticConfig:
-        return config.static
+    def get_static_config(self, config: BaseConfig) -> MediaConfig:
+        return config.media

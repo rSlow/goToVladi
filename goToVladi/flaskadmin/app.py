@@ -30,10 +30,11 @@ def main():
         template_folder=flask_config.paths.admin_path / "templates",
         static_folder=flask_config.paths.admin_path / "static",
         static_url_path=(
-                flask_config.flask.root_path + flask_config.admin.static_path
+                flask_config.flask.root_path + flask_config.static.path
         )
     )
     flask_app.config["SECRET_KEY"] = flask_config.flask.secret_key
+    flask_app.config["DEBUG"] = flask_config.flask.debug
 
     di_container = make_container(
         *get_common_sync_providers(),
@@ -59,7 +60,7 @@ def main():
         ),
         base_template="self_admin/base.html",
         template_mode=flask_config.admin.template_mode,
-        static_url_path=flask_config.admin.static_path + "-admin"
+        static_url_path=flask_config.static.path + "-admin"
         # "-admin" prefix for not matching as base static, cause in admin
         # templates is used `admin_static.url()` marco
     )
@@ -73,11 +74,15 @@ def main():
     )
     auth.setup(flask_app)
     i18n.setup(flask_app)
-    scss.setup(flask_app, flask_config)
+
+    if flask_config.flask.debug:
+        scss.setup(flask_app, flask_config)
+    else:
+        scss.compile_files(flask_config)
 
     return flask_app
 
 
 if __name__ == '__main__':
     app = main()
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8000, debug=True)

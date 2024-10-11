@@ -2,12 +2,12 @@ from dataclasses import dataclass
 from enum import Enum
 
 
-class StaticType(Enum):
+class MediaLoadType(Enum):
     url = "url"
     path = "path"
 
 
 @dataclass
-class StaticConfig:
-    type_: StaticType
+class MediaConfig:
+    type_: MediaLoadType
     base_url: str | None = None

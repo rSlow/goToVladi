@@ -5,3 +5,4 @@ from dataclasses import dataclass
 class FlaskConfig:
     secret_key: str
     root_path: str = "/admin"
+    debug: bool = False

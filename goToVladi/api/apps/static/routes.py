@@ -11,6 +11,8 @@ from libcloud.storage.drivers.local import LocalStorageDriver
 from libcloud.storage.types import ObjectDoesNotExistError
 from sqlalchemy_file.storage import StorageManager
 
+from goToVladi.api import ApiAppConfig
+
 
 async def serve_files(
         storage: Annotated[str, Path()],
@@ -41,8 +43,8 @@ async def serve_files(
         return JSONResponse({"detail": "Not found"}, status_code=404)
 
 
-def setup():
-    router = APIRouter(prefix="/static")
+def setup(config: ApiAppConfig):
+    router = APIRouter(prefix=config.media.base_url)
 
     router.add_api_route(
         "/{storage}/{file_id}", serve_files,

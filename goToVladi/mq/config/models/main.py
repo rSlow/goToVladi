@@ -9,5 +9,5 @@ class MQAppConfig(BaseConfig):
     def from_base(cls, base: BaseConfig):
         return MQAppConfig(
             app=base.app, paths=base.paths, db=base.db, redis=base.redis,
-            web=base.web, static=base.static, mq=base.mq, auth=base.auth
+            web=base.web, media=base.media, mq=base.mq, auth=base.auth
         )

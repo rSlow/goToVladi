@@ -6,7 +6,7 @@ __all__ = [
     "MQConfig",
     "Paths",
     "RedisConfig",
-    "StaticConfig",
+    "MediaConfig",
     "WebConfig",
 ]
 
@@ -17,5 +17,5 @@ from .db import DBConfig
 from .mq import MQConfig
 from .paths import Paths
 from .redis import RedisConfig
-from .static import StaticConfig
+from .static import MediaConfig
 from .web import WebConfig

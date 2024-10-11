@@ -10,7 +10,7 @@ from .db import DBConfig
 from .mq import MQConfig
 from .paths import Paths
 from .redis import RedisConfig
-from .static import StaticConfig
+from .static import MediaConfig
 from .web import WebConfig
 
 
@@ -22,7 +22,7 @@ class BaseConfig:
     redis: RedisConfig
     mq: MQConfig
     web: WebConfig
-    static: StaticConfig
+    media: MediaConfig
     auth: SecurityConfig
 
     @property
@@ -45,5 +45,5 @@ class BaseConfig:
     def as_base(self):
         return BaseConfig(
             app=self.app, paths=self.paths, db=self.db, redis=self.redis,
-            mq=self.mq, web=self.web, static=self.static, auth=self.auth,
+            mq=self.mq, web=self.web, media=self.media, auth=self.auth,
         )

@@ -20,8 +20,8 @@ class SassMiddleware(BaseSassMiddleware):
         self.output_style = output_style
 
     def __call__(self, environ, start_response):
-        path = environ.get('PATH_INFO', '/')
-        if path.endswith('.css'):
+        path = environ.get("PATH_INFO", '/')
+        if path.endswith(".css"):
             for prefix, package_dir, manifest in self.paths:
                 if not path.startswith(prefix):
                     continue

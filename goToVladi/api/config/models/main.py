@@ -14,6 +14,6 @@ class ApiAppConfig(BaseConfig):
     def from_base(cls, base: BaseConfig, api: ApiConfig):
         return cls(
             paths=base.paths, db=base.db, redis=base.redis, app=base.app,
-            web=base.web, static=base.static, mq=base.mq,
+            web=base.web, media=base.media, mq=base.mq,
             api=api, auth=base.auth,
         )
