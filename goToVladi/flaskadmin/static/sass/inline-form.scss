@@ -1,9 +1,6 @@
 @import "mixins/buttons";
 
-.form-group:has(.inline-field):not(:has(.inline-field.card)) {
-  // скрытие label инлайн формы при отсутствии инлайн элементов
-  display: none;
-}
+
 
 .form-group > .inline-field { // управляющий контейнер вместе с кнопкой "Добавить inline element"
   & > a[id$="-button"] { // кнопка "Добавить inline element"
@@ -11,7 +8,7 @@
   }
 
   & > .inline-field-list { // все inline карточки
-    display: flex;
+    display: flex !important;
     gap: 10px;
     flex-wrap: wrap;
 
@@ -19,7 +16,6 @@
       margin-bottom: 0 !important;
       min-width: 300px;
       max-width: 500px;
-      //flex-basis: auto; /* default value */
       flex: 1 1 auto;
       position: relative;
 

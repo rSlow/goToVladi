@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
@@ -6,7 +6,7 @@ from goToVladi.core.data.db import dto
 from goToVladi.core.data.db import models as db
 
 
-def upsert_user(user: dto.User, session: Session) -> dto.User:
+def upsert(user: dto.User, session: Session) -> dto.User:
     kwargs = {
         "tg_id": user.tg_id,
         "first_name": user.first_name,
@@ -30,3 +30,12 @@ def upsert_user(user: dto.User, session: Session) -> dto.User:
         .where(db.User.tg_id == user.tg_id)
     ).one()
     return saved_user
+
+
+def set_admin_rights(session: Session, ids: list[int], is_superuser: bool):
+    session.execute(
+        update(db.User)
+        .where(db.User.id.in_(ids))
+        .values(is_superuser=is_superuser)
+    )
+    session.commit()

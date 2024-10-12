@@ -1,4 +1,5 @@
 @import "mixins/buttons";
+@import "mixins/media";
 
 .submit-row { // страница редактирования, нижняя строка с кнопками
   display: flex;
@@ -11,6 +12,56 @@
   & > * {
     display: block;
   }
+}
+
+form.admin-form > fieldset {
+  & > hr {
+    display: none;
+  }
+
+  & > .form-group:not(:last-child) {
+    display: flex;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    padding-bottom: 1rem;
+
+    @include media_screen_width-992px {
+      display: block;
+    }
+
+    & > label.control-label {
+      width: 200px;
+    }
+
+    & > .form-control {
+      width: auto;
+      min-width: 500px;
+      @include media_screen_width-992px {
+        width: 100%;
+        min-width: auto;
+      }
+    }
+
+    & > textarea.form-control {
+      flex: 1 1 auto;
+      max-width: 1000px;
+    }
+
+    &:has(.inline-field) {
+      display: block;
+
+      & > label {
+        width: 100%;
+        background: rgba(52, 58, 64, 0.59);
+        padding: 5px 5px 5px 15px;
+        color: white;
+      }
+
+      &:not(:has(.inline-field.card)) { // скрытие инлайн формы при отсутствии инлайн элементов
+        display: none;
+      }
+    }
+  }
+
 }
 
 .form-group > input[type="checkbox"] { // checkbox
@@ -50,5 +101,5 @@
 }
 
 .form-group > .select2-container.form-control { // select поля формы
-  width: 100% !important;
+  //width: 100% !important;
 }

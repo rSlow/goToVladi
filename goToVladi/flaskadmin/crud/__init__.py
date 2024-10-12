@@ -1,5 +1,5 @@
 __all__ = [
-    "upsert_user"
+    "user"
 ]
 
-from .user import upsert_user
+from . import user

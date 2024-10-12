@@ -12,3 +12,4 @@ class TemplateMode(str, Enum):
 class FlaskAdminConfig:
     media_url: str
     template_mode: TemplateMode = TemplateMode.bootstrap4
+    fluid: bool = True

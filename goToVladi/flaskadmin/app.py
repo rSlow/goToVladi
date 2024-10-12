@@ -35,6 +35,7 @@ def main():
     )
     flask_app.config["SECRET_KEY"] = flask_config.flask.secret_key
     flask_app.config["DEBUG"] = flask_config.flask.debug
+    flask_app.config["FLASK_ADMIN_FLUID_LAYOUT"] = flask_config.admin.fluid
 
     di_container = make_container(
         *get_common_sync_providers(),

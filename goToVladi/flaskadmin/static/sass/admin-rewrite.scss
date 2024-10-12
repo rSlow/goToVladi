@@ -1,3 +1,15 @@
-ul.nav > li.nav-item {
+@import "mixins/media";
+
+ul.nav > li.nav-item { // color model nav action tabs (fix)
   color: #004bad;
+}
+
+div.container > .admin-form, // fix for container-fluid
+div.container-fluid > .admin-form {
+  margin-top: 35px;
+  padding: 0 30px;
+
+  @include media_screen_width-992px {
+    padding: 0 15px;
+  }
 }

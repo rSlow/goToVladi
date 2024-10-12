@@ -6,10 +6,10 @@ from flask import flash
 from flask_admin import Admin
 from flask_admin.actions import action
 from flask_login import current_user
-from sqlalchemy import update
 from sqlalchemy.orm import scoped_session, Session
 
 from goToVladi.core.data.db import models as db
+from goToVladi.flaskadmin import crud
 from goToVladi.flaskadmin.utils.secure_view import SecureModelView
 
 
@@ -28,13 +28,13 @@ class UserView(SecureModelView):
     column_list = ["tg_id", "username", "is_superuser"]
     column_filters = column_list
     form_excluded_columns = [
-        "hashed_password", "is_bot",
+        "hashed_password", "is_bot", "is_active",
         "created_at", "edited_at"
     ]
     form_widget_args = {
-        'tg_id': {
+        "tg_id": {
             'readonly': True,
-        }
+        },
     }
 
     @action(
@@ -45,7 +45,7 @@ class UserView(SecureModelView):
     )
     def set_as_admin(self, id_list: list[str]):
         id_list = [*map(int, id_list)]
-        self._set_admin_rights(id_list, True)
+        crud.user.set_admin_rights(self.session, id_list, True)
         flash(f"Обновлены права {len(id_list)} пользователям.", "info")
 
     @action(
@@ -64,22 +64,14 @@ class UserView(SecureModelView):
         if current_user_id:
             flash("Не убирайте права у себя :)", "warning")
         if id_list:
-            self._set_admin_rights(id_list, False)
+            crud.user.set_admin_rights(self.session, id_list, False)
             flash(f"Обновлены права {len(id_list)} пользователям.", "info")
-
-    def _set_admin_rights(self, ids: list[int], is_superuser: bool) -> None:
-        self.session.execute(
-            update(db.User)
-            .where(db.User.id.in_(ids))
-            .values(is_superuser=is_superuser)
-        )
-        self.session.commit()
 
 
 def mount_users_views(admin_app: Admin, session: scoped_session[Session]):
     admin_app.add_view(
         UserView(
             db.User, session,
-            name="Пользователи"
-        )
+            name="Пользователи",
+        ),
     )
