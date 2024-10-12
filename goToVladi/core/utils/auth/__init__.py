@@ -1,7 +1,7 @@
 __all__ = [
-    "SecurityService",
+    "SecurityProps",
     "TG_WIDGET_HTML"
 ]
 
-from .security import SecurityService
+from .security import SecurityProps
 from .template import TG_WIDGET_HTML

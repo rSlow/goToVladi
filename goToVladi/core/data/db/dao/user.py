@@ -64,7 +64,7 @@ class UserDao(BaseDao[db.User]):
                 where=self.model.tg_id == user.tg_id
             )
         )
-        await self.session.commit()
+        await self.commit()
         saved_user = await self.get_by_tg_id(user.tg_id)
         return saved_user
 
@@ -79,7 +79,7 @@ class UserDao(BaseDao[db.User]):
     async def set_password(self, user: dto.User, hashed_password: str):
         db_user = await self._get_by_id(user.id_)
         db_user.hashed_password = hashed_password
-        await self.session.commit()
+        await self.commit()
 
     async def set_region(self, tg_id: int, region_id: int):
         await self.session.execute(
@@ -87,7 +87,7 @@ class UserDao(BaseDao[db.User]):
             .where(self.model.tg_id == tg_id)
             .values(region_id=region_id)
         )
-        await self.session.commit()
+        await self.commit()
 
     async def get_all_active(self):
         result = await self.session.execute(
@@ -103,7 +103,7 @@ class UserDao(BaseDao[db.User]):
             .where(self.model.tg_id == tg_id)
             .values(is_active=False)
         )
-        await self.session.commit()
+        await self.commit()
 
 
 def get_user_options():

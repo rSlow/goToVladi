@@ -11,7 +11,7 @@ from .token import Token
 logger = logging.getLogger(__name__)
 
 
-class SecurityService:
+class SecurityProps:
     def __init__(self, config: SecurityConfig) -> None:
         super().__init__()
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

@@ -51,7 +51,7 @@ class RestaurantDao(BaseDao[db.Restaurant]):
 
     async def add(self, restaurant: db.Restaurant) -> dto.Restaurant:
         self.session.add(restaurant)
-        await self.session.commit()
+        await self.commit()
         await self.session.refresh(restaurant, attribute_names=["id"])
         return await self.get(restaurant.id)
 
@@ -60,7 +60,7 @@ class RestaurantDao(BaseDao[db.Restaurant]):
             db.RestaurantMedia(restaurant_id=restaurant_id, content=media)
             for media in medias
         ])
-        await self.session.commit()
+        await self.commit()
         return True
 
     async def delete(self, id_: int) -> None:
@@ -68,7 +68,7 @@ class RestaurantDao(BaseDao[db.Restaurant]):
             delete(db.Restaurant)
             .where(db.Restaurant.id == id_)
         )
-        await self.session.commit()
+        await self.commit()
 
 
 def get_restaurant_list_options():

@@ -8,7 +8,7 @@ from starlette import status
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
-from goToVladi.core.utils.auth.security import SecurityService
+from goToVladi.core.utils.auth.security import SecurityProps
 from goToVladi.core.utils.auth.token import Token
 from goToVladi.core.utils.exceptions.user import NoUsernameFound
 
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class AuthService:
-    def __init__(self, security: SecurityService) -> None:
+    def __init__(self, security: SecurityProps) -> None:
         self.security = security
 
     async def authenticate_user(

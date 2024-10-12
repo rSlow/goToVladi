@@ -39,7 +39,7 @@ class HotelDao(BaseDao[db.Hotel]):
 
     async def add(self, hotel: db.Hotel) -> dto.Hotel:
         self.session.add(hotel)
-        await self.session.commit()
+        await self.commit()
         await self.session.refresh(hotel, attribute_names=["id"])
         return await self.get(hotel.id)
 
@@ -48,7 +48,7 @@ class HotelDao(BaseDao[db.Hotel]):
             db.HotelMedia(hotel_id=hotel_id, content=media)
             for media in medias
         ])
-        await self.session.commit()
+        await self.commit()
         return True
 
     async def delete(self, id_: int) -> None:
@@ -56,7 +56,7 @@ class HotelDao(BaseDao[db.Hotel]):
             delete(db.Hotel)
             .where(db.Hotel.id == id_)
         )
-        await self.session.commit()
+        await self.commit()
 
 
 def get_hotel_options():

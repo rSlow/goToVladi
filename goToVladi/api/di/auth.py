@@ -6,16 +6,14 @@ from goToVladi.api.utils.auth import AuthService
 from goToVladi.api.utils.auth.cookie import OAuth2PasswordBearerWithCookie
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
-from goToVladi.core.utils.auth import SecurityService
 
 
 class AuthProvider(Provider):
     scope = Scope.APP
+
     request = from_context(provides=Request, scope=Scope.REQUEST)
 
-    @provide
-    def get_auth_service(self, security: SecurityService) -> AuthService:
-        return AuthService(security)
+    auth_service = provide(AuthService)
 
     @provide
     def get_cookie_auth(self) -> OAuth2PasswordBearerWithCookie:

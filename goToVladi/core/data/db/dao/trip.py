@@ -30,7 +30,7 @@ class TripDao(BaseDao[db.Trip]):
 
     async def add(self, trip: db.Trip) -> dto.Trip:
         self.session.add(trip)
-        await self.session.commit()
+        await self.commit()
         await self.session.refresh(trip, attribute_names=["id"])
         return await self.get(trip.id)
 
@@ -39,7 +39,7 @@ class TripDao(BaseDao[db.Trip]):
             db.TripMedia(trip_id=trip_id, content=media)
             for media in medias
         ])
-        await self.session.commit()
+        await self.commit()
         return True
 
     async def delete(self, id_: int) -> None:
@@ -47,7 +47,7 @@ class TripDao(BaseDao[db.Trip]):
             delete(self.model)
             .where(self.model.id == id_)
         )
-        await self.session.commit()
+        await self.commit()
 
 
 def get_trip_options():

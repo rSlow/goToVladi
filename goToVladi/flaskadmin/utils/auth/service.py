@@ -3,12 +3,12 @@ from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.orm import Session
 
 from goToVladi.core.data.db import models as db
-from goToVladi.core.utils.auth import SecurityService
+from goToVladi.core.utils.auth import SecurityProps
 from goToVladi.core.utils import exceptions as exc
 
 
 class AuthService:
-    def __init__(self, security: SecurityService):
+    def __init__(self, security: SecurityProps):
         self.security = security
 
     def authenticate_user(
