@@ -4,8 +4,8 @@ from aiogram_dialog.widgets.kbd import Select, ScrollingGroup
 from aiogram_dialog.widgets.text import Format
 from aiogram_dialog.window import Window
 
-from goToVladi.bot.apps.trips.states import TripSG
-from goToVladi.bot.utils import buttons
+from goToVladi.bot.states.trip import TripSG
+from goToVladi.bot.views import buttons
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
 

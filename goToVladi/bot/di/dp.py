@@ -9,9 +9,10 @@ from dishka import Provider, Scope, provide, AsyncContainer
 from dishka.integrations.aiogram import setup_dishka as setup_aiogram_dishka
 from redis.asyncio import Redis
 
-from goToVladi.bot.apps import setup_handlers
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.config.models.storage import StorageConfig, StorageType
+from goToVladi.bot.dialogs import setup_dialogs
+from goToVladi.bot.handlers import setup_handlers
 from goToVladi.bot.middlewares import setup_middlewares
 from goToVladi.bot.utils.router import print_router_tree
 from goToVladi.core.factory.redis import create_redis
@@ -32,7 +33,8 @@ class DpProvider(Provider):
     ) -> Dispatcher:
         dp = Dispatcher(storage=storage, events_isolation=event_isolation)
         setup_aiogram_dishka(container=dishka, router=dp)
-        bg_manager_factory = setup_handlers(dp, bot_config)
+        setup_handlers(dp, bot_config)
+        bg_manager_factory = setup_dialogs(dp)
         setup_middlewares(dp=dp, bg_manager_factory=bg_manager_factory)
 
         logger.info(

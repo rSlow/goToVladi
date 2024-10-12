@@ -12,7 +12,7 @@ from .trip import trips_dialog
 logger = logging.getLogger(__name__)
 
 
-def setup(dp: Dispatcher):
+def setup_dialogs(dp: Dispatcher):
     dialog_router = Router(name=__name__)
 
     dialog_router.include_router(main_menu)
@@ -25,6 +25,6 @@ def setup(dp: Dispatcher):
     dp.include_router(dialog_router)
 
     bg_manager_factory = setup_aiogram_dialogs(dp)
-    logger.debug("handlers configured successfully")
+    logger.debug("dialogs configured successfully")
 
     return bg_manager_factory

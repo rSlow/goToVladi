@@ -3,9 +3,9 @@ from aiogram_dialog import Dialog, Window, DialogManager, ShowMode
 from aiogram_dialog.widgets.kbd import SwitchTo, Select
 from aiogram_dialog.widgets.text import Format, Case, Const
 
-from goToVladi.bot.apps.base.states import RegionSG
 from goToVladi.bot.middlewares.config import MiddlewareData
-from goToVladi.bot.utils import buttons
+from goToVladi.bot.states.region import RegionSG
+from goToVladi.bot.views import buttons
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
 

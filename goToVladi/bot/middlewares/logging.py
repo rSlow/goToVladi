@@ -6,8 +6,8 @@ from aiogram import types as t
 
 from goToVladi.bot.middlewares.config import MiddlewareData
 from goToVladi.bot.utils import events as get_event
+from goToVladi.bot.utils.exceptions import UnknownEventTypeError
 from goToVladi.core.data.db import dto
-from goToVladi.core.utils.exceptions import UnknownEventTypeError
 
 logger = logging.getLogger(__name__)
 

@@ -3,8 +3,8 @@ from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.kbd import Group, Select, ScrollingGroup
 from aiogram_dialog.widgets.text import Const, Format
 
-from goToVladi.bot.apps.hotels.states import HotelSG
-from goToVladi.bot.utils import buttons
+from goToVladi.bot.states.hotel import HotelSG
+from goToVladi.bot.views import buttons
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
 

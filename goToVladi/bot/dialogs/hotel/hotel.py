@@ -3,20 +3,21 @@ from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.kbd import Group, Url
 from aiogram_dialog.widgets.text import Const, Format
 
-from goToVladi.bot.apps.hotels.states import HotelSG
-from goToVladi.bot.utils import buttons
-from goToVladi.bot.views.media_group import send_additional_media_group
+from goToVladi.bot.states.hotel import HotelSG
+from goToVladi.bot.views import buttons
+from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.core.data.db.dao import DaoHolder
 
 
-async def hotel_getter(dao: DaoHolder, dialog_manager: DialogManager, **__):
+async def hotel_getter(
+        dao: DaoHolder, dialog_manager: DialogManager,
+        add_message_viewer: AdditionalMessageViewer, **__
+):
     hotel_id = dialog_manager.dialog_data["hotel_id"]
     hotel = await dao.hotel.get(hotel_id)
 
     if hotel.medias:
-        await send_additional_media_group(
-            medias=hotel.medias, manager=dialog_manager
-        )
+        await add_message_viewer.send(hotel.medias)
 
     return {"hotel": hotel}
 

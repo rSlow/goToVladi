@@ -6,7 +6,8 @@ from dishka import FromDishka
 from dishka.integrations.aiogram import inject
 from jinja2 import Environment
 
-from goToVladi.bot.apps.base.states import MainMenuSG, RegionSG
+from goToVladi.bot.states.region import RegionSG
+from goToVladi.bot.states.start import MainMenuSG
 from goToVladi.bot.views import commands
 from goToVladi.bot.views.jinja import render_template
 

@@ -2,7 +2,7 @@ from aiogram_dialog import StartMode
 from aiogram_dialog.widgets.kbd import Start, Cancel, Back, Next
 from aiogram_dialog.widgets.text import Const
 
-from goToVladi.bot.apps.base.states import MainMenuSG
+from goToVladi.bot.states.start import MainMenuSG
 
 __all__ = [
     "MAIN_MENU",

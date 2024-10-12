@@ -5,8 +5,8 @@ from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.kbd import Select, ScrollingGroup, Group
 from aiogram_dialog.widgets.text import Const, Format
 
-from goToVladi.bot.apps.restaurants.states import RestaurantSG
-from goToVladi.bot.utils import buttons
+from goToVladi.bot.states.restaurant import RestaurantSG
+from goToVladi.bot.views import buttons
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
 

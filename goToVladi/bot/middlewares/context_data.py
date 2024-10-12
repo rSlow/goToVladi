@@ -7,6 +7,7 @@ from aiogram_dialog.api.entities import DialogUpdate
 
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.middlewares.config import MiddlewareData
+from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.core.config import BaseConfig
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
@@ -32,6 +33,9 @@ class ContextDataMiddleware(BaseMiddleware):
         data["scheduler"] = await dishka.get(Scheduler)
         data["dao"] = dao_holder
         data["bg_manager_factory"] = self.bg_manager_factory
+        data["add_message_viewer"] = AdditionalMessageViewer(
+            data["dialog_manager"]
+        )
 
         user_tg = data.get("event_from_user", None)
         if user_tg is None:

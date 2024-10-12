@@ -6,33 +6,28 @@ from aiogram_dialog.widgets.common import ManagedScroll as MScroll
 from aiogram_dialog.widgets.kbd import Group, Url
 from aiogram_dialog.widgets.text import Const, Format
 
-from goToVladi.bot.apps.restaurants.states import RestaurantSG
-from goToVladi.bot.utils import buttons
+from goToVladi.bot.states.restaurant import RestaurantSG
 from goToVladi.bot.utils.scroll import normalize_scroll
-from goToVladi.bot.views.media_group import send_additional_media_group
+from goToVladi.bot.views import buttons
+from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.bot.views.types import PaginationRow
 from goToVladi.bot.views.types.scrolls import ScrollingSplitText
 from goToVladi.bot.views.types.scrolls.split_text import PageTable
-from goToVladi.core.config import BaseConfig
 from goToVladi.core.data.db.dao import DaoHolder
 
-PHOTOS_SCROLL = "photos_scroll"
 DESCRIPTION_SCROLL = "description_scroll"
 
 logger = logging.getLogger(__name__)
 
 
 async def get_restaurant(
-        dao: DaoHolder, base_config: BaseConfig,
-        dialog_manager: DialogManager, **__
-):
+        dao: DaoHolder, dialog_manager: DialogManager,
+        add_message_viewer: AdditionalMessageViewer, **__):
     restaurant_id = dialog_manager.dialog_data["restaurant_id"]
     restaurant = await dao.restaurant.get(restaurant_id)
 
     if restaurant.medias:
-        await send_additional_media_group(
-            medias=restaurant.medias, manager=dialog_manager
-        )
+        await add_message_viewer.send(restaurant.medias)
 
     if restaurant.description:
         description_scroll: MScroll = dialog_manager.find(DESCRIPTION_SCROLL)

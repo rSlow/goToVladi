@@ -11,6 +11,7 @@ from aiogram_dialog.context.storage import StorageProxy
 from dishka import AsyncContainer
 
 from goToVladi.bot.config.models.bot import BotConfig
+from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.core.config import BaseConfig
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
@@ -51,3 +52,4 @@ class MiddlewareData(DialogMiddlewareData, total=False):
     region: dto.Region | None
 
     bg_manager_factory: BgManagerFactory
+    add_message_viewer: AdditionalMessageViewer

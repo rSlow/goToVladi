@@ -1,12 +1,12 @@
 from aiogram.fsm.state import StatesGroup, State
 
 
-class SGSingleFactory:
-    def __init__(self, group_name: str, state_name: str | None = None):
-        if state_name is None:
-            state_name = group_name
-        _states_group: StatesGroup = type(
-            group_name, (StatesGroup,), {state_name: State()}
+class FSMSingleFactory:
+    def __init__(self, group_name: str, state_name: str):
+        _states_group: StatesGroup = type(  # type:ignore
+            group_name,
+            (StatesGroup,),
+            {state_name: State()}
         )
         self.__states_group = _states_group
 
