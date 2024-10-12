@@ -10,7 +10,7 @@ from .db import DBConfig
 from .mq import MQConfig
 from .paths import Paths
 from .redis import RedisConfig
-from .static import MediaConfig
+from .media import MediaConfig
 from .web import WebConfig
 
 

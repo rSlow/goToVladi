@@ -11,3 +11,4 @@ class MediaLoadType(Enum):
 class MediaConfig:
     type_: MediaLoadType
     base_url: str | None = None
+    path: str | None = None
