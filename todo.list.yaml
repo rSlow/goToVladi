@@ -9,3 +9,7 @@
 
 админка:
   - генерация aiogram-dialog админок
+
+core:
+  - тесты
+  - telegraph

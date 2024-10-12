@@ -9,7 +9,8 @@ class Manifest(BaseManifest):
             self, package_dir, filename,
             source_map=False, output_style="nested"
     ):
-        """Builds one Sass/SCSS file.
+        """
+        Builds one Sass/SCSS file.
 
         :param package_dir: the path of package directory
         :type package_dir: :class:`str`, :class:`basestring`
@@ -26,11 +27,8 @@ class Manifest(BaseManifest):
         :type output_style: :class:`str`
         :returns: the filename of compiled CSS
         :rtype: :class:`str`, :class:`basestring`
-
-        .. versionadded:: 0.4.0
-           Added optional ``source_map`` parameter.
-
         """
+
         sass_filename, css_filename = self.resolve_filename(
             package_dir, filename,
         )
