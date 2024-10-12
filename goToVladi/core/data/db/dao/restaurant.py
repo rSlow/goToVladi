@@ -57,7 +57,9 @@ class RestaurantDao(BaseDao[db.Restaurant]):
 
     async def add_medias(self, restaurant_id: int, *medias: UploadFile) -> bool:
         self.session.add_all([
-            db.RestaurantMedia(restaurant_id=restaurant_id, content=media)
+            db.RestaurantMedia(
+                restaurant_id=restaurant_id, content=media  # type: ignore
+            )
             for media in medias
         ])
         await self.commit()

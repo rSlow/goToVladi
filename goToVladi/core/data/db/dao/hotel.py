@@ -45,7 +45,7 @@ class HotelDao(BaseDao[db.Hotel]):
 
     async def add_medias(self, hotel_id: int, *medias: UploadFile) -> bool:
         self.session.add_all([
-            db.HotelMedia(hotel_id=hotel_id, content=media)
+            db.HotelMedia(hotel_id=hotel_id, content=media)  # type: ignore
             for media in medias
         ])
         await self.commit()
