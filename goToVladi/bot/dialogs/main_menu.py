@@ -3,10 +3,11 @@ from aiogram_dialog import Window, Dialog
 from aiogram_dialog.widgets.kbd import Start, Group
 from aiogram_dialog.widgets.text import Const
 
-from goToVladi.bot.apps.base.states import MainMenuSG, RegionSG
-from goToVladi.bot.apps.hotels.states import HotelSG
-from goToVladi.bot.apps.restaurants.states import RestaurantSG
-from goToVladi.bot.apps.trips.states import TripSG
+from goToVladi.bot.states.hotel import HotelSG
+from goToVladi.bot.states.region import RegionSG
+from goToVladi.bot.states.restaurant import RestaurantSG
+from goToVladi.bot.states.start import MainMenuSG
+from goToVladi.bot.states.trip import TripSG
 
 has_region = F["middleware_data"]["user"].region.is_not(None)
 

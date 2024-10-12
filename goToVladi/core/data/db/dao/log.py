@@ -30,4 +30,4 @@ class EventLogDao(BaseDao[db.LogEvent]):
                 data=event.data
             )
         )
-        await self.session.commit()
+        await self.commit()

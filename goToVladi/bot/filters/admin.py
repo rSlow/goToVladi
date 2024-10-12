@@ -4,6 +4,7 @@ from aiogram.enums import ChatType
 from goToVladi.core.data.db import dto
 
 
+# TODO check
 async def is_admin_filter(bot: Bot, chat: dto.Chat, user: dto.User) -> bool:
     if chat.type == ChatType.PRIVATE:
         return False
