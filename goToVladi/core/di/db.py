@@ -26,3 +26,10 @@ class DbProvider(Provider):
     @provide
     def get_pool(self, engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
         return create_session_maker(engine)
+
+    @provide(scope=Scope.REQUEST)
+    async def get_session(
+            self, pool: async_sessionmaker[AsyncSession]
+    ) -> AsyncIterable[AsyncSession]:
+        async with pool() as session:
+            yield session
