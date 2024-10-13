@@ -6,12 +6,13 @@ from adaptix import Retort
 from aiogram import types as tg
 
 from goToVladi.core.data.db.dto import Region
+from goToVladi.core.utils.auth.models import FlaskLoginMixin
 
 user_retort = Retort()
 
 
 @dataclass
-class User:
+class User(FlaskLoginMixin):
     id_: int | None = None
     tg_id: int | None = None
     username: str | None = None

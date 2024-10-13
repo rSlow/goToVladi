@@ -3,8 +3,8 @@ from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.orm import Session
 
 from goToVladi.core.data.db import models as db
-from goToVladi.core.utils.auth import SecurityProps
 from goToVladi.core.utils import exceptions as exc
+from goToVladi.core.utils.auth import SecurityProps
 
 
 class AuthService:
@@ -19,11 +19,12 @@ class AuthService:
             .where(db.User.username == username)
         )
         try:
-            user = result.one()
+            db_user = result.one()
+            user = db_user.to_dto().with_password(db_user.hashed_password)
         except (MultipleResultsFound, NoResultFound):
             raise exc.InvalidCredentialsError
         if not self.security.pwd_context.verify(password, user.hashed_password):
             raise exc.InvalidCredentialsError
-        if not user.is_superuser or user.id is None:
+        if not user.is_superuser or user.id_ is None:
             raise exc.AccessDeniedError
         return user

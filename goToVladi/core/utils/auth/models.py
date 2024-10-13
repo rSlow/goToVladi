@@ -5,6 +5,19 @@ from pydantic import BaseModel, Field
 from goToVladi.core.data.db import dto
 
 
+class FlaskLoginMixin:
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id_  # type:ignore
+
+
 class WebAppUser(BaseModel):
     id: int
     first_name: str

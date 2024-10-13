@@ -14,7 +14,7 @@ def setup(app: Flask):
     @login_manager.user_loader
     @inject
     def load_user(user_id, session: FromDishka[Session]):
-        return session.query(db.User).get(user_id)
+        return session.query(db.User).get(user_id).to_dto()
 
     @login_manager.unauthorized_handler
     def unauthorized():
