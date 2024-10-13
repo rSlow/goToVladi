@@ -5,6 +5,8 @@ from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.redis import RedisEventIsolation, RedisStorage, \
     DefaultKeyBuilder
+from aiogram_dialog import BgManagerFactory
+from aiogram_dialog.manager.bg_manager import BgManagerFactoryImpl
 from dishka import Provider, Scope, provide, AsyncContainer
 from dishka.integrations.aiogram import setup_dishka as setup_aiogram_dishka
 from redis.asyncio import Redis
@@ -71,3 +73,11 @@ class DpProvider(Provider):
     @provide
     def get_event_isolation(self, redis: Redis) -> BaseEventIsolation:
         return RedisEventIsolation(redis)
+
+    @provide
+    def get_bg_manager_factory(self, dp: Dispatcher) -> BgManagerFactory:
+        return BgManagerFactoryImpl(dp)
+
+
+def resolve_update_types(dp: Dispatcher) -> list[str]:
+    return dp.resolve_used_update_types(skip_events={"aiogd_update"})

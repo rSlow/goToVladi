@@ -1,14 +1,16 @@
 import asyncio
 
 from dishka import make_async_container
-from dishka.integrations.faststream import \
-    setup_dishka as setup_dishka_faststream, FastStreamProvider
+from dishka.integrations.faststream import (
+    setup_dishka as setup_dishka_faststream,
+    FastStreamProvider
+)
 from faststream import FastStream
 from faststream.rabbit import RabbitBroker
 
 from goToVladi.bot.config.models import BotAppConfig
 from goToVladi.bot.config.parser.main import load_config
-from goToVladi.bot.di import BotProvider
+from goToVladi.bot.di import get_bot_providers
 from goToVladi.core.config import setup_logging, BaseConfig
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.config.parser.retort import get_base_retort
@@ -36,7 +38,7 @@ def main():
 
     di_container = make_async_container(
         *get_common_providers(),
-        BotProvider(),
+        *get_bot_providers(),
         FastStreamProvider(),
         context={
             BaseConfig: mq_config.as_base(),

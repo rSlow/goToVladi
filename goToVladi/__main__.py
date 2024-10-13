@@ -16,6 +16,7 @@ from goToVladi.bot.config.models import BotAppConfig
 from goToVladi.bot.config.models.webhook import WebhookConfig
 from goToVladi.bot.config.parser.main import load_config as load_bot_config
 from goToVladi.bot.di import get_bot_providers
+from goToVladi.bot.di.dp import resolve_update_types
 from goToVladi.bot.utils import ui
 from goToVladi.core.config import BaseConfig
 from goToVladi.core.config.models.web import WebConfig
@@ -89,14 +90,15 @@ async def on_startup(
     ) + webhook_config.path
 
     bot = await dishka.get(Bot)
+    dp: Dispatcher = await dishka.get(Dispatcher)
     await bot.set_webhook(
         url=webhook_url,
         secret_token=webhook_config.secret,
+        allowed_updates=resolve_update_types(dp),
     )
     logger.info("as webhook url used %s", webhook_url)
 
     await ui.setup(bot)
-    await dishka.get(Dispatcher)  # initialize dispatcher
 
 
 async def on_shutdown(dishka: AsyncContainer):

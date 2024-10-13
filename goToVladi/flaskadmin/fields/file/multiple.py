@@ -40,7 +40,7 @@ class SQLAlchemyMultipleFileUploadField(MultipleFileField):
         for form_file in self.data:
             data_list.append(
                 self.relation_class(
-                    content=File(
+                    content=File(  # type:ignore
                         content_type=form_file.content_type,
                         filename=form_file.filename,
                         content=form_file.stream

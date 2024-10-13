@@ -1,3 +1,7 @@
+__all__ = [
+    "get_bot_providers",
+]
+
 from dishka import Provider
 
 from .bot import BotProvider
