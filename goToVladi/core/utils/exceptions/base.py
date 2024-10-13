@@ -11,7 +11,7 @@ class BaseError(Exception, ABC):
 
     log: bool = True
     log_message: str = "Ошибка"
-    user_note: str | None = None
+    user_note_template: str | None = None
 
     def __init__(
             self,
@@ -35,6 +35,6 @@ class BaseError(Exception, ABC):
 
     @property
     def note_for_user(self):
-        if self.user_note is not None:
-            return self.user_note.format_map(self.map_kwargs)
+        if self.user_note_template is not None:
+            return self.user_note_template.format_map(self.map_kwargs)
         return "Внимание: текст оповещения не установлен!"

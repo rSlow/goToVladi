@@ -4,6 +4,7 @@ from dishka.integrations.flask import inject
 from flask import redirect, url_for, request, flash, get_flashed_messages
 from flask_admin import AdminIndexView as BaseAdminIndexView, expose, helpers
 from flask_login import login_required, current_user
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
 from goToVladi.flaskadmin.utils import exceptions as exc
@@ -74,14 +75,15 @@ class AdminIndexView(BaseAdminIndexView):
     ):
         if user_data := dict(request.args):
             try:
-                user = UserTgAuth.model_validate(user_data)
-                check_tg_auth(user, config.auth.tg_bot_token)
-                saved_user = crud.user.upsert(user.to_dto(), session)
-                if not saved_user.is_superuser:
+                tg_user = UserTgAuth.model_validate(user_data)
+                check_tg_auth(tg_user, config.auth.tg_bot_token)
+                user = crud.user.get(tg_user.id, session)
+                if not user.is_superuser:
                     raise exc.AccessDeniedError
-                flask_login.login_user(saved_user)
+                flask_login.login_user(user)
                 return redirect(url_for(".index"))
-
+            except NoResultFound:
+                flash(exc.AccessDeniedError.message, category="form-error")
             except exc.FormError as ex:
                 flash(ex.message, category="form-error")
 

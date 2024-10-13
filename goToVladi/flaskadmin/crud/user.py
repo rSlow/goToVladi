@@ -32,6 +32,14 @@ def upsert(user: dto.User, session: Session) -> dto.User:
     return saved_user
 
 
+def get(user_id: int, session: Session) -> dto.User:
+    res = session.scalars(
+        select(db.User)
+        .where(db.User.tg_id == user_id)
+    )
+    return res.one().to_dto()
+
+
 def set_admin_rights(session: Session, ids: list[int], is_superuser: bool):
     session.execute(
         update(db.User)

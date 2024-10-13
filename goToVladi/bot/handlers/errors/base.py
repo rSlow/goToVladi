@@ -70,7 +70,7 @@ async def handle_base_error(error: ErrorEvent, log_chat_id: int, bot: Bot):
     if c := error.update.callback_query:
         await c.answer(exception.note_for_user, show_alert=True)
 
-    elif chat_id and exception.user_note is not None:
+    elif chat_id and exception.user_note_template is not None:
         try:
             await bot.send_message(
                 chat_id=chat_id,

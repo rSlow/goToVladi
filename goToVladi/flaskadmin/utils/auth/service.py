@@ -3,8 +3,8 @@ from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.orm import Session
 
 from goToVladi.core.data.db import models as db
-from goToVladi.core.utils import exceptions as exc
 from goToVladi.core.utils.auth import SecurityProps
+from goToVladi.flaskadmin.utils import exceptions as exc
 
 
 class AuthService:
