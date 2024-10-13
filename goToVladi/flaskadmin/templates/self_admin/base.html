@@ -12,13 +12,21 @@
 
 {% block page_body %}
     <div class="app-root">
-        <div class="header-width">
+        <div class="header-wide">
             <a class="navbar-brand"
                href="{{ admin_view.admin.url }}">
                 {% block header %}
                     {{ admin_view.admin.name }} - администрирование
                 {% endblock %}
             </a>
+            <div class="header-user">
+                {% if current_user.is_authenticated %}
+                    <span class="user">{{ current_user.name_mention }}</span>
+                    <a class="user-logout" href="{{ url_for("admin.logout_view") }}">
+                        Выйти
+                    </a>
+                {% endif %}
+            </div>
         </div>
         <div class="container{% if config.get('FLASK_ADMIN_FLUID_LAYOUT', False) %}-fluid{% endif %}">
             <div class="container-nav">

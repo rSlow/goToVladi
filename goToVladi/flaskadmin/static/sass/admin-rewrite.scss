@@ -12,10 +12,28 @@ div[class^="container"] > .admin-form { // fix for container-fluid
   }
 }
 
-.header-width {
-  padding: 5px 50px;
+.header-wide {
+  padding: 5px 30px;
   background: #343a40;
   color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > .header-user {
+    display: flex;
+    column-gap: 5px;
+    font-size: 1rem;
+
+    & > *:first-child {
+      padding-right: 5px;
+      border-right: 1px rgba(255, 255, 255, 0.5) solid;
+    }
+
+    & > a.user-logout {
+      text-decoration: underline;
+    }
+  }
 
   @include media_screen_max_width-1150px {
     display: none;

@@ -27,4 +27,4 @@ class AuthService:
             raise exc.InvalidCredentialsError
         if not user.is_superuser or user.id_ is None:
             raise exc.AccessDeniedError
-        return user
+        return user.without_password()
