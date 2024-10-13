@@ -1,37 +1,78 @@
 @import "../vars";
 
-@mixin media_screen_width($max-width) {
+// MAX WIDTH
+
+@mixin media_screen_max_width($max-width) {
   @media screen and (max-width: $max-width) {
     @content
   }
 }
 
-@mixin media_screen_width-1150px {
-  @include media_screen_width($width-1150px) {
+
+@mixin media_screen_max_width-1150px {
+  @include media_screen_max_width($width-1150px) {
     @content
   }
 }
 
-@mixin media_screen_width-992px {
-  @include media_screen_width($width-992px) {
+@mixin media_screen_max_width-992px {
+  @include media_screen_max_width($width-992px) {
     @content
   }
 }
 
-@mixin media_screen_width-768px {
-  @include media_screen_width($width-768px) {
+@mixin media_screen_max_width-768px {
+  @include media_screen_max_width($width-768px) {
     @content
   }
 }
 
-@mixin media_screen_width-576px {
-  @include media_screen_width($width-576px) {
+@mixin media_screen_max_width-576px {
+  @include media_screen_max_width($width-576px) {
     @content
   }
 }
 
-@mixin media_screen_width-350px {
-  @include media_screen_width($width-350px) {
+@mixin media_screen_max_width-350px {
+  @include media_screen_max_width($width-350px) {
+    @content
+  }
+}
+
+// MIN WIDTH
+
+@mixin media_screen_min_width($min-width) {
+  @media screen and (min-width: $min-width + 1px) {
+    @content
+  }
+}
+
+@mixin media_screen_min_width-1150px {
+  @include media_screen_min_width($width-1150px) {
+    @content
+  }
+}
+
+@mixin media_screen_min_width-992px {
+  @include media_screen_min_width($width-992px) {
+    @content
+  }
+}
+
+@mixin media_screen_min_width-768px {
+  @include media_screen_min_width($width-768px) {
+    @content
+  }
+}
+
+@mixin media_screen_min_width-576px {
+  @include media_screen_min_width($width-576px) {
+    @content
+  }
+}
+
+@mixin media_screen_min_width-350px {
+  @include media_screen_min_width($width-350px) {
     @content
   }
 }

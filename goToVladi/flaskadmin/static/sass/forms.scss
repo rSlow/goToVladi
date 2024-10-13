@@ -24,7 +24,7 @@ form.admin-form > fieldset {
     border-bottom: 1px solid rgba(0, 0, 0, .1);
     padding-bottom: 1rem;
 
-    @include media_screen_width-992px {
+    @include media_screen_max_width-992px {
       display: block;
     }
 
@@ -35,7 +35,7 @@ form.admin-form > fieldset {
     & > .form-control {
       width: auto;
       min-width: 500px;
-      @include media_screen_width-992px {
+      @include media_screen_max_width-992px {
         width: 100%;
         min-width: auto;
       }

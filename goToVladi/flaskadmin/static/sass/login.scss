@@ -30,7 +30,7 @@ body {
       bottom: -80px;
     }
 
-    @include media_screen_width-576px {
+    @include media_screen_max_width-576px {
       display: none;
     }
   }
@@ -50,7 +50,7 @@ body {
   box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
   padding: 50px 35px;
 
-  @include media_screen_width-576px {
+  @include media_screen_max_width-576px {
     width: 100%;
     border-radius: 0;
     padding: 40px 25px;

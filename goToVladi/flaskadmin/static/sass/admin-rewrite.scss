@@ -4,12 +4,89 @@ ul.nav > li.nav-item { // color model nav action tabs (fix)
   color: #004bad;
 }
 
-div.container > .admin-form, // fix for container-fluid
-div.container-fluid > .admin-form {
+div[class^="container"] > .admin-form { // fix for container-fluid
   margin-top: 35px;
   padding: 0 30px;
-
-  @include media_screen_width-992px {
+  @include media_screen_max_width-992px {
     padding: 0 15px;
+  }
+}
+
+.header-width {
+  padding: 5px 50px;
+  background: #343a40;
+  color: #ffffff;
+
+  @include media_screen_max_width-1150px {
+    display: none;
+  }
+}
+
+.app-root > div[class^="container"] {
+  @include media_screen_min_width-1150px {
+    display: grid;
+    grid-template-columns: 250px auto;
+    padding-left: 0;
+    & > .container-nav {
+      min-height: calc(var(--vh) * 100 - 50px);
+      height: 100%;
+      position: relative;
+      background: rgb(52, 58, 64);
+
+      & > .navbar.navbar-expand-lg {
+        margin-bottom: 0 !important;
+        align-items: start;
+        position: sticky;
+        top: 5px;
+      }
+    }
+  }
+}
+
+#admin-navbar-collapse {
+  @include media_screen_min_width-1150px {
+    display: block !important;
+    .navbar-brand {
+      display: none;
+    }
+    .navbar-nav {
+      display: flex;
+      flex-direction: column;
+      margin-right: 0 !important;
+
+      & > li {
+        &:not(:last-child) {
+          border-bottom: 1px solid rgba(255, 255, 255, .5);
+        }
+
+        &.dropdown > ul.dropdown-menu {
+          position: inherit;
+          display: block;
+          background: inherit;
+          color: rgba(255, 255, 255, .5);
+          border: none;
+          padding-top: 0;
+          margin-top: 0;
+
+          & .dropdown-item {
+            &:hover {
+              color: rgba(255, 255, 255, .75);
+              background: inherit;
+            }
+
+            &.active {
+              color: #ffffff;
+              background: inherit;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.container-main {
+  @include media_screen_min_width-1150px {
+    padding-left: 15px;
   }
 }

@@ -56,12 +56,8 @@ class UserView(SecureModelView):
     )
     def set_as_not_admin(self, id_list: list[str]):
         id_list = [*map(int, id_list)]
-        try:
-            current_user_id_index = id_list.index(current_user.id)
-            current_user_id = id_list.pop(current_user_id_index)
-        except (IndexError, ValueError):
-            current_user_id = None
-        if current_user_id:
+        if current_user.id in id_list:
+            id_list.remove(current_user.id)
             flash("Не убирайте права у себя :)", "warning")
         if id_list:
             crud.user.set_admin_rights(self.session, id_list, False)
