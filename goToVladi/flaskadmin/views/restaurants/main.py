@@ -28,6 +28,8 @@ class RestaurantView(SecureModelView):
         "whatsapp": "Whatsapp",
         "telegram": "Telegram",
         "region": "Город / регион",
+        "restaurant_cuisines": "Кухня",
+        "regions": "Город",
     }
     column_list = ["region", "name", "rating", "cuisine"]
     column_filters = column_list

@@ -48,12 +48,16 @@ form.admin-form > fieldset {
 
     &:has(.inline-field) {
       display: block;
+      position: relative;
 
       & > label {
         width: 100%;
-        background: rgba(52, 58, 64, 0.59);
+        background: rgb(100, 107, 114);
         padding: 5px 5px 5px 15px;
         color: white;
+        position: sticky;
+        top: 0;
+        z-index: 1;
       }
 
       &:not(:has(.inline-field.card)) { // скрытие инлайн формы при отсутствии инлайн элементов

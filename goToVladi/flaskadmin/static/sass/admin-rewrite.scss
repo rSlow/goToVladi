@@ -22,11 +22,11 @@ div[class^="container"] > .admin-form { // fix for container-fluid
 
   & > .header-user {
     display: flex;
-    column-gap: 5px;
+    column-gap: 15px;
     font-size: 1rem;
 
     & > *:first-child {
-      padding-right: 5px;
+      padding-right: 15px;
       border-right: 1px rgba(255, 255, 255, 0.5) solid;
     }
 
@@ -77,24 +77,34 @@ div[class^="container"] > .admin-form { // fix for container-fluid
           border-bottom: 1px solid rgba(255, 255, 255, .5);
         }
 
-        &.dropdown > ul.dropdown-menu {
-          position: inherit;
-          display: block;
-          background: inherit;
-          color: rgba(255, 255, 255, .5);
-          border: none;
-          padding-top: 0;
-          margin-top: 0;
+        &.dropdown {
+          & > a.dropdown-toggle {
+            pointer-events: none;
 
-          & .dropdown-item {
-            &:hover {
-              color: rgba(255, 255, 255, .75);
-              background: inherit;
+            &::after {
+              display: none;
             }
+          }
 
-            &.active {
-              color: #ffffff;
-              background: inherit;
+          & > ul.dropdown-menu {
+            position: inherit;
+            display: block;
+            background: inherit;
+            color: rgba(255, 255, 255, .5);
+            border: none;
+            padding-top: 0;
+            margin-top: 0;
+
+            & .dropdown-item {
+              &:hover {
+                color: rgba(255, 255, 255, .75);
+                background: inherit;
+              }
+
+              &.active {
+                color: #ffffff;
+                background: inherit;
+              }
             }
           }
         }
@@ -104,6 +114,7 @@ div[class^="container"] > .admin-form { // fix for container-fluid
 }
 
 .container-main {
+  position: relative;
   @include media_screen_min_width-1150px {
     padding-left: 15px;
   }

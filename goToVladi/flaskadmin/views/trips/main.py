@@ -15,6 +15,7 @@ class TripView(SecureModelView):
         "site_url": "Сайт",
         "medias": "Медиафайлы",
         "region": "Город / регион",
+        "regions": "Город",
     }
     column_list = ["region", "name"]
     column_filters = column_list

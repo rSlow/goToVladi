@@ -17,6 +17,7 @@ class HotelView(SecureModelView):
         "medias": "Медиафайлы",
         "min_price": "Минимальная цена",
         "promo_code": "Промокод",
+        "hotel_districts": "Район",
     }
     column_filters = ["district", "name"]
     column_list = column_filters
