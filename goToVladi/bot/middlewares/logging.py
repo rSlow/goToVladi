@@ -3,10 +3,12 @@ from typing import Callable, Any, Awaitable
 
 from aiogram import BaseMiddleware
 from aiogram import types as t
+from aiogram_dialog.api.entities import DialogUpdateEvent
 
 from goToVladi.bot.middlewares.config import MiddlewareData
 from goToVladi.bot.utils import events as get_event
-from goToVladi.bot.utils.exceptions import UnknownEventTypeError
+from goToVladi.bot.utils.exceptions import (UnknownEventTypeError,
+                                            PassEventException)
 from goToVladi.core.data.db import dto
 
 logger = logging.getLogger(__name__)
@@ -17,8 +19,9 @@ def _parse_event(event: t.TelegramObject) -> dto.LogEvent:
         return get_event.from_message(event)
     elif isinstance(event, t.CallbackQuery):
         return get_event.from_callback_query(event)
-    else:
-        raise UnknownEventTypeError(event)
+    elif isinstance(event, DialogUpdateEvent):
+        raise PassEventException(event)
+    raise UnknownEventTypeError(event)
 
 
 class EventLoggingMiddleware(BaseMiddleware):
@@ -34,9 +37,8 @@ class EventLoggingMiddleware(BaseMiddleware):
             await dao.log.write_event(event_dto)
 
         except UnknownEventTypeError as ex:
-            logger.warning(
-                "Unknown event type: %s. Skipping writing.",
-                type(ex.event)
-            )
+            logger.warning(ex)
+        except PassEventException as ex:
+            logger.debug(ex)
 
         return await handler(event, data)

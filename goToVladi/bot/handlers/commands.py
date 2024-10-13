@@ -19,7 +19,6 @@ async def cmd_start(message: types.Message, dialog_manager: DialogManager):
     await dialog_manager.start(
         state=MainMenuSG.state, mode=StartMode.RESET_STACK
     )
-    await dialog_manager.update({}, show_mode=ShowMode.DELETE_AND_SEND)
 
 
 @inject

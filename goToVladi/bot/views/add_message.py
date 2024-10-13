@@ -3,13 +3,15 @@ import logging
 
 from aiogram import Bot
 from aiogram.types import FSInputFile, Chat
-from aiogram.utils.media_group import MediaGroupBuilder
+from aiogram.utils.media_group import MediaGroupBuilder, MAX_MEDIA_GROUP_SIZE
 from aiogram_dialog import DialogManager, ShowMode
 from aiogram_dialog.api.entities import Context
 
 from goToVladi.bot.utils.exceptions import UnknownContentTypeError
+from goToVladi.bot.utils.markdown import get_update_text
 from goToVladi.bot.utils.media_matching import as_aiogram_content_type
 from goToVladi.bot.utils.message import delete_message
+from goToVladi.bot.views.alert import BotAlert
 from goToVladi.core.data.db import dto
 
 logger = logging.getLogger(__name__)
@@ -38,6 +40,10 @@ class AdditionalMessageViewer:
         return self._middleware_data["aiogd_context"]
 
     @property
+    def _alert(self) -> BotAlert:
+        return self._middleware_data["alert"]
+
+    @property
     def _message_ids(self) -> list[int]:
         return self._manager.dialog_data.get(KEY, [])
 
@@ -45,7 +51,20 @@ class AdditionalMessageViewer:
     def _message_ids(self, message_ids: list[int]):
         self._manager.dialog_data[KEY] = message_ids
 
+    async def _send_size_alert(self, medias: list[dto.BaseAttachment]):
+        error_message = (
+            f"Попытка добавить в медиагруппу {len(medias)} элементов "
+            f"класса {medias[0].__class__.__name__} "
+            f"при апдейте: {get_update_text(self._manager.event)}"
+        )
+        logger.error(error_message)
+        await self._alert(error_message)
+
     async def send(self, medias: list[dto.BaseAttachment]):
+        if len(medias) > MAX_MEDIA_GROUP_SIZE:
+            await self._send_size_alert(medias)
+            medias = medias[:MAX_MEDIA_GROUP_SIZE]
+
         media_builder = MediaGroupBuilder()
 
         for media in medias:

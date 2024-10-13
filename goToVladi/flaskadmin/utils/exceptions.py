@@ -1,11 +1,11 @@
-from .base import BaseError
+from abc import ABC
 
 
-class AuthError(BaseError):
-    pass
+class FormError(Exception, ABC):
+    message: str = "Ошибка формы."
 
 
-class AccessDeniedError(AuthError):
+class AccessDeniedError(FormError):
     message = "Доступ запрещен."
 
 

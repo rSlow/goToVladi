@@ -1,7 +1,8 @@
 __all__ = [
-    "AccessDeniedError", "OutdatedCredentialsError",
-    "InvalidCredentialsError", "AuthError",
+    "BaseError",
+    "NoUsernameFound", "MultipleUsernameFound",
+
 ]
 
-from .auth import (AuthError, InvalidCredentialsError, OutdatedCredentialsError,
-                   AccessDeniedError)
+from .base import BaseError
+from .user import NoUsernameFound, MultipleUsernameFound

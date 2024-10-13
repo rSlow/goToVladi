@@ -35,7 +35,7 @@ async def no_context(
                  f"в главное меню, и уже работаем над устранением 🛠"
         )
         await dialog_manager.start(
-            MainMenuSG.main_state, mode=StartMode.RESET_STACK,
+            MainMenuSG.state, mode=StartMode.RESET_STACK,
             show_mode=ShowMode.DELETE_AND_SEND
         )
 

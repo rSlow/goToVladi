@@ -3,11 +3,12 @@ from typing import Callable, Any, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 from aiogram_dialog import BgManagerFactory
-from aiogram_dialog.api.entities import DialogUpdate
+from aiogram_dialog.api.entities import DialogUpdateEvent
 
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.middlewares.config import MiddlewareData
 from goToVladi.bot.views.add_message import AdditionalMessageViewer
+from goToVladi.bot.views.alert import BotAlert
 from goToVladi.core.config import BaseConfig
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
@@ -31,6 +32,7 @@ class ContextDataMiddleware(BaseMiddleware):
         data["base_config"] = await dishka.get(BaseConfig)
         data["locker"] = await dishka.get(LockFactory)
         data["scheduler"] = await dishka.get(Scheduler)
+        data["alert"] = await dishka.get(BotAlert)
         data["dao"] = dao_holder
         data["bg_manager_factory"] = self.bg_manager_factory
         data["add_message_viewer"] = AdditionalMessageViewer(
@@ -41,7 +43,7 @@ class ContextDataMiddleware(BaseMiddleware):
         if user_tg is None:
             user = None
         else:
-            if isinstance(event, DialogUpdate):
+            if isinstance(event, DialogUpdateEvent):
                 user = await dao_holder.user.get_by_tg_id(user_tg.id)
             else:
                 user = await dao_holder.user.upsert_user(

@@ -6,7 +6,7 @@ from flask_admin import AdminIndexView as BaseAdminIndexView, expose, helpers
 from flask_login import login_required, current_user
 from sqlalchemy.orm import Session
 
-from goToVladi.core.utils import exceptions as exc
+from goToVladi.flaskadmin.utils import exceptions as exc
 from goToVladi.core.utils.auth.hash import check_tg_auth
 from goToVladi.core.utils.auth.models import UserTgAuth
 from goToVladi.flaskadmin import crud
@@ -40,7 +40,8 @@ class AdminIndexView(BaseAdminIndexView):
                 )
                 if user:
                     flask_login.login_user(user)
-            except exc.AuthError as ex:
+
+            except exc.FormError as ex:
                 form.form_errors.append(ex.message)
 
         form_errors = get_flashed_messages(
@@ -81,7 +82,7 @@ class AdminIndexView(BaseAdminIndexView):
                 flask_login.login_user(saved_user)
                 return redirect(url_for(".index"))
 
-            except exc.AuthError as ex:
+            except exc.FormError as ex:
                 flash(ex.message, category="form-error")
 
         return redirect(url_for(".login_view"))

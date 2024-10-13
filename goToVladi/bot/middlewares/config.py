@@ -12,6 +12,7 @@ from dishka import AsyncContainer
 
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.views.add_message import AdditionalMessageViewer
+from goToVladi.bot.views.alert import BotAlert
 from goToVladi.core.config import BaseConfig
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import DaoHolder
@@ -44,6 +45,7 @@ class MiddlewareData(DialogMiddlewareData, total=False):
     base_config: BaseConfig
     retort: Retort
     locker: LockFactory
+    alert: BotAlert
 
     scheduler: Scheduler
 
