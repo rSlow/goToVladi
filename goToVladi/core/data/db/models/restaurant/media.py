@@ -1,6 +1,7 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy_file import FileField
+from sqlalchemy_file.validators import SizeValidator
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base
@@ -16,7 +17,12 @@ class RestaurantMedia(AttachmentProtocol, Base):
     restaurant = relationship(
         "Restaurant", back_populates="medias", uselist=False
     )
-    content = mapped_column(FileField(upload_storage="restaurants"))
+    content = mapped_column(
+        FileField(
+            upload_storage="restaurants",
+            validators=[SizeValidator(max_size="50M")]
+        )
+    )
 
     def to_dto(self) -> dto.RestaurantMedia:
         return dto.RestaurantMedia(
