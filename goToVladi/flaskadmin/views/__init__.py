@@ -8,7 +8,7 @@ from flask_admin import Admin
 from sqlalchemy.orm import scoped_session, Session, configure_mappers
 
 from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
-from goToVladi.flaskadmin.views import media
+from goToVladi.flaskadmin.views import media, errors
 from .hotels import mount_hotel_views
 from .mailing import mount_mailing_view
 from .regions import mount_region_views
@@ -34,6 +34,8 @@ def mount_views(app: Flask, config: FlaskAppConfig):
         'root', __name__,
         url_prefix=config.flask.get_real_root_path(config.web.root_path)
     )
+
+    errors.setup(app)
 
     # mount blueprints to the root router
     if config.flask.debug:

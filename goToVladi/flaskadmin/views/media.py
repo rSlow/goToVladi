@@ -10,7 +10,7 @@ from sqlalchemy_file.storage import StorageManager
 from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
 
 
-async def serve_media(storage: str, file_id: str):
+def serve_media(storage: str, file_id: str):
     try:
         file = StorageManager.get_file(f"{storage}/{file_id}")
         if isinstance(file.object.driver, LocalStorageDriver):

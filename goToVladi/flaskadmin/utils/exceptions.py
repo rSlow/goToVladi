@@ -1,5 +1,11 @@
 from abc import ABC
 
+from goToVladi.core.utils.exceptions import BaseError
+
+
+class FlaskError(BaseError):
+    log_message = "Ошибка Flask: {message}"
+
 
 class FormError(Exception, ABC):
     message: str = "Ошибка формы."
