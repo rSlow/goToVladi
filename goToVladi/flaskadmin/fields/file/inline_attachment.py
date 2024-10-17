@@ -81,7 +81,7 @@ class SQLAlchemyInlineAttachmentUploadInput(SQLAlchemyFileUploadInput):
             media_prefix = root_path + config.admin.media_url + "/"
             return media_prefix + file["path"]
 
-        root_path = config.web.root_path
+        root_path = config.web.root_path or ""
         relative_url = file_field.get_relative_path(file["url"], media_path)
         return root_path + config.media.base_url + "/" + relative_url.as_posix()
 
