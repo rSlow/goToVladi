@@ -12,7 +12,7 @@ from goToVladi.flaskadmin.utils.sass.wsgi import SassMiddleware
 
 
 def setup(app: Flask, config: FlaskAppConfig):
-    static_url = config.flask.root_path + config.static.path
+    static_url = config.flask.root_path + config.static.base_url
     static_folder = config.paths.admin_path / "static"
 
     app.wsgi_app = SassMiddleware(

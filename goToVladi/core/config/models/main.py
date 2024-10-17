@@ -39,7 +39,7 @@ class BaseConfig:
 
     @property
     def upload_file_path(self) -> Path:
-        return self.paths.upload_file_path
+        return self.paths.media_path
 
     @final
     def as_base(self):

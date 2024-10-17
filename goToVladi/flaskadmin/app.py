@@ -7,7 +7,7 @@ from sqlalchemy.orm import scoped_session
 from goToVladi.core.config import setup_logging, BaseConfig
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.config.parser.retort import get_base_retort
-from goToVladi.core.data.db.utils.file_field import configure_storages
+from goToVladi.core.data.db.utils.storage import configure_storages
 from goToVladi.core.di import get_common_sync_providers
 from goToVladi.core.factory import db
 from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
@@ -23,67 +23,67 @@ def main():
     setup_logging(paths)
 
     retort = get_base_retort()
-    flask_config = load_config(paths, retort)
+    config = load_config(paths, retort)
 
     flask_app = Flask(
-        flask_config.app.name,
-        template_folder=flask_config.paths.admin_path / "templates",
-        static_folder=flask_config.paths.admin_path / "static",
-        static_url_path=(
-                flask_config.flask.root_path + flask_config.static.path
-        )
+        config.app.name,
+        template_folder=config.paths.admin_path / "templates",
+        static_folder=config.paths.admin_path / "static",
+        static_url_path=config.flask.root_path + config.static.base_url
     )
-    flask_app.config["SECRET_KEY"] = flask_config.flask.secret_key
-    flask_app.config["DEBUG"] = flask_config.flask.debug
-    flask_app.config["FLASK_ADMIN_FLUID_LAYOUT"] = flask_config.admin.fluid
+    flask_app.config.update({
+        "SECRET_KEY": config.flask.secret_key,
+        "DEBUG": config.flask.debug,
+        "FLASK_ADMIN_FLUID_LAYOUT": config.admin.fluid
+    })
 
     di_container = make_container(
         *get_common_sync_providers(),
         *get_flask_providers(),
         context={
-            BaseConfig: flask_config.as_base(),
-            FlaskAppConfig: flask_config
+            BaseConfig: config.as_base(),
+            FlaskAppConfig: config
         }
     )
     setup_dishka_flask(di_container, flask_app)
 
-    sqlalchemy_session = scoped_session(db.sync.create_pool(flask_config.db))
+    sqlalchemy_session = scoped_session(db.sync.create_pool(config.db))
 
+    root_path = config.flask.get_real_root_path(config.web.root_path)
     admin = Admin(
         flask_app,
-        url=flask_config.flask.root_path,
-        name=flask_config.app.name,
+        url=root_path,
+        name=config.app.name,
         index_view=AdminIndexView(
             name="Главная страница",
-            url=flask_config.flask.root_path,
+            url=root_path,
             template="self_admin/index.html",
-
         ),
         base_template="self_admin/base.html",
-        template_mode=flask_config.admin.template_mode,
-        static_url_path=flask_config.static.path + "-admin"
+        template_mode=config.admin.template_mode,
+        static_url_path=config.static.base_url + "-admin"
         # "-admin" prefix for not matching as base static, cause in admin
         # templates is used `admin_static.url()` marco
     )
 
     mount_admin_views(admin, sqlalchemy_session)
-    mount_views(flask_app, flask_config)
+    mount_views(flask_app, config)
 
     configure_storages(
-        upload_path=paths.upload_file_path,
-        storages=flask_config.db.file_storages
+        upload_path=paths.media_path,
+        storages=config.db.file_storages
     )
     auth.setup(flask_app)
     i18n.setup(flask_app)
 
-    if flask_config.flask.debug:
-        scss.setup(flask_app, flask_config)
+    if config.flask.debug:
+        scss.setup(flask_app, config)
     else:
-        scss.compile_files(flask_config)
+        scss.compile_files(config)
 
     return flask_app
 
 
 if __name__ == '__main__':
     app = main()
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

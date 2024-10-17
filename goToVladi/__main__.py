@@ -23,7 +23,7 @@ from goToVladi.core.config.models.web import WebConfig
 from goToVladi.core.config.parser.config_logging import setup_logging
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.config.parser.retort import get_base_retort
-from goToVladi.core.data.db.utils.file_field import configure_storages
+from goToVladi.core.data.db.utils.storage import configure_storages
 from goToVladi.core.di import get_common_providers
 from goToVladi.core.utils import di_visual
 
@@ -67,7 +67,7 @@ def main():
     api_app.add_event_handler("shutdown", shutdown_callback)
 
     configure_storages(
-        upload_path=paths.upload_file_path,
+        upload_path=paths.media_path,
         storages=bot_config.db.file_storages
     )
 
@@ -85,9 +85,11 @@ async def on_startup(
         web_config: WebConfig, api_config: ApiConfig,
         webhook_config: WebhookConfig
 ):
-    webhook_url = web_config.get_real_base_url(
-        api_config.root_path
-    ) + webhook_config.path
+    webhook_url = (
+            web_config.real_base_url +
+            api_config.root_path +
+            webhook_config.path
+    )
 
     bot = await dishka.get(Bot)
     dp: Dispatcher = await dishka.get(Dispatcher)

@@ -33,7 +33,7 @@ class Paths:
         return self.app_dir / "goToVladi"
 
     @property
-    def upload_file_path(self) -> Path:
+    def media_path(self) -> Path:
         return self.app_dir / "media"
 
     @property

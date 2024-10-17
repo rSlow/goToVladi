@@ -3,5 +3,5 @@ from dataclasses import dataclass
 
 @dataclass
 class FlaskStaticConfig:
-    path: str
-    scss_output_style: str = "nested"
+    base_url: str
+    scss_output_style: str = "compressed"

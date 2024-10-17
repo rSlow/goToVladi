@@ -35,7 +35,7 @@ def upsert(user: dto.User, session: Session) -> dto.User:
 def get(user_id: int, session: Session) -> dto.User:
     res = session.scalars(
         select(db.User)
-        .where(db.User.tg_id == user_id)
+        .where(db.User.id == user_id)
     )
     return res.one().to_dto()
 

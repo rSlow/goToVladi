@@ -5,7 +5,7 @@ from sqlalchemy_file.validators import SizeValidator
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base
-from goToVladi.core.data.db.models.base_attachment import AttachmentProtocol
+from goToVladi.core.data.db.models.mixins import AttachmentProtocol
 
 
 class HotelMedia(AttachmentProtocol, Base):

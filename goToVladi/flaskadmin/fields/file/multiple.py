@@ -3,7 +3,7 @@ from werkzeug.datastructures import FileStorage
 from wtforms.fields import MultipleFileField
 
 from goToVladi.core.data.db.dao.base import ModelType
-from goToVladi.core.data.db.models.base_attachment import AttachmentProtocol
+from goToVladi.core.data.db.models.mixins import AttachmentProtocol
 from goToVladi.flaskadmin.fields.file import SQLAlchemyFileUploadInput
 
 

@@ -30,9 +30,13 @@ def mount_admin_views(admin_app: Admin, session: scoped_session[Session]):
 
 
 def mount_views(app: Flask, config: FlaskAppConfig):
-    root_router = Blueprint('root', __name__, url_prefix=config.flask.root_path)
+    root_router = Blueprint(
+        'root', __name__,
+        url_prefix=config.flask.get_real_root_path(config.web.root_path)
+    )
 
     # mount blueprints to the root router
-    root_router.register_blueprint(media.setup(config))
+    if config.flask.debug:
+        root_router.register_blueprint(media.setup(config))
 
     app.register_blueprint(root_router)

@@ -1,11 +1,13 @@
 import os.path as op
 import typing
+from pathlib import Path
 
 from dishka import FromDishka
 from dishka.integrations.flask import inject
 from flask_admin.babel import gettext
 from flask_admin.form import FileUploadField, BaseForm
 from markupsafe import Markup
+from multidict import MultiDict
 from sqlalchemy_file import File
 from werkzeug.datastructures import FileStorage
 from wtforms import ValidationError
@@ -13,8 +15,9 @@ from wtforms.utils import unset_value
 from wtforms.widgets import html_params
 
 from goToVladi.core.config.parser.paths import get_paths
-from goToVladi.core.data.db.models.base_attachment import AttachmentProtocol
-from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
+from goToVladi.core.data.db.models.mixins import AttachmentProtocol
+from goToVladi.core.data.db.utils import file_field
+from goToVladi.flaskadmin.config.models import FlaskAppConfig
 from .main import SQLAlchemyFileUploadInput
 
 
@@ -40,38 +43,47 @@ class SQLAlchemyInlineAttachmentUploadInput(SQLAlchemyFileUploadInput):
         if data and isinstance(data, File):
             if self._is_file_image(data.file.filename):
                 return self._render_image(field, **kwargs)
-        return self._render_file(field, **kwargs)
+            return self._render_file(field, **kwargs)
 
     def _render_file(self, field: FileUploadField, **kwargs):
         template = self.verify_template(field, self.file_template)
-        args = self._get_base_args(field, **kwargs)
-        if isinstance(field.data, File):
-            url = field.data.path
-            filename = field.data.file.filename
-            media_url = self._get_media_prefix() + url
+        file = typing.cast(File, field.data)
+        filename = file.file.filename
+        media_url = self.get_media_url(
+            file=file, media_path=field.base_path  # type:ignore
+        )  # type:ignore
 
-            args["a"] = html_params(href=media_url, target="_blank")
-            args["filename"] = filename
+        args = self._get_base_args(field, **kwargs)
+        args["a"] = html_params(href=media_url, target="_blank")
+        args["filename"] = filename
 
         return Markup(template % args)
 
     def _render_image(self, field: FileUploadField, **kwargs):
         template = self.verify_template(field, self.image_template)
-        value = typing.cast(File, field.data)
-        url = value.path
-        media_url = self._get_media_prefix() + url
+        media_url = self.get_media_url(
+            file=field.data, media_path=field.base_path  # type:ignore
+        )  # type:ignore
 
         args = self._get_base_args(field, **kwargs)
         args["a"] = html_params(href=media_url, target="_blank")
-        args["url"] = url
         args["img"] = html_params(src=media_url)
 
         return Markup(template % args)
 
     @staticmethod
     @inject
-    def _get_media_prefix(config: FromDishka[FlaskAppConfig]):
-        return config.flask.root_path + config.admin.media_url + "/"
+    def get_media_url(
+            file: File, media_path: Path, config: FromDishka[FlaskAppConfig]
+    ):
+        if config.flask.debug:
+            root_path = config.flask.get_real_root_path(config.web.root_path)
+            media_prefix = root_path + config.admin.media_url + "/"
+            return media_prefix + file["path"]
+
+        root_path = config.web.root_path
+        relative_url = file_field.get_relative_path(file["url"], media_path)
+        return root_path + config.media.base_url + "/" + relative_url.as_posix()
 
     @staticmethod
     def _get_file_extension(filename):
@@ -104,7 +116,7 @@ class SQLAlchemyInlineAttachmentField(FileUploadField):
             permission=permission, allow_overwrite=allow_overwrite,
             **kwargs
         )
-        self.base_path = base_path or get_paths().upload_file_path
+        self.base_path = base_path or get_paths().media_path
         self.render_image = render_image
         self.max_size = max_size
 
@@ -134,7 +146,8 @@ class SQLAlchemyInlineAttachmentField(FileUploadField):
             )
 
     def process(
-            self, formdata, data=unset_value, extra_filters: list | None = None
+            self, formdata: MultiDict, data=unset_value,
+            extra_filters: list | None = None
     ):
         if formdata:
             marker = '_%s-delete' % self.name
