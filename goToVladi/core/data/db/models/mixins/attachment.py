@@ -2,10 +2,12 @@ import typing as t
 from abc import abstractmethod
 from pathlib import Path
 
-from sqlalchemy.orm import MappedColumn
+from sqlalchemy.orm import mapped_column, declared_attr
 from sqlalchemy_file import FileField
+from sqlalchemy_file.validators import SizeValidator
 
 from goToVladi.core.data.db import dto
+from goToVladi.core.data.db.types.file import File
 from goToVladi.core.data.db.utils import file_field
 
 AttachmentDtoType = t.TypeVar(
@@ -15,15 +17,28 @@ AttachmentDtoType = t.TypeVar(
 
 
 class AttachmentProtocol:
-    content: MappedColumn[FileField]  # abstract
+    __upload_type__ = File
+
+    __storage_name__: str
+
+    # need to set __storage_name__ field with specifying the storage
+    # __storage_name__ = "storage_name"
+
+    @declared_attr
+    def content(self):
+        return mapped_column(
+            FileField(
+                upload_storage=self.__storage_name__,
+                validators=[SizeValidator(max_size="50M")],
+                upload_type=self.__upload_type__
+            )
+        )
 
     # need to set ForeignKey and relationship attribute in subclass
     # parent_model_id: Mapped[int] = mapped_column(ForeignKey('model.id'))
     # parent_model = relationship(
     #     "Parent", back_populates="medias", uselist=False
     # )
-    # need to set content field with specifying the storage
-    # content = mapped_column(FileField(upload_storage="storage_name"))
 
     def convert_content(self) -> dto.FileSchema:
         return dto.FileSchema.from_dict(self.content)

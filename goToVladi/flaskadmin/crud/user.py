@@ -40,6 +40,14 @@ def get(user_id: int, session: Session) -> dto.User:
     return res.one().to_dto()
 
 
+def get_by_tg_id(tg_id: int, session: Session) -> dto.User:
+    res = session.scalars(
+        select(db.User)
+        .where(db.User.tg_id == tg_id)
+    )
+    return res.one().to_dto()
+
+
 def set_admin_rights(session: Session, ids: list[int], is_superuser: bool):
     session.execute(
         update(db.User)

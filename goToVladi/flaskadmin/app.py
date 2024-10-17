@@ -29,7 +29,10 @@ def main():
         config.app.name,
         template_folder=config.paths.admin_path / "templates",
         static_folder=config.paths.admin_path / "static",
-        static_url_path=config.flask.root_path + config.static.base_url
+        static_url_path=(
+                config.flask.get_real_root_path(config.web.root_path)
+                + config.static.base_url
+        )
     )
     flask_app.config.update({
         "SECRET_KEY": config.flask.secret_key,
@@ -63,7 +66,7 @@ def main():
         template_mode=config.admin.template_mode,
         static_url_path=config.static.base_url + "-admin"
         # "-admin" prefix for not matching as base static, cause in admin
-        # templates is used `admin_static.url()` marco
+        # templates is used {{ admin_static.url() }} marco
     )
 
     mount_admin_views(admin, sqlalchemy_session)

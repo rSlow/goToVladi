@@ -1,4 +1,3 @@
-from sqlalchemy_file import File
 from werkzeug.datastructures import FileStorage
 from wtforms.fields import MultipleFileField
 
@@ -40,7 +39,7 @@ class SQLAlchemyMultipleFileUploadField(MultipleFileField):
         for form_file in self.data:
             data_list.append(
                 self.relation_class(
-                    content=File(  # type:ignore
+                    content=self.relation_class.__upload_type__(  # type:ignore
                         content_type=form_file.content_type,
                         filename=form_file.filename,
                         content=form_file.stream

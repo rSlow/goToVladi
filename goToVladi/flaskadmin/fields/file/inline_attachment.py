@@ -121,7 +121,7 @@ class SQLAlchemyInlineAttachmentField(FileUploadField):
         self.max_size = max_size
 
     @staticmethod
-    def _is_file_uploaded(data: FileStorage):
+    def _is_file_valid_to_save(data: FileStorage):
         if data:
             return any((
                 isinstance(data, FileStorage) and data.filename,
@@ -130,19 +130,16 @@ class SQLAlchemyInlineAttachmentField(FileUploadField):
         return False
 
     def pre_validate(self, form: BaseForm):
-        if all((
-                self._is_file_uploaded(self.data),
-                not self.is_file_allowed(self.data.filename)
-        )):
-            raise ValidationError(gettext('Invalid file extension'))
+        if not self.is_file_allowed(self.data.filename):
+            raise ValidationError(gettext("Invalid file extension"))
 
         # Handle overwriting existing content
-        if not self._is_uploaded_file(self.data):
+        if not self._is_file_valid_to_save(self.data):
             return
 
         if not self._allow_overwrite and self._check_exists(self.data.url):
             raise ValidationError(
-                gettext('File "%s" already exists.' % self.data.filename)
+                gettext(f"File {self.data.filename} already exists.")
             )
 
     def process(
@@ -161,7 +158,7 @@ class SQLAlchemyInlineAttachmentField(FileUploadField):
             self.data = None
         elif valuelist:
             for data in valuelist:
-                if self._is_file_uploaded(data):
+                if self._is_file_valid_to_save(data):
                     self.data = data
                     break
 
@@ -173,10 +170,10 @@ class SQLAlchemyInlineAttachmentField(FileUploadField):
                 setattr(obj, name, None)
                 return
 
-        if self._is_file_uploaded(self.data):
+        if self._is_file_valid_to_save(self.data):
             setattr(
                 obj, name,
-                File(
+                obj.__upload_type__(
                     content_type=self.data.content_type,
                     filename=self.data.filename,
                     content=self.data.stream

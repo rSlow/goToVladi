@@ -77,7 +77,7 @@ class AdminIndexView(BaseAdminIndexView):
             try:
                 tg_user = UserTgAuth.model_validate(user_data)
                 check_tg_auth(tg_user, config.auth.tg_bot_token)
-                user = crud.user.get(tg_user.id, session)
+                user = crud.user.get_by_tg_id(tg_user.id, session)
                 if not user.is_superuser:
                     raise exc.AccessDeniedError
                 flask_login.login_user(user)
