@@ -1,11 +1,13 @@
 import os.path as op
 import typing
 from pathlib import Path
+from pprint import pprint
 
 from dishka import FromDishka
 from dishka.integrations.flask import inject
 from flask_admin.babel import gettext
 from flask_admin.form import FileUploadField, BaseForm
+from libcloud.storage.types import ObjectDoesNotExistError
 from markupsafe import Markup
 from multidict import MultiDict
 from sqlalchemy_file import File
@@ -40,10 +42,14 @@ class SQLAlchemyInlineAttachmentUploadInput(SQLAlchemyFileUploadInput):
 
     def __call__(self, field: FileUploadField, **kwargs):
         data = field.data
+        pprint(data)
         if data and isinstance(data, File):
-            if self._is_file_image(data.file.filename):
-                return self._render_image(field, **kwargs)
-            return self._render_file(field, **kwargs)
+            try:
+                if self._is_file_image(data.file.filename):
+                    return self._render_image(field, **kwargs)
+                return self._render_file(field, **kwargs)
+            except ObjectDoesNotExistError:
+                return self.empty_template
 
     def _render_file(self, field: FileUploadField, **kwargs):
         template = self.verify_template(field, self.file_template)
