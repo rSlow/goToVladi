@@ -2,19 +2,34 @@ from datetime import datetime
 
 import pytz
 from aiogram import types as t
+from aiogram.enums import ContentType
 from aiogram_dialog.utils import CB_SEP
 
 from goToVladi.core.data.db import dto
 
 
 def from_message(message: t.Message):
+    match message.content_type:
+        case ContentType.TEXT:
+            data = (message.text or "")[:255]
+        case ContentType.DOCUMENT:
+            data = message.document.file_id
+        case ContentType.PHOTO:
+            data = message.photo[-1].file_id
+        case ContentType.VIDEO:
+            data = message.video[-1].file_id
+        case ContentType.AUDIO:
+            data = message.audio[-1].file_id
+        case _ as content_type:
+            data = "unexpected content type: " + content_type
+
     return dto.LogEvent(
         type_="message",
         user_id=message.from_user.id,
         chat_id=message.chat.id,
         content_type=message.content_type,
         dt=message.date,
-        data=message.text
+        data=data
     )
 
 

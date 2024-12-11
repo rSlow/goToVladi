@@ -10,6 +10,7 @@ from aiogram_dialog.api.entities import Stack, Context
 from aiogram_dialog.context.storage import StorageProxy
 from dishka import AsyncContainer
 
+from goToVladi.api.config.models import ApiConfig
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.bot.views.alert import BotAlert
@@ -42,6 +43,7 @@ class DialogMiddlewareData(AiogramMiddlewareData, total=False):
 class MiddlewareData(DialogMiddlewareData, total=False):
     dishka_container: AsyncContainer
     bot_config: BotConfig
+    api_config: ApiConfig
     base_config: BaseConfig
     retort: Retort
     locker: LockFactory

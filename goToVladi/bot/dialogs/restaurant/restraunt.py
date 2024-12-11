@@ -11,6 +11,7 @@ from goToVladi.bot.utils.scroll import normalize_scroll
 from goToVladi.bot.views import buttons
 from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.bot.views.types import PaginationRow
+from goToVladi.bot.views.types.redirect_url import RedirectUrl
 from goToVladi.bot.views.types.scrolls import ScrollingSplitText
 from goToVladi.bot.views.types.scrolls.split_text import PageTable
 from goToVladi.core.data.db.dao import DaoHolder
@@ -66,7 +67,7 @@ restaurant_window = Window(
     ),
 
     Group(
-        Url(
+        RedirectUrl(
             text=Const("Сайт 🌐"),
             url=Format("{restaurant.site_url}"),
             id="site_url",

@@ -47,7 +47,7 @@ def setup(config: ApiAppConfig):
     router = APIRouter(prefix=config.media.base_url)
 
     router.add_api_route(
-        "/{storage}/{file_id}", serve_files,
+        "/{storage}/{file_id}/", serve_files,
         methods=["GET"], response_class=FileResponse
     )
 

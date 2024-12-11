@@ -66,10 +66,7 @@ def main():
     api_app.add_event_handler("startup", startup_callback)
     api_app.add_event_handler("shutdown", shutdown_callback)
 
-    configure_storages(
-        upload_path=paths.media_path,
-        storages=bot_config.db.file_storages
-    )
+    configure_storages(upload_path=paths.media_path)
 
     logger.info(
         "app prepared with dishka:\n%s",
@@ -82,8 +79,7 @@ def main():
 
 async def on_startup(
         dishka: AsyncContainer,
-        web_config: WebConfig, api_config: ApiConfig,
-        webhook_config: WebhookConfig
+        web_config: WebConfig, api_config: ApiConfig, webhook_config: WebhookConfig
 ):
     webhook_url = (
             web_config.real_base_url +
@@ -91,7 +87,7 @@ async def on_startup(
             webhook_config.path
     )
 
-    bot = await dishka.get(Bot)
+    bot: Bot = await dishka.get(Bot)
     dp: Dispatcher = await dishka.get(Dispatcher)
     await bot.set_webhook(
         url=webhook_url,
@@ -101,6 +97,7 @@ async def on_startup(
     logger.info("as webhook url used %s", webhook_url)
 
     await ui.setup(bot)
+    logger.info(f"Bot {(await bot.get_my_name()).name} is ready.")
 
 
 async def on_shutdown(dishka: AsyncContainer):

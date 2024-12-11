@@ -19,7 +19,6 @@ class DBConfig:
     name: str | None = None
     path: str | None = None
     echo: bool = False
-    file_storages: list[str] = field(default_factory=list)
 
     def _get_uri(self, connector: str | None = None):
         if self.type in ("mysql", "postgresql"):

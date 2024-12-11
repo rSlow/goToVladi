@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 
 from goToVladi.api.config.models import ApiAppConfig
-from . import auth, user, static, restaurants, hotels
+from . import auth, user, static, restaurants, hotels, redirect
 
 
 def setup_routes(app: FastAPI, config: ApiAppConfig):
     app.include_router(auth.routes.setup())
     app.include_router(user.routes.setup())
+    app.include_router(redirect.setup())
 
     app.include_router(restaurants.routes.setup())
     app.include_router(hotels.routes.setup())

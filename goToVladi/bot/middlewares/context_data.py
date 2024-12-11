@@ -5,6 +5,7 @@ from aiogram.types import TelegramObject
 from aiogram_dialog import BgManagerFactory
 from aiogram_dialog.api.entities import DialogUpdateEvent
 
+from goToVladi.api.config.models import ApiConfig
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.middlewares.config import MiddlewareData
 from goToVladi.bot.views.add_message import AdditionalMessageViewer
@@ -29,6 +30,7 @@ class ContextDataMiddleware(BaseMiddleware):
         dishka = data["dishka_container"]
         dao_holder: DaoHolder = await dishka.get(DaoHolder)
         data["bot_config"] = await dishka.get(BotConfig)
+        data["api_config"] = await dishka.get(ApiConfig)
         data["base_config"] = await dishka.get(BaseConfig)
         data["locker"] = await dishka.get(LockFactory)
         data["scheduler"] = await dishka.get(Scheduler)

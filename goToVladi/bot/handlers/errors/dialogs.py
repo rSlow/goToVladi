@@ -22,9 +22,7 @@ async def clear_unknown_intent(error: ErrorEvent, bot: Bot):
     )
 
 
-async def no_context(
-        error: ErrorEvent, bot: Bot, dialog_manager: DialogManager
-):
+async def no_context(error: ErrorEvent, bot: Bot, dialog_manager: DialogManager):
     logger.error("No dialog context found", exc_info=error.exception)
     message = error.update.message or error.update.callback_query.message
     assert message

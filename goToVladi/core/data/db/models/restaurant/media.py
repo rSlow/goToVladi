@@ -8,7 +8,6 @@ from goToVladi.core.data.db.models.mixins import AttachmentProtocol
 
 class RestaurantMedia(AttachmentProtocol, Base):
     __tablename__ = "restaurant_medias"
-    __storage_name__ = "restaurants"
 
     restaurant_id: Mapped[int] = mapped_column(
         ForeignKey('restaurants.id', ondelete="CASCADE"),

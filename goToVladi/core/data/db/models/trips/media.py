@@ -7,8 +7,7 @@ from goToVladi.core.data.db.models.mixins import AttachmentProtocol
 
 
 class TripMedia(AttachmentProtocol, Base):
-    __tablename__ = 'trip_medias'
-    __storage_name__ = "trips"
+    __tablename__ = "trip_medias"
 
     trip_id: Mapped[int] = mapped_column(
         ForeignKey("trips.id", ondelete="CASCADE")

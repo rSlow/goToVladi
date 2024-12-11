@@ -19,16 +19,10 @@ AttachmentDtoType = t.TypeVar(
 class AttachmentProtocol:
     __upload_type__ = File
 
-    __storage_name__: str
-
-    # need to set __storage_name__ field with specifying the storage
-    # __storage_name__ = "storage_name"
-
     @declared_attr
     def content(self):
         return mapped_column(
             FileField(
-                upload_storage=self.__storage_name__,
                 validators=[SizeValidator(max_size="50M")],
                 upload_type=self.__upload_type__
             )

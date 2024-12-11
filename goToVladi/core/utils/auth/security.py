@@ -5,7 +5,7 @@ import jwt
 from passlib.context import CryptContext
 
 from goToVladi.core.config.models.auth import SecurityConfig
-from goToVladi.core.utils.tz import tz_utc
+from goToVladi.core.utils.dates import tz_utc
 from .token import Token
 
 logger = logging.getLogger(__name__)

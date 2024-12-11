@@ -72,10 +72,7 @@ def main():
     mount_admin_views(admin, sqlalchemy_session)
     mount_views(flask_app, config)
 
-    configure_storages(
-        upload_path=paths.media_path,
-        storages=config.db.file_storages
-    )
+    configure_storages(upload_path=paths.media_path)
     auth.setup(flask_app)
     i18n.setup(flask_app)
 
