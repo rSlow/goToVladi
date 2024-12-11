@@ -1,3 +1,3 @@
-from goToVladi.flaskadmin.app import main
+from goToVladi.flaskadmin.__main__ import main
 
 wsgi_app = main()

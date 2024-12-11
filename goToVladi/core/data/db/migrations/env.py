@@ -1,15 +1,26 @@
 import asyncio
 import logging.config
-import alembic_postgresql_enum
 
 from alembic import context
 from sqlalchemy import create_engine
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from goToVladi.core.config.parser.config_file_reader import read_config_yaml
+from goToVladi.core.config.parser.main import load_base_config
+from goToVladi.core.config.parser.paths import get_paths
+from goToVladi.core.config.parser.retort import get_base_retort
 from goToVladi.core.data.db.models import Base
 
 config = context.config
+
+paths = get_paths()
+retort = get_base_retort()
+config_dct = read_config_yaml(paths)
+app_config = load_base_config(config_dct, paths, retort)
+sqlalchemy_url = app_config.db.async_uri
+config.set_main_option("sqlalchemy.url", sqlalchemy_url)
+logging.warning(f"INFO: sqlalchemy alembic url set `{sqlalchemy_url}`")
 
 logging.config.fileConfig(config.config_file_name)
 

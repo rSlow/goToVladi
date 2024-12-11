@@ -30,8 +30,6 @@ class SyncDbProvider(Provider):
         return db.sync.create_session_maker(engine)
 
     @provide(scope=Scope.REQUEST)
-    def get_session(
-            self, pool: sync_sessionmaker[SyncSession]
-    ) -> Iterable[SyncSession]:
+    def get_session(self, pool: sync_sessionmaker[SyncSession]) -> Iterable[SyncSession]:
         with pool() as session:
             yield session

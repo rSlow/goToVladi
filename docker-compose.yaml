@@ -44,7 +44,8 @@ services:
       - migrations
     restart: always
     entrypoint:
-      [ "poetry", "run", "gunicorn" ]
+      [ "poetry", "run", "python", "-m", "goToVladi.flaskadmin" ]
+  #        [ "poetry", "run", "gunicorn" ] # TODO fix??
 
   faststream:
     build: .
@@ -69,6 +70,10 @@ services:
       - type: "bind"
         source: "./alembic.ini"
         target: "/app/alembic.ini"
+        read_only: true
+      - type: "bind"
+        source: "./config/"
+        target: "/app/config/"
         read_only: true
     entrypoint: [ "poetry", "run", "python", "-m", "alembic", "upgrade", "heads" ]
     depends_on:
