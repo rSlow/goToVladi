@@ -162,3 +162,5 @@ cython_debug/
 /media/
 /nginx/
 /goToVladi/flaskadmin/static/css/c/
+/deploy/
+/log/
