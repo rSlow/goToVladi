@@ -33,7 +33,7 @@ def setup(app: Flask, config: FlaskAppConfig):
 def compile_files(config: FlaskAppConfig):
     static_folder = config.paths.admin_path / "static"
     compiled_css_path = static_folder / "css" / "c"
-    compiled_css_path.mkdir(exist_ok=True)
+    compiled_css_path.mkdir(exist_ok=True, parents=True)
     build_directory(
         sass_path=(static_folder / "sass").as_posix(),
         css_path=compiled_css_path.as_posix(),
