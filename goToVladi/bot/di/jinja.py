@@ -24,6 +24,4 @@ class JinjaProvider(Provider):
 
     @provide
     def get_loader(self, paths: Paths) -> BaseLoader:
-        return FileSystemLoader(
-            searchpath=paths.bot_path / "views" / "jinja" / "templates"
-        )
+        return FileSystemLoader(searchpath=paths.bot_path / "views" / "jinja" / "templates")

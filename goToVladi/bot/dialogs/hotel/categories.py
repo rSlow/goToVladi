@@ -46,10 +46,7 @@ async def hotels_getter(dao: DaoHolder, dialog_manager: DialogManager, **__):
     return {"hotels": hotels}
 
 
-async def on_hotel_click(
-        _: types.CallbackQuery, __: Select,
-        manager: DialogManager, hotel_id: str
-):
+async def on_hotel_click(_, __, manager: DialogManager, hotel_id: str):
     manager.dialog_data["hotel_id"] = int(hotel_id)
     await manager.next()
 

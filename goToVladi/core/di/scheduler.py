@@ -13,8 +13,5 @@ class SchedulerProvider(Provider):
     async def create_scheduler(
             self, dishka: AsyncContainer, redis_config: RedisConfig
     ) -> AsyncIterable[Scheduler]:
-        async with ApScheduler(
-                dishka=dishka,
-                redis_config=redis_config
-        ) as scheduler:
+        async with ApScheduler(dishka=dishka, redis_config=redis_config) as scheduler:
             yield scheduler

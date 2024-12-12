@@ -16,16 +16,13 @@ class Hotel(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     district_id: Mapped[int | None] = mapped_column(
-        ForeignKey("hotel_districts.id", ondelete="SET NULL"),
-        nullable=True
+        ForeignKey("hotel_districts.id", ondelete="SET NULL"), nullable=True
     )
     district: Mapped[HotelDistrict] = relationship(
         foreign_keys=district_id, back_populates="hotels"
     )
 
-    medias: Mapped[list[HotelMedia]] = relationship(
-        cascade="all, delete-orphan"
-    )
+    medias: Mapped[list[HotelMedia]] = relationship(cascade="all, delete-orphan")
     min_price: Mapped[int]
     promo_code: Mapped[str | None]
 
@@ -45,10 +42,7 @@ class Hotel(Base):
             district_id=self.district_id,
             site_url=self.site_url,
             description=self.description,
-            medias=[
-                _media.to_dto()
-                for _media in self.medias
-            ],
+            medias=[_media.to_dto() for _media in self.medias],
             min_price=self.min_price,
             promo_code=self.promo_code,
         )

@@ -8,9 +8,7 @@ from .logging import EventLoggingMiddleware
 
 
 def setup_middlewares(dp: Dispatcher, bg_manager_factory: BgManagerFactory):
-    _base_setup_middleware(
-        dp, ContextDataMiddleware(bg_manager_factory=bg_manager_factory)
-    )
+    _base_setup_middleware(dp, ContextDataMiddleware(bg_manager_factory=bg_manager_factory))
 
     _base_setup_middleware(dp, AdditionalMessageMiddleware())
     _base_setup_middleware(dp, EventLoggingMiddleware())

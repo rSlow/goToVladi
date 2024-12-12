@@ -37,9 +37,7 @@ class ContextDataMiddleware(BaseMiddleware):
         data["alert"] = await dishka.get(BotAlert)
         data["dao"] = dao_holder
         data["bg_manager_factory"] = self.bg_manager_factory
-        data["add_message_viewer"] = AdditionalMessageViewer(
-            data["dialog_manager"]
-        )
+        data["add_message_viewer"] = AdditionalMessageViewer(data["dialog_manager"])
 
         user_tg = data.get("event_from_user", None)
         if user_tg is None:
@@ -48,9 +46,7 @@ class ContextDataMiddleware(BaseMiddleware):
             if isinstance(event, DialogUpdateEvent):
                 user = await dao_holder.user.get_by_tg_id(user_tg.id)
             else:
-                user = await dao_holder.user.upsert_user(
-                    dto.User.from_aiogram(user_tg)
-                )
+                user = await dao_holder.user.upsert_user(dto.User.from_aiogram(user_tg))
         data["user"] = user
 
         return await handler(event, data)

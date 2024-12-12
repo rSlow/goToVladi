@@ -24,7 +24,4 @@ class JinjaTemplate(Text):
     async def _render_text(self, data: dict, manager: DialogManager) -> str:
         self._template_data.update(data)
         template = self._env.get_template(self._template_name)
-        return render_template(
-            template=template,
-            context=self._template_data,
-        )
+        return render_template(template=template, context=self._template_data)

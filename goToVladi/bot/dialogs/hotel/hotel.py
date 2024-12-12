@@ -10,8 +10,8 @@ from goToVladi.core.data.db.dao import DaoHolder
 
 
 async def hotel_getter(
-        dao: DaoHolder, dialog_manager: DialogManager,
-        add_message_viewer: AdditionalMessageViewer, **__
+        dao: DaoHolder, dialog_manager: DialogManager, add_message_viewer: AdditionalMessageViewer,
+        **__
 ):
     hotel_id = dialog_manager.dialog_data["hotel_id"]
     hotel = await dao.hotel.get(hotel_id)

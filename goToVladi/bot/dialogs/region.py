@@ -47,10 +47,7 @@ async def regions_getter(dao: DaoHolder, **__):
     return {"regions": regions}
 
 
-async def on_region_click(
-        callback: types.CallbackQuery, _: Select,
-        manager: DialogManager, region_id: str
-):
+async def on_region_click(callback: types.CallbackQuery, _, manager: DialogManager, region_id: str):
     middleware_data: MiddlewareData = manager.middleware_data
     dao = middleware_data["dao"]
     user = middleware_data["user"]
@@ -58,9 +55,7 @@ async def on_region_click(
     await dao.user.set_region(tg_id=user.tg_id, region_id=int(region_id))
 
     saver_user = await dao.user.get_by_tg_id(user.tg_id)
-    await callback.message.answer(
-        f"❗️ Установлен регион: {saver_user.region.name}"
-    )
+    await callback.message.answer(f"❗️ Установлен регион: {saver_user.region.name}")
     middleware_data["user"] = saver_user
 
     manager.show_mode = ShowMode.DELETE_AND_SEND

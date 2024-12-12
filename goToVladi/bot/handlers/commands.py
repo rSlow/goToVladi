@@ -13,12 +13,8 @@ from goToVladi.bot.views.jinja import render_template
 
 
 async def cmd_start(message: types.Message, dialog_manager: DialogManager):
-    await message.answer(
-        text="Добро пожаловать в бот GoToVladi!"
-    )
-    await dialog_manager.start(
-        state=MainMenuSG.state, mode=StartMode.RESET_STACK
-    )
+    await message.answer(text="Добро пожаловать в бот GoToVladi!")
+    await dialog_manager.start(state=MainMenuSG.state, mode=StartMode.RESET_STACK)
 
 
 @inject
@@ -32,8 +28,10 @@ async def cmd_help(
 
 
 async def cmd_about(message: types.Message, dialog_manager: DialogManager):
-    await message.answer(f"Разработчик бота - @rs1ow\n"
-                         f"Дизайнер бота - @petrunin_artem")
+    await message.answer(
+        f"Разработчик бота - @rs1ow\n"
+        f"Дизайнер бота - @petrunin_artem"
+    )
     await dialog_manager.update({}, show_mode=ShowMode.DELETE_AND_SEND)
 
 

@@ -19,9 +19,7 @@ class SyncMQProvider(Provider):
         )
 
     @provide
-    def get_connection(
-            self, credentials: PlainCredentials, config: MQConfig
-    ) -> BlockingConnection:
+    def get_connection(self, credentials: PlainCredentials, config: MQConfig) -> BlockingConnection:
         return BlockingConnection(
             ConnectionParameters(
                 host=config.host,

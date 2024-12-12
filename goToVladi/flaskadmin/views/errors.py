@@ -11,18 +11,21 @@ from werkzeug.exceptions import InternalServerError
 from goToVladi.flaskadmin.utils.exceptions import FlaskError
 
 
-@inject
-def internal_server_error(
-        e: InternalServerError, mq: FromDishka[BlockingChannel]
-):
-    msg_ex = FlaskError(message=repr(e.original_exception))
-    mq.basic_publish("logging", "log", str(msg_ex))
-    return Response(status=500)
+def create_error_handler(status: int):
+    @inject
+    def _error_route(e: InternalServerError, mq: FromDishka[BlockingChannel]):
+        msg_ex = FlaskError(message=repr(e.original_exception))
+        mq.basic_publish("logging", "log", str(msg_ex))
+        return Response(status=status)
+
+    return _error_route
 
 
 def setup(app: Flask):
     router = Blueprint("errors", __name__)
 
-    app.register_error_handler(500, internal_server_error)
+    app.register_error_handler(500, create_error_handler(500))
+    app.register_error_handler(501, create_error_handler(501))
+    app.register_error_handler(502, create_error_handler(502))
 
     return router

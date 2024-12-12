@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import pytz
 from dishka import FromDishka
 from dishka.integrations.faststream import inject
 from faststream.rabbit import RabbitRouter, RabbitExchange
@@ -15,6 +16,6 @@ log_exchange = RabbitExchange("logging")
 async def send_alert(error_text: str, alert: FromDishka[BotAlert]):
     alert_message = {
         "error": error_text,
-        "dt": datetime.utcnow().isoformat()
+        "dt": datetime.now(pytz.UTC).isoformat()
     }
     await alert(text=f"Логирование из очереди: {str(alert_message)}")

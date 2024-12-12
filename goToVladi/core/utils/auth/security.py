@@ -19,9 +19,7 @@ class SecurityProps:
         self.algorythm = config.algorythm
         self.access_token_expire = config.token_expire
 
-    def verify_password(
-            self, plain_password: str, hashed_password: str
-    ) -> bool:
+    def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         return self.pwd_context.verify(plain_password, hashed_password)
 
     def get_password_hash(self, password: str) -> str:
@@ -31,7 +29,5 @@ class SecurityProps:
         to_encode = data.copy()
         expire = datetime.now(tz=tz_utc) + self.access_token_expire
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(
-            to_encode, self.secret_key, algorithm=self.algorythm
-        )
+        encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorythm)
         return Token(value=encoded_jwt, type_="bearer")

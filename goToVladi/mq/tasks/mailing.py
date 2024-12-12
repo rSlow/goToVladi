@@ -26,10 +26,7 @@ async def prepare_mail(
 ):
     user_ids = await dao.user.get_all_active()
     for user_id in user_ids:
-        message = MailingMessage(
-            text=message_text,
-            user_id=user_id
-        )
+        message = MailingMessage(text=message_text, user_id=user_id)
         await broker.publish(message, queue="user", exchange=mail_exchange)
 
 
@@ -40,10 +37,7 @@ async def send_mail(
         bg_factory: FromDishka[BgManagerFactory], bot: FromDishka[Bot],
 ):
     user_id = data.user_id
-    await bot.send_message(
-        chat_id=user_id,
-        text=data.text,
-    )
+    await bot.send_message(chat_id=user_id, text=data.text)
     bg = bg_factory.bg(bot=bot, user_id=user_id, chat_id=user_id)
     await bg.update({}, show_mode=ShowMode.DELETE_AND_SEND)
     await message.ack()

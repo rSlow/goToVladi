@@ -10,8 +10,8 @@ from goToVladi.core.data.db.dao import DaoHolder
 
 
 async def trip_getter(
-        dialog_manager: DialogManager, dao: DaoHolder,
-        add_message_viewer: AdditionalMessageViewer, **__
+        dialog_manager: DialogManager, dao: DaoHolder, add_message_viewer: AdditionalMessageViewer,
+        **__
 ):
     trip_id = dialog_manager.dialog_data["trip_id"]
     trip = await dao.trip.get(trip_id)

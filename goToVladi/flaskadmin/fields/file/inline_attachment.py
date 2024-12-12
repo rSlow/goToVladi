@@ -139,9 +139,7 @@ class SQLAlchemyInlineAttachmentField(FileUploadField):
             return
 
         if not self._allow_overwrite and self._check_exists(self.data.url):
-            raise ValidationError(
-                gettext(f"File {self.data.filename} already exists.")
-            )
+            raise ValidationError(gettext(f"File {self.data.filename} already exists."))
 
     def process(
             self, formdata: MultiDict, data=unset_value,

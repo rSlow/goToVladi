@@ -5,10 +5,7 @@ from sassutils.builder import Manifest as BaseManifest
 
 
 class Manifest(BaseManifest):
-    def build_one(
-            self, package_dir, filename,
-            source_map=False, output_style="nested"
-    ):
+    def build_one(self, package_dir, filename, source_map=False, output_style="nested"):
         """
         Builds one Sass/SCSS file.
 
@@ -58,8 +55,6 @@ class Manifest(BaseManifest):
             f.write(css)
         if source_map:
             # Source maps are JSON, and JSON has to be UTF-8 encoded
-            with open(
-                    source_map_path, 'w', encoding='utf-8', newline='',
-            ) as f:
+            with open(source_map_path, 'w', encoding='utf-8', newline='') as f:
                 f.write(source_map)
         return css_filename

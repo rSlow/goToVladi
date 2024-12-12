@@ -16,21 +16,13 @@ class Restaurant(RegionMixin, Base):
     average_check: Mapped[int]
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     site_url: Mapped[str | None] = mapped_column(URLType, nullable=True)
-    is_inner: Mapped[bool] = mapped_column(
-        default=True, server_default=sql.true()
-    )
-    is_delivery: Mapped[bool] = mapped_column(
-        default=False, server_default=sql.false()
-    )
+    is_inner: Mapped[bool] = mapped_column(default=True, server_default=sql.true())
+    is_delivery: Mapped[bool] = mapped_column(default=False, server_default=sql.false())
     rating: Mapped[float]
     priority: Mapped[float] = mapped_column(default=0)
-    phone: Mapped[str | None] = mapped_column(
-        PhoneNumberType(region="RU"), nullable=True
-    )
+    phone: Mapped[str | None] = mapped_column(PhoneNumberType(region="RU"), nullable=True)
 
-    medias: Mapped[list[RestaurantMedia]] = relationship(
-        cascade="all, delete-orphan"
-    )
+    medias: Mapped[list[RestaurantMedia]] = relationship(cascade="all, delete-orphan")
 
     cuisine_id: Mapped[int | None] = mapped_column(
         ForeignKey('restaurant_cuisines.id'), nullable=True
@@ -65,10 +57,7 @@ class Restaurant(RegionMixin, Base):
             site_url=self.site_url,
             description=self.description,
             phone=self.phone,
-            medias=[
-                _media.to_dto()
-                for _media in self.medias
-            ],
+            medias=[_media.to_dto() for _media in self.medias],
             cuisine=self.cuisine.to_dto(),
             instagram=self.instagram,
             vk=self.vk,

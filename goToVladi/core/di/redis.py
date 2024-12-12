@@ -16,8 +16,6 @@ class RedisProvider(Provider):
         return base_config.redis
 
     @provide
-    async def get_redis(
-            self, redis_config: RedisConfig
-    ) -> AsyncIterable[Redis]:
+    async def get_redis(            self, redis_config: RedisConfig    ) -> AsyncIterable[Redis]:
         async with create_redis(redis_config) as redis:
             yield redis

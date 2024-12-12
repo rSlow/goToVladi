@@ -1,6 +1,6 @@
 from operator import itemgetter
 
-from aiogram import types, F
+from aiogram import F
 from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.kbd import Select, ScrollingGroup, Group
 from aiogram_dialog.widgets.text import Const, Format
@@ -16,10 +16,7 @@ async def get_cuisines(dao: DaoHolder, user: dto.User, **__):
     return {"cuisines": cuisines}
 
 
-async def set_cuisine(
-        _: types.CallbackQuery, __: Select,
-        manager: DialogManager, cuisine_id: str
-):
+async def set_cuisine(_, __, manager: DialogManager, cuisine_id: str):
     manager.dialog_data["cuisine_id"] = int(cuisine_id)
     await manager.next()
 
@@ -51,10 +48,7 @@ async def get_restaurant_types(**__):
     }
 
 
-async def set_restaurant_type(
-        _: types.CallbackQuery, __: Select,
-        manager: DialogManager, restaurant_type: str
-):
+async def set_restaurant_type(_, __, manager: DialogManager, restaurant_type: str):
     manager.dialog_data["restaurant_type"] = restaurant_type
     await manager.next()
 
@@ -74,9 +68,7 @@ type_restaurant_window = Window(
 )
 
 
-async def get_restaurants(
-        dao: DaoHolder, dialog_manager: DialogManager, user: dto.User, **__
-):
+async def get_restaurants(dao: DaoHolder, dialog_manager: DialogManager, user: dto.User, **__):
     cuisine_id = dialog_manager.dialog_data["cuisine_id"]
     restaurant_type = dialog_manager.dialog_data["restaurant_type"]
     is_delivery = restaurant_type == "delivery"
@@ -90,10 +82,7 @@ async def get_restaurants(
     return {"restaurants": restaurants}
 
 
-async def on_restaurant_click(
-        _: types.CallbackQuery, __: Select,
-        manager: DialogManager, restaurant_id: str,
-):
+async def on_restaurant_click(_, __, manager: DialogManager, restaurant_id: str):
     manager.dialog_data["restaurant_id"] = int(restaurant_id)
     await manager.next()
 

@@ -40,8 +40,7 @@ class UserView(SecureModelView):
     @action(
         name="set_as_admin",
         text="Сделать администратором",
-        confirmation="Вы действительно хотите дать этим пользователям "
-                     "права администратора?"
+        confirmation="Вы действительно хотите дать этим пользователям права администратора?"
     )
     def set_as_admin(self, id_list: list[str]):
         id_list = [*map(int, id_list)]
@@ -51,8 +50,7 @@ class UserView(SecureModelView):
     @action(
         name="set_as_not_admin",
         text="Убрать права администратора",
-        confirmation="Вы действительно забрать у этих пользователей "
-                     "права администратора?"
+        confirmation="Вы действительно забрать у этих пользователей права администратора?"
     )
     def set_as_not_admin(self, id_list: list[str]):
         id_list = [*map(int, id_list)]

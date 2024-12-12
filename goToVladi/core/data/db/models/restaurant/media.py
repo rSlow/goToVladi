@@ -12,9 +12,7 @@ class RestaurantMedia(AttachmentProtocol, Base):
     restaurant_id: Mapped[int] = mapped_column(
         ForeignKey('restaurants.id', ondelete="CASCADE"),
     )
-    restaurant = relationship(
-        "Restaurant", back_populates="medias", uselist=False
-    )
+    restaurant = relationship("Restaurant", back_populates="medias", uselist=False)
 
     def to_dto(self) -> dto.RestaurantMedia:
         return dto.RestaurantMedia(

@@ -26,9 +26,7 @@ class SassMiddleware(BaseSassMiddleware):
                 if not path.startswith(prefix):
                     continue
                 css_filename = path[len(prefix):]
-                sass_filename = manifest.unresolve_filename(
-                    package_dir, css_filename,
-                )
+                sass_filename = manifest.unresolve_filename(package_dir, css_filename)
                 try:
                     result = manifest.build_one(
                         package_dir,

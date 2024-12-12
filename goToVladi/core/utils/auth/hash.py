@@ -6,6 +6,7 @@ import pytz
 
 from goToVladi.core.utils import exceptions as exc
 from goToVladi.core.utils.auth.models import UserTgAuth
+from goToVladi.flaskadmin.utils import exceptions as exc
 
 
 def check_tg_auth(user: UserTgAuth, bot_token: str):

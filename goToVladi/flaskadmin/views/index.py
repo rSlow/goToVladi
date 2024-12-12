@@ -7,12 +7,12 @@ from flask_login import login_required, current_user
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
-from goToVladi.flaskadmin.utils import exceptions as exc
 from goToVladi.core.utils.auth.hash import check_tg_auth
 from goToVladi.core.utils.auth.models import UserTgAuth
 from goToVladi.flaskadmin import crud
 from goToVladi.flaskadmin.config.models import FlaskAppConfig
 from goToVladi.flaskadmin.forms.login import LoginForm
+from goToVladi.flaskadmin.utils import exceptions as exc
 from goToVladi.flaskadmin.utils.auth import AuthService
 
 
@@ -45,9 +45,7 @@ class AdminIndexView(BaseAdminIndexView):
             except exc.FormError as ex:
                 form.form_errors.append(ex.message)
 
-        form_errors = get_flashed_messages(
-            with_categories=True, category_filter=["form-error"]
-        )
+        form_errors = get_flashed_messages(with_categories=True, category_filter=["form-error"])
         form.form_errors.extend([error for _, error in form_errors])
 
         if current_user.is_authenticated and current_user.is_superuser:
@@ -69,10 +67,7 @@ class AdminIndexView(BaseAdminIndexView):
 
     @expose("/tg-auth/data/", methods=["GET", "POST"])
     @inject
-    def tg_auth_data(
-            self, session: FromDishka[Session],
-            config: FromDishka[FlaskAppConfig]
-    ):
+    def tg_auth_data(self, session: FromDishka[Session], config: FromDishka[FlaskAppConfig]):
         if user_data := dict(request.args):
             try:
                 tg_user = UserTgAuth.model_validate(user_data)

@@ -44,10 +44,7 @@ async def bot_blocked(error: ErrorEvent, dao: DaoHolder):
     logger.info("Деактивирован пользователь с ID %s", user_id)
 
 
-async def handle_notify_exception(
-        error: ErrorEvent, bot: Bot,
-        dialog_bg_factory: BgManagerFactory
-):
+async def handle_notify_exception(error: ErrorEvent, bot: Bot, dialog_bg_factory: BgManagerFactory):
     exception = t.cast(UserNotifyException, error.exception)
     chat_id = get_chat_id_from_error(error)
     if chat_id is not None:

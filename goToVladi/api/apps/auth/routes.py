@@ -8,7 +8,6 @@ from fastapi import Depends as fDepends, Body
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import HTMLResponse, Response
 
-
 from goToVladi.api.utils.auth import AuthService
 from goToVladi.api.utils.auth.cookie import set_auth_cookie
 from goToVladi.bot.config.models.bot import BotConfig
@@ -28,9 +27,7 @@ async def login(
         dao: FromDishka[DaoHolder],
         form_data: OAuth2PasswordRequestForm = fDepends(),
 ):
-    user = await auth_service.authenticate_user(
-        form_data.username, form_data.password, dao
-    )
+    user = await auth_service.authenticate_user(form_data.username, form_data.password, dao)
     token = auth_service.create_user_token(user)
     set_auth_cookie(security_config, response, token)
     return {"ok": True}
@@ -112,19 +109,12 @@ def setup():
     router = APIRouter(prefix='/auth', tags=['auth'])
 
     router.add_api_route("/token", login, methods=["POST"])
-    router.add_api_route(
-        "/login", tg_login_page,
-        response_class=HTMLResponse, methods=["GET"]
-    )
+    router.add_api_route("/login", tg_login_page, response_class=HTMLResponse, methods=["GET"])
     router.add_api_route("/logout", logout, methods=["POST"])
 
     router.add_api_route("/login/data", tg_login_result, methods=["GET"])
-    router.add_api_route(
-        "/login/data", tg_login_result_post, methods=["POST"]
-    )
+    router.add_api_route("/login/data", tg_login_result_post, methods=["POST"])
 
-    router.add_api_route(
-        "/login/webapp", webapp_login_result_post, methods=["POST"]
-    )
+    router.add_api_route("/login/webapp", webapp_login_result_post, methods=["POST"])
 
     return router

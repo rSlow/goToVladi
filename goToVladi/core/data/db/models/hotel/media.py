@@ -9,12 +9,8 @@ from goToVladi.core.data.db.models.mixins import AttachmentProtocol
 class HotelMedia(AttachmentProtocol, Base):
     __tablename__ = "hotel_medias"
 
-    hotel_id: Mapped[int] = mapped_column(
-        ForeignKey('hotels.id', ondelete="CASCADE")
-    )
-    hotel = relationship(
-        "Hotel", back_populates="medias", uselist=False
-    )
+    hotel_id: Mapped[int] = mapped_column(ForeignKey('hotels.id', ondelete="CASCADE"))
+    hotel = relationship("Hotel", back_populates="medias", uselist=False)
 
     def to_dto(self) -> dto.HotelMedia:
         return dto.HotelMedia(

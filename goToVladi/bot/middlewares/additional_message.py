@@ -13,6 +13,7 @@ class AdditionalMessageMiddleware(BaseMiddleware):
             event: TelegramObject,
             data: MiddlewareData
     ) -> Any:
-        viewer = data["add_message_viewer"]
-        await viewer.delete()
+        viewer = data.get("add_message_viewer")
+        if viewer:
+            await viewer.delete()
         return await handler(event, data)

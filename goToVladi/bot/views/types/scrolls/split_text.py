@@ -22,9 +22,7 @@ class ScrollingSplitText(ScrollingText):
         self.splitter = sep
 
     def _get_page_table(self, text: str):
-        return PageTable(
-            text=text, page_size=self.page_size, splitter=self.splitter
-        )
+        return PageTable(text=text, page_size=self.page_size, splitter=self.splitter)
 
     def _get_page_count(self, text: str):
         page_table = self._get_page_table(text)

@@ -36,6 +36,4 @@ class MailingView(SecureView):
 
 
 def mount_mailing_view(admin_app: Admin):
-    admin_app.add_view(
-        MailingView(name="Рассылка", endpoint="mailing")
-    )
+    admin_app.add_view(MailingView(name="Рассылка", endpoint="mailing"))

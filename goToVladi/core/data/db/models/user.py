@@ -15,15 +15,9 @@ class User(TimeMixin, Base):
     last_name: Mapped[str | None]
     username: Mapped[str | None] = mapped_column(nullable=True, unique=True)
     hashed_password: Mapped[str | None]
-    is_bot: Mapped[bool] = mapped_column(
-        default=False, server_default=sql.false()
-    )
-    is_superuser: Mapped[bool] = mapped_column(
-        default=False, server_default=sql.false()
-    )
-    is_active: Mapped[bool] = mapped_column(
-        default=True, server_default=sql.true()
-    )
+    is_bot: Mapped[bool] = mapped_column(default=False, server_default=sql.false())
+    is_superuser: Mapped[bool] = mapped_column(default=False, server_default=sql.false())
+    is_active: Mapped[bool] = mapped_column(default=True, server_default=sql.true())
 
     region_id: Mapped[int] = mapped_column(
         ForeignKey("regions.id", ondelete="SET NULL"), nullable=True

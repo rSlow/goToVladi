@@ -39,12 +39,8 @@ async def set_password_route(
 def setup() -> APIRouter:
     router = APIRouter(prefix="/users", tags=["users"])
 
-    router.add_api_route(
-        "/me", read_users_me, methods=["GET"], response_model=dto.User
-    )
-    router.add_api_route(
-        "/me/password", set_password_route, methods=["PUT"]
-    )
+    router.add_api_route("/me", read_users_me, methods=["GET"], response_model=dto.User)
+    router.add_api_route("/me/password", set_password_route, methods=["PUT"])
     router.add_api_route("/{id}", read_user, methods=["GET"])
 
     return router

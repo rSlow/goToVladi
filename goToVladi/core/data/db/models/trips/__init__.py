@@ -14,9 +14,7 @@ class Trip(RegionMixin, Base):
     name: Mapped[str]
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     site_url: Mapped[str | None] = mapped_column(PydanticURLType, nullable=True)
-    medias: Mapped[list[TripMedia]] = relationship(
-        cascade="all, delete-orphan"
-    )
+    medias: Mapped[list[TripMedia]] = relationship(cascade="all, delete-orphan")
 
     def to_dto(self):
         return dto.Trip(
@@ -24,10 +22,7 @@ class Trip(RegionMixin, Base):
             name=self.name,
             description=self.description,
             site_url=self.site_url,
-            medias=[
-                _media.to_dto()
-                for _media in self.medias
-            ],
+            medias=[_media.to_dto() for _media in self.medias],
             region_id=self.region_id,
             region=self.region.to_dto() if self.region else None,
         )
