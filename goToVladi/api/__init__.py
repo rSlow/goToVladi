@@ -13,8 +13,8 @@ def create_app(config: ApiAppConfig) -> FastAPI:
     app = FastAPI(
         root_path=config.api.get_real_root_path(config.web.root_path),
         debug=config.api.debug,
-        docs_url="/docs" if not config.api.debug else None,
-        redoc_url="/redoc" if not config.api.debug else None,
+        docs_url="/docs" if config.api.debug else None,
+        redoc_url="/redoc" if config.api.debug else None,
     )
 
     setup_routes(app, config)
