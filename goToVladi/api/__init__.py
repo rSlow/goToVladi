@@ -10,7 +10,12 @@ logger = logging.getLogger(__name__)
 
 
 def create_app(config: ApiAppConfig) -> FastAPI:
-    app = FastAPI(root_path=config.api.get_real_root_path(config.web.root_path))
+    app = FastAPI(
+        root_path=config.api.get_real_root_path(config.web.root_path),
+        debug=config.api.debug,
+        docs_url="/docs" if not config.api.debug else None,
+        redoc_url="/redoc" if not config.api.debug else None,
+    )
 
     setup_routes(app, config)
     # middlewares.setup(app, config)
