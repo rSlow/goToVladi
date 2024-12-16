@@ -5,7 +5,9 @@ from goToVladi.core.data.db.dao import DaoHolder, UserDao, RegionDao, EventLogDa
 
 
 class DaoProvider(Provider):
-    holder = provide(DaoHolder, scope=Scope.REQUEST)
+    scope = Scope.REQUEST
+
+    holder = provide(DaoHolder)
 
     dao = provide_all(
         UserDao,
