@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .hotel import HotelDao
 from .log import EventLogDao
+from .massage import MassageDao
 from .region import RegionDao
 from .restaurant import RestaurantDao
 from .trip import TripDao
@@ -21,3 +22,4 @@ class DaoHolder:
         self.restaurant: RestaurantDao = RestaurantDao(self.session)
         self.hotel: HotelDao = HotelDao(self.session)
         self.trip: TripDao = TripDao(self.session)
+        self.massage: MassageDao = MassageDao(self.session)

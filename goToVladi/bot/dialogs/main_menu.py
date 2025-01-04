@@ -5,9 +5,9 @@ from aiogram_dialog.widgets.text import Const
 from goToVladi.bot.dialogs.region import has_region
 from goToVladi.bot.states.car_rent import CarRentSG
 from goToVladi.bot.states.hotel import HotelSG
+from goToVladi.bot.states.massage import MassageListSG
 from goToVladi.bot.states.region import RegionSG
 from goToVladi.bot.states.restaurant import RestaurantSG
-from goToVladi.bot.states.spa import SpaSG
 from goToVladi.bot.states.start import MainMenuSG
 from goToVladi.bot.states.trip import TripSG
 
@@ -36,7 +36,7 @@ main_menu = Dialog(
             Start(
                 text=Const("Спа / массажи"),
                 id="spa",
-                state=SpaSG.spa_list,
+                state=MassageListSG.state,
             ),
             Start(
                 text=Const("Автопрокаты"),

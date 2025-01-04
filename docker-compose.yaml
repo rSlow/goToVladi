@@ -45,7 +45,7 @@ services:
     restart: always
     entrypoint:
       [ "poetry", "run", "python", "-m", "goToVladi.flaskadmin" ]
-  #        [ "poetry", "run", "gunicorn" ] # TODO fix??
+  #   [ "poetry", "run", "gunicorn" ] # TODO fix (тут был косяк с кэшированием запросов в БД, надо почитать)
 
   faststream:
     build: .

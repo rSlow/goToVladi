@@ -5,7 +5,7 @@ from aiogram import Dispatcher
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types.error_event import ErrorEvent
 from aiogram_dialog import DialogManager, StartMode, ShowMode
-from aiogram_dialog.api.exceptions import UnknownIntent, NoContextError
+from aiogram_dialog.api.exceptions import UnknownIntent, NoContextError, UnknownState
 
 from goToVladi.bot.states.start import MainMenuSG
 
@@ -38,6 +38,13 @@ async def no_context(error: ErrorEvent, bot: Bot, dialog_manager: DialogManager)
         )
 
 
+async def unknown_state(_error: ErrorEvent, dialog_manager: DialogManager):
+    await dialog_manager.start(
+        MainMenuSG.state, mode=StartMode.RESET_STACK,
+        show_mode=ShowMode.DELETE_AND_SEND
+    )
+
+
 def setup(dp: Dispatcher):
     dp.errors.register(
         clear_unknown_intent,
@@ -46,4 +53,8 @@ def setup(dp: Dispatcher):
     dp.errors.register(
         no_context,
         ExceptionTypeFilter(NoContextError)
+    )
+    dp.errors.register(
+        unknown_state,
+        ExceptionTypeFilter(UnknownState)
     )

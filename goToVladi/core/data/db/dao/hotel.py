@@ -8,9 +8,6 @@ from goToVladi.core.data.db.dao.base import BaseDao
 
 
 class HotelDao(BaseDao[db.Hotel]):
-    def __init__(self, session: AsyncSession) -> None:
-        super().__init__(db.Hotel, session)
-
     async def get_all_districts(self, region_id: int):
         result: ScalarResult[db.HotelDistrict] = await self.session.scalars(
             select(db.HotelDistrict)

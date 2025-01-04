@@ -6,9 +6,6 @@ from goToVladi.core.data.db.dao.base import BaseDao
 
 
 class EventLogDao(BaseDao[db.LogEvent]):
-    def __init__(self, session: AsyncSession) -> None:
-        super().__init__(db.LogEvent, session)
-
     async def get_last_from_user(self, user_id: int) -> dto.LogEvent | None:
         res = await self.session.scalars(
             select(self.model)

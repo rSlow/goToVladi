@@ -8,9 +8,6 @@ from goToVladi.core.data.db.dao.base import BaseDao
 
 
 class TripDao(BaseDao[db.Trip]):
-    def __init__(self, session: AsyncSession) -> None:
-        super().__init__(db.Trip, session)
-
     async def get_filtered_list(self, region_id: int) -> list[dto.ListHotel]:
         result: ScalarResult[db.Trip] = await self.session.scalars(
             select(self.model)

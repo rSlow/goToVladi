@@ -9,9 +9,6 @@ from goToVladi.core.data.db.dao.base import BaseDao
 
 
 class RestaurantDao(BaseDao[db.Restaurant]):
-    def __init__(self, session: AsyncSession) -> None:
-        super().__init__(db.Restaurant, session)
-
     async def get_all_cuisines(
             self, region_id: int
     ) -> list[dto.RestaurantCuisine]:

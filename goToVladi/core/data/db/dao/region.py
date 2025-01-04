@@ -5,9 +5,6 @@ from goToVladi.core.data.db.dao.base import BaseDao
 
 
 class RegionDao(BaseDao[db.Region]):
-    def __init__(self, session: AsyncSession) -> None:
-        super().__init__(db.Region, session)
-
     async def get(self, id_: int):
         region = await self._get_by_id(id_)
         return region.to_dto()

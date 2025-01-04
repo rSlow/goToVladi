@@ -16,10 +16,8 @@ class SecureViewMixin:
 
 
 class SecureView(SecureViewMixin, BaseView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
 
 
 class SecureModelView(SecureViewMixin, ModelView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass

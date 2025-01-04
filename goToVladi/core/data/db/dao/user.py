@@ -11,9 +11,6 @@ from goToVladi.core.utils.exceptions.user import NoUsernameFound, \
 
 
 class UserDao(BaseDao[db.User]):
-    def __init__(self, session: AsyncSession) -> None:
-        super().__init__(db.User, session)
-
     async def get_by_tg_id(self, tg_id: int) -> dto.User:
         result: ScalarResult[db.User] = await self.session.scalars(
             select(self.model)

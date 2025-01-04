@@ -1,3 +1,3 @@
 from goToVladi.bot.utils.states_factory import FSMSingleFactory
 
-MainMenuSG = FSMSingleFactory("MainMenuSG", "start")
+MainMenuSG = FSMSingleFactory("MainMenuSG")

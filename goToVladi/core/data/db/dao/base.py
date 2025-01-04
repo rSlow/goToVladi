@@ -14,8 +14,9 @@ ModelType = TypeVar(
 
 
 class BaseDao(Generic[ModelType]):
-    def __init__(self, model: type[ModelType], session: AsyncSession) -> None:
-        self.model = model
+    def __init__(self, session: AsyncSession) -> None:
+        self.model: type[ModelType] = self.__orig_bases__[0].__args__[0]  # noqa
+        # get Generic type
         self.session = session
 
     async def _get_all(self) -> Sequence[ModelType]:

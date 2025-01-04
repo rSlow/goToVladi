@@ -3,6 +3,7 @@ import logging
 from aiogram import Router, Dispatcher
 from aiogram_dialog import setup_dialogs as setup_aiogram_dialogs
 
+from . import massage
 from .hotel import hotels_dialog
 from .main_menu import main_menu
 from .region import region_dialog
@@ -21,6 +22,7 @@ def setup_dialogs(dp: Dispatcher):
     dialog_router.include_router(hotels_dialog)
     dialog_router.include_router(restaurants_dialog)
     dialog_router.include_router(trips_dialog)
+    dialog_router.include_router(massage.setup())  # TODO
 
     dp.include_router(dialog_router)
 
