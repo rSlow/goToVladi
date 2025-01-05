@@ -4,7 +4,7 @@ from goToVladi.bot.utils.states_factory import FSMSingleFactory
 
 
 class CarRentSG(StatesGroup):
-    category = State()
+    car_class = State()
     rent_list = State()
 
 

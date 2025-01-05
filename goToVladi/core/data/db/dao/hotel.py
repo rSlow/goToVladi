@@ -1,6 +1,5 @@
 from fastapi import UploadFile
 from sqlalchemy import ScalarResult, select, delete
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, joinedload
 
 from goToVladi.core.data.db import models as db, dto

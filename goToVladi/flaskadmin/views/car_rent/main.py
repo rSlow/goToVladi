@@ -8,21 +8,24 @@ from goToVladi.flaskadmin.views.mixins.description import DescriptionMixin
 from goToVladi.flaskadmin.views.mixins.media import MediaFilesMixin
 
 
-class MassageView(AppModelView,
+class CarRentView(AppModelView,
                   DescriptionMixin,
                   ColumnListEqualFiltersMixin,
-                  MediaFilesMixin[db.MassageMedia]):
+                  MediaFilesMixin[db.CarRentMedia]):
     inline_models = [
-        MediaInline(db.MassageMedia),
+        MediaInline(db.CarRentMedia),
     ]
     column_labels = {
+        "car_classes": "Классы автомобилей",
+        "region": "Город / регион",
         "name": "Название",
         "description": "Описание",
         "rating": "Рейтинг",
-        "phone": "Телефон",
+        "min_age": "Минимальный возраст",
+        "min_experience": "Минимальный стаж",
         "min_price": "Минимальная цена",
-        "region": "Город / регион",
-        "regions": "Город",
+        "phone": "Телефон",
+        "medias": "Медиафайлы",
     }
-    column_list = ["region", "name"]
+    column_filters = ["name"]
     form_overrides = {"phone": TelField}

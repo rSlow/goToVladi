@@ -1,11 +1,16 @@
 from goToVladi.core.data.db import models as db
-from goToVladi.flaskadmin.fields.file import SQLAlchemyMultipleFileUploadField
 from goToVladi.flaskadmin.utils.media_inline import MediaInline
-from goToVladi.flaskadmin.utils.secure_view import SecureModelView
+
+from goToVladi.flaskadmin.views.base import AppModelView
+from goToVladi.flaskadmin.views.mixins.columns import ColumnListEqualFiltersMixin
+from goToVladi.flaskadmin.views.mixins.description import DescriptionMixin
+from goToVladi.flaskadmin.views.mixins.media import MediaFilesMixin
 
 
-class TripView(SecureModelView):
-    page_size = 10
+class TripView(AppModelView,
+               DescriptionMixin,
+               ColumnListEqualFiltersMixin,
+               MediaFilesMixin[db.RestaurantMedia]):
     inline_models = [
         MediaInline(db.TripMedia),
     ]
@@ -18,15 +23,3 @@ class TripView(SecureModelView):
         "regions": "Город",
     }
     column_list = ["region", "name"]
-    column_filters = column_list
-    form_extra_fields = {
-        "multi_media": SQLAlchemyMultipleFileUploadField(
-            field_name="medias", relation_class=db.TripMedia,
-            label="Загрузка медиафайлов"
-        )
-    }
-    form_widget_args = {
-        'description': {
-            'rows': 8,
-        }
-    }

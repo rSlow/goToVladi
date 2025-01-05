@@ -15,9 +15,9 @@ class SecureViewMixin:
             return redirect(url_for('admin.login_view'))
 
 
-class SecureView(SecureViewMixin, BaseView):
+class SecureView(BaseView, SecureViewMixin):
     pass
 
 
-class SecureModelView(SecureViewMixin, ModelView):
+class SecureModelView(ModelView, SecureViewMixin):
     pass

@@ -12,6 +12,7 @@ from dishka import AsyncContainer
 
 from goToVladi.api.config.models import ApiConfig
 from goToVladi.bot.config.models.bot import BotConfig
+from goToVladi.bot.di.jinja import JinjaRenderer
 from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.bot.views.alert import BotAlert
 from goToVladi.core.config import BaseConfig
@@ -57,3 +58,4 @@ class MiddlewareData(DialogMiddlewareData, total=False):
 
     bg_manager_factory: BgManagerFactory
     add_message_viewer: AdditionalMessageViewer
+    jinja_renderer: JinjaRenderer

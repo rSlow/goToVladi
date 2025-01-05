@@ -9,6 +9,7 @@ from sqlalchemy.orm import scoped_session, Session, configure_mappers
 
 from goToVladi.flaskadmin.config.models.main import FlaskAppConfig
 from goToVladi.flaskadmin.views import media, errors
+from .car_rent import mount_car_rent_views
 from .hotels import mount_hotel_views
 from .mailing import mount_mailing_view
 from .massages import mount_massages_views
@@ -26,6 +27,7 @@ def mount_admin_views(admin_app: Admin, session: scoped_session[Session]):
     mount_hotel_views(admin_app, session)
     mount_trips_views(admin_app, session)
     mount_massages_views(admin_app, session)
+    mount_car_rent_views(admin_app, session)
     mount_users_views(admin_app, session)
 
     mount_mailing_view(admin_app)

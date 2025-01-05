@@ -41,7 +41,7 @@ main_menu = Dialog(
             Start(
                 text=Const("Автопрокаты"),
                 id="car_rent",
-                state=CarRentSG.category,
+                state=CarRentSG.car_class,
             ),
             when=has_region
         ),

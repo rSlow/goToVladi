@@ -1,7 +1,7 @@
 from dishka import Scope, provide, Provider, provide_all
 
 from goToVladi.core.data.db.dao import DaoHolder, UserDao, RegionDao, EventLogDao, RestaurantDao, \
-    HotelDao, TripDao, MassageDao
+    HotelDao, TripDao, MassageDao, CarRentDao
 
 
 class DaoProvider(Provider):
@@ -17,4 +17,5 @@ class DaoProvider(Provider):
         HotelDao,
         TripDao,
         MassageDao,
+        CarRentDao,
     )

@@ -1,7 +1,6 @@
 from aiogram import F
 from aiogram_dialog import Window, DialogManager, Dialog
-from aiogram_dialog.widgets.kbd import Url, Group
-from aiogram_dialog.widgets.text import Const, Format
+from aiogram_dialog.widgets.text import Format
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
@@ -26,28 +25,18 @@ async def massage_getter(
 
 massage_card_dialog = Dialog(
     Window(
-        Format("<b>{massage.name}</b>\n"),
+        Format("<b>{massage.name}</b>"),
         Format(
-            text="Минимальная цена - {massage.min_price}\n",
+            text="\nМинимальная цена - {massage.min_price}",
             when=F["massage"].min_price,
         ),
         Format(
-            text="{massage.description}",
+            text="\n{massage.description}",
             when=F["massage"].description,
         ),
         Format(
             text="<u>\nТелефон:</u> <code>{massage.phone}</code>",
             when=F["massage"].phone
-        ),
-
-        Group(
-            Url(
-                text=Const("Сайт 🌐"),
-                url=Format("{massage.site_url}"),
-                id="site_url",
-                when=F["massage"].site_url
-            ),
-            width=2,
         ),
         buttons.CANCEL,
         getter=massage_getter,

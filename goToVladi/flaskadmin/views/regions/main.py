@@ -1,7 +1,7 @@
-from goToVladi.flaskadmin.utils.secure_view import SecureModelView
+from goToVladi.flaskadmin.views.base import AppModelView
 
 
-class RegionView(SecureModelView):
+class RegionView(AppModelView):
     column_labels = {
         "name": "Название"
     }

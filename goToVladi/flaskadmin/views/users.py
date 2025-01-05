@@ -10,10 +10,10 @@ from sqlalchemy.orm import scoped_session, Session
 
 from goToVladi.core.data.db import models as db
 from goToVladi.flaskadmin import crud
-from goToVladi.flaskadmin.utils.secure_view import SecureModelView
+from goToVladi.flaskadmin.views.base import AppModelView
 
 
-class UserView(SecureModelView):
+class UserView(AppModelView):
     page_size = 20
     can_delete = False
     can_create = False

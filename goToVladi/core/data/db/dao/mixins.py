@@ -12,10 +12,15 @@ DtoType = TypeVar("DtoType")
 class BaseDaoMixin(Generic[DtoType]):
     session: AsyncSession
     model: ModelType
+    _export_dto_type: type[DtoType]
+
+    def __new__(cls, *args, **kwargs):
+        dao = super().__new__(cls)
+        dao._export_dto_type = dao.__orig_bases__[0].__args__[0]
+        return dao
 
     def __init__(self):
-        self._dto: type[DtoType] = self.__orig_bases__[0].__args__[0]  # noqa
-        # get Generic type
+        self._dto: type[DtoType] = type(self).__orig_bases__[0].__args__[0]
 
 
 class GetListWithRegion(BaseDaoMixin[DtoType]):

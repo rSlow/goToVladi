@@ -7,6 +7,7 @@ from aiogram_dialog.api.entities import DialogUpdateEvent
 
 from goToVladi.api.config.models import ApiConfig
 from goToVladi.bot.config.models.bot import BotConfig
+from goToVladi.bot.di.jinja import JinjaRenderer
 from goToVladi.bot.middlewares.config import MiddlewareData
 from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.bot.views.alert import BotAlert
@@ -38,6 +39,7 @@ class ContextDataMiddleware(BaseMiddleware):
         data["dao"] = dao_holder
         data["bg_manager_factory"] = self.bg_manager_factory
         data["add_message_viewer"] = AdditionalMessageViewer(data["dialog_manager"])
+        data["jinja_renderer"] = await dishka.get(JinjaRenderer)
 
         user_tg = data.get("event_from_user", None)
         if user_tg is None:

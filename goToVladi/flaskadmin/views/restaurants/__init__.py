@@ -7,7 +7,7 @@ from sqlalchemy.orm import scoped_session, Session
 
 from goToVladi.core.data.db import models as db
 from .main import RestaurantView
-from .restaurant_cuisine import RestaurantCuisineView
+from .cuisine import RestaurantCuisineView
 
 
 def mount_restaurant_views(admin_app: Admin, session: scoped_session[Session]):

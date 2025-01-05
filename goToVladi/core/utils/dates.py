@@ -2,6 +2,15 @@ from datetime import tzinfo, datetime
 
 from dateutil import tz
 
+DATE_FORMAT = r"%d.%m.%y"
+DATE_FORMAT_USER = "ДД.ММ.ГГ"
+
+TIME_FORMAT = r"%H:%M"
+TIME_FORMAT_USER = "ЧЧ:ММ"
+
+DATETIME_FORMAT = f"{DATE_FORMAT} {TIME_FORMAT}"
+DATETIME_FORMAT_USER = f"{DATE_FORMAT_USER} {TIME_FORMAT_USER}"
+
 tz_utc = tz.gettz("UTC")
 tz_local = tz.gettz("Asia/Vladivostok")
 

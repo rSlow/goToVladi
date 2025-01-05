@@ -6,7 +6,7 @@ from flask_admin.helpers import validate_form_on_submit
 from pika.adapters.blocking_connection import BlockingChannel
 
 from goToVladi.flaskadmin.forms.mailing import MailingForm
-from goToVladi.flaskadmin.utils.secure_view import SecureView
+from goToVladi.flaskadmin.views.mixins.secure import SecureView
 
 
 class MailingView(SecureView):

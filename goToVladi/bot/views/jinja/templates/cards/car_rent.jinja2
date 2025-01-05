@@ -1,0 +1,30 @@
+<b>{{ car_rent.name }}</b> <br><br>
+
+{% if car_rent.rating %}
+    Рейтинг редакции - {{ car_rent.rating }} ⭐️<br>
+{% endif %}
+
+{% if car_rent.min_age %}
+    Минимальный возраст для аренды авто - {{ car_rent.min_age }} лет <br>
+{% endif %}
+
+{% if car_rent.min_experience %}
+    Минимальный стаж вождения - {{ car_rent.min_experience }} лет <br>
+    {# TODO create filter год/лет #}
+{% endif %}
+
+{% if car_rent.min_price %}
+    Цена автомобиля от {{ car_rent.min_price }} рублей<br>
+{% endif %}
+
+{% if car_rent.car_classes %}
+    <br> Доступные классы автомобилей: <br>
+    {% for car_class in car_rent.car_classes %}
+        {{ loop.index }}. {{ car_class.name }} <br>
+    {% endfor %}
+{% endif %}
+
+{% if car_rent.phone %}
+    <br>
+    <u>Телефон:</u> <code>{{ car_rent.phone }}</code> <br>
+{% endif %}
