@@ -41,7 +41,7 @@ start_window = Window(
 )
 
 
-async def regions_getter(dao: DaoHolder):
+async def regions_getter(dao: DaoHolder, **__):
     regions = await dao.region.get_all()
     return {"regions": regions}
 
