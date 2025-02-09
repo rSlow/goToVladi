@@ -10,7 +10,7 @@ from goToVladi.bot.middlewares.config import MiddlewareData
 from goToVladi.bot.states.region import RegionSG
 from goToVladi.bot.views import buttons
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.dao import RegionDao
+from goToVladi.core.data.db.dao import RegionDao, UserDao
 
 
 async def main_region_getter(user: dto.User, **__):
@@ -49,14 +49,17 @@ async def regions_getter(dao: FromDishka[RegionDao]):
     return {"regions": regions}
 
 
-async def on_region_click(callback: types.CallbackQuery, _, manager: DialogManager, region_id: str):
+@inject
+async def on_region_click(
+        callback: types.CallbackQuery, _, manager: DialogManager, region_id: str,
+        user_dao:FromDishka[UserDao]
+):
     middleware_data: MiddlewareData = manager.middleware_data
-    dao = middleware_data["dao"]
     user = middleware_data["user"]
 
-    await dao.user.set_region(tg_id=user.tg_id, region_id=int(region_id))
+    await user_dao.set_region(tg_id=user.tg_id, region_id=int(region_id))
 
-    updated_user = await dao.user.get_by_tg_id(user.tg_id)
+    updated_user = await user_dao.get_by_tg_id(user.tg_id)
     await callback.message.answer(f"❗️ Установлен регион: {updated_user.region.name}")
     middleware_data["user"] = updated_user
 
