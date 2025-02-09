@@ -2,13 +2,15 @@ from aiogram import types
 from aiogram_dialog import Dialog, Window, DialogManager, ShowMode
 from aiogram_dialog.widgets.kbd import SwitchTo, Select
 from aiogram_dialog.widgets.text import Format, Case, Const
+from dishka import FromDishka
+from dishka.integrations.aiogram_dialog import inject
 
 from goToVladi.bot.filters.region import has_region
 from goToVladi.bot.middlewares.config import MiddlewareData
 from goToVladi.bot.states.region import RegionSG
 from goToVladi.bot.views import buttons
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import RegionDao
 
 
 async def main_region_getter(user: dto.User, **__):
@@ -41,8 +43,9 @@ start_window = Window(
 )
 
 
-async def regions_getter(dao: DaoHolder):
-    regions = await dao.region.get_all()
+@inject
+async def regions_getter(dao: FromDishka[RegionDao]):
+    regions = await dao.get_all()
     return {"regions": regions}
 
 

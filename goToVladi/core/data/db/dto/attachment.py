@@ -1,12 +1,11 @@
-from dataclasses import dataclass
+from typing import TypeVar
 
-from adaptix import Retort
+from pydantic import BaseModel
 
-file_retort = Retort()
+from goToVladi.core.data.db.dto.mixins import ORMMixin
 
 
-@dataclass
-class FileSchema:
+class FileSchema(BaseModel):
     filename: str
     content_type: str
     size: int
@@ -19,13 +18,12 @@ class FileSchema:
     saved: bool
 
     @classmethod
-    def from_dict(cls, data: dict) -> 'FileSchema':
-        return file_retort.load(data, cls)
+    def from_dict(cls, data: dict):
+        return cls.model_validate(data)
 
 
-@dataclass
-class BaseAttachment:
-    id_: int
+class BaseAttachment(BaseModel, ORMMixin):
+    _id: int
     content: FileSchema
 
     @property
@@ -35,3 +33,12 @@ class BaseAttachment:
     @property
     def path(self):
         return self.content.path
+
+    def to_dto(self):  # can't do this method abstract because of dataclass :(
+        raise NotImplementedError
+
+
+AttachmentType = TypeVar(
+    "AttachmentType", bound=type[BaseAttachment],
+    covariant=True, contravariant=False
+)

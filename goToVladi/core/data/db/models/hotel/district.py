@@ -11,12 +11,7 @@ class HotelDistrict(mixins.RegionMixin, Base):
     hotels = relationship("Hotel", back_populates="district", uselist=True)
 
     def to_dto(self):
-        return dto.HotelDistrict(
-            id_=self.id,
-            name=self.name,
-            region_id=self.region_id,
-            region=self.region.to_dto() if self.region else None,
-        )
+        return dto.HotelDistrict.model_validate(self)
 
     def __str__(self):
         res = ""

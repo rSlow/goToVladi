@@ -2,6 +2,8 @@ import inspect
 from functools import wraps
 from typing import Callable, TypeVar, ParamSpec, get_type_hints, Any
 
+from typing_extensions import get_original_bases
+
 T = TypeVar("T")
 P = ParamSpec("P")
 
@@ -29,3 +31,7 @@ def hide_unused_kwargs(func: Callable[P, T]) -> Callable[P, T]:
             return func(*args, **filtered_kwargs)
 
         return _original_sync_func
+
+
+def get_generic_types(cls: type[Any], generic_position: int = -1):
+    return get_original_bases(cls)[generic_position].__args__

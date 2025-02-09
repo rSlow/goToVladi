@@ -18,14 +18,17 @@ class RedirectUrl(Url):
 
         user: User = manager.middleware_data["event_from_user"]
         chat: Chat = manager.middleware_data["event_chat"]
-        original_callback_data: str = manager.middleware_data["aiogd_original_callback_data"]  # TODO error on `/update`
-        event_data = original_callback_data.split(CB_SEP, maxsplit=1)[1]
 
         button_url = await self.url.render_text(data, manager)
         redirecting_url = api_root_path + (f"/redirect/?url={quote(button_url, safe='')}"
                                            f"&user_id={user.id}"
-                                           f"&chat_id={chat.id}"
-                                           f"&data={event_data}:{self.widget_id}")
+                                           f"&chat_id={chat.id}")
+
+        original_callback_data: str = manager.middleware_data.get("aiogd_original_callback_data")
+        if original_callback_data:
+            event_data = original_callback_data.split(CB_SEP, maxsplit=1)[1]
+            redirecting_url += f"&data={event_data}:{self.widget_id}"
+
         return [
             [
                 InlineKeyboardButton(

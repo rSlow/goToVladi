@@ -7,6 +7,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from goToVladi.core.data.db.models.base import Base
+from goToVladi.core.utils.functools import get_generic_types
 
 ModelType = TypeVar(
     "ModelType", bound=Base, covariant=True, contravariant=False
@@ -15,8 +16,7 @@ ModelType = TypeVar(
 
 class BaseDao(Generic[ModelType]):
     def __init__(self, session: AsyncSession) -> None:
-        self.model: type[ModelType] = self.__orig_bases__[0].__args__[0]  # noqa
-        # get Generic type
+        self.model: type[ModelType] = get_generic_types(type(self), 0)[0]
         self.session = session
 
     async def _get_all(self) -> Sequence[ModelType]:

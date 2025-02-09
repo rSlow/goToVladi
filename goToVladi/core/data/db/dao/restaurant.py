@@ -1,51 +1,41 @@
 from fastapi import UploadFile
-from sqlalchemy import ScalarResult, select, delete, or_
+from sqlalchemy import select, delete
 from sqlalchemy.orm import joinedload, selectinload
 
-from goToVladi.core.data.db import dto
 from goToVladi.core.data.db import models as db
 from goToVladi.core.data.db.dao.base import BaseDao
 
 
 class RestaurantDao(BaseDao[db.Restaurant]):
-    async def get_all_cuisines(
-            self, region_id: int
-    ) -> list[dto.RestaurantCuisine]:
-        result: ScalarResult[db.RestaurantCuisine] = await self.session.scalars(
-            select(db.RestaurantCuisine)
-            .join(db.Restaurant)
-            .where(db.Restaurant.region_id == region_id)
+    async def get_all_cuisines(self, region_id: int):
+        result = await self.session.scalars(
+            select(db.FoodCuisine)
+            .join(self.model)
+            .where(self.model.region_id == region_id)
             .distinct()
         )
         cuisines = result.all()
         return [cuisine.to_dto() for cuisine in cuisines]
 
-    async def get_filtered_list(
-            self, cuisine_id: int, is_delivery: bool, is_inner: bool,
-            region_id: int
-    ) -> list[dto.ListRestaurant]:
-        result: ScalarResult[db.Restaurant] = await self.session.scalars(
-            select(db.Restaurant)
-            .where(db.Restaurant.cuisine_id == cuisine_id)
-            .where(or_(
-                db.Restaurant.is_inner == is_inner,
-                db.Restaurant.is_delivery == is_delivery
-            ))
-            .where(db.Restaurant.region_id == region_id)
+    async def get_filtered_list(self, cuisine_id: int, region_id: int):
+        result = await self.session.scalars(
+            select(self.model)
+            .where(self.model.cuisine_id == cuisine_id)
+            .where(self.model.region_id == region_id)
             .options(*get_restaurant_list_options())
         )
         restaurants = result.all()
         return [restaurant.to_list_dto() for restaurant in restaurants]
 
-    async def get(self, id_: int) -> dto.Restaurant:
-        result: ScalarResult[db.Restaurant] = await self.session.scalars(
-            select(db.Restaurant)
-            .where(db.Restaurant.id == id_)
+    async def get(self, id_: int):
+        result = await self.session.scalars(
+            select(self.model)
+            .where(self.model.id == id_)
             .options(*get_restaurant_options())
         )
         return result.one().to_dto()
 
-    async def add(self, restaurant: db.Restaurant) -> dto.Restaurant:
+    async def add(self, restaurant: db.Restaurant):
         self.session.add(restaurant)
         await self.commit()
         await self.session.refresh(restaurant, attribute_names=["id"])

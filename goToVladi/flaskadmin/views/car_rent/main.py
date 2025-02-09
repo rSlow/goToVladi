@@ -12,9 +12,6 @@ class CarRentView(AppModelView,
                   DescriptionMixin,
                   ColumnListEqualFiltersMixin,
                   MediaFilesMixin[db.CarRentMedia]):
-    inline_models = [
-        MediaInline(db.CarRentMedia),
-    ]
     column_labels = {
         "car_classes": "Классы автомобилей",
         "region": "Город / регион",

@@ -1,19 +1,11 @@
-from __future__ import annotations
-
-from dataclasses import dataclass
-
-from adaptix import Retort
 from aiogram import types as tg
 
 from goToVladi.core.data.db.dto import Region
+from goToVladi.core.data.db.dto.base import BaseDto
 from goToVladi.core.utils.auth.models import FlaskLoginMixin
 
-user_retort = Retort()
 
-
-@dataclass
-class User(FlaskLoginMixin):
-    id_: int | None = None
+class User(BaseDto, FlaskLoginMixin):
     tg_id: int | None = None
     username: str | None = None
     first_name: str | None = None
@@ -36,11 +28,11 @@ class User(FlaskLoginMixin):
         return (self.fullname
                 or self.username
                 or str(self.tg_id)
-                or str(self.id_)
+                or str(self.id)
                 or "unknown")
 
     @classmethod
-    def from_aiogram(cls, user: tg.User) -> User:
+    def from_aiogram(cls, user: tg.User) -> "User":
         return cls(
             tg_id=user.id,
             username=user.username,
@@ -50,16 +42,15 @@ class User(FlaskLoginMixin):
             is_active=True
         )
 
-    def with_password(self, hashed_password: str) -> UserWithCreds:
-        user_data = user_retort.dump(self, User)
+    def with_password(self, hashed_password: str) -> "UserWithCreds":
+        user_data = self.model_dump()
         user_data["hashed_password"] = hashed_password
-        return user_retort.load(user_data, UserWithCreds)
+        return UserWithCreds.model_validate(user_data)
 
 
-@dataclass
 class UserWithCreds(User):
     hashed_password: str | None = None
 
     def without_password(self) -> User:
-        user_data = user_retort.dump(self, UserWithCreds)
-        return user_retort.load(user_data, User)
+        user_data = self.model_dump(exclude={"hashed_password"})
+        return User.model_validate(user_data)

@@ -5,7 +5,7 @@ from jwt import PyJWTError
 from goToVladi.api.utils.auth import AuthService
 from goToVladi.api.utils.auth.cookie import OAuth2PasswordBearerWithCookie
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import UserDao
 
 
 class AuthProvider(Provider):
@@ -25,7 +25,7 @@ class AuthProvider(Provider):
             request: Request,
             cookie_auth: OAuth2PasswordBearerWithCookie,
             auth_service: AuthService,
-            dao: DaoHolder,
+            dao: UserDao,
     ) -> dto.User:
         try:
             token = await cookie_auth.get_token(request)

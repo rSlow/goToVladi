@@ -1,12 +1,13 @@
 from aiogram import F
 from aiogram_dialog import Dialog, Window, DialogManager
-from aiogram_dialog.widgets.kbd import ScrollingGroup, Select
+from aiogram_dialog.widgets.kbd import Select
 from aiogram_dialog.widgets.text import Format
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
 from goToVladi.bot.states.car_rent import CarRentSG, CarRentCardSG
 from goToVladi.bot.views import buttons
+from goToVladi.bot.views.types.scrolls.scrolling_group import ScrollingGroup
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao.car_rent import CarRentDao
 
@@ -14,7 +15,7 @@ from goToVladi.core.data.db.dao.car_rent import CarRentDao
 @inject
 async def car_classes_getter(car_rent_dao: FromDishka[CarRentDao], user: dto.User, **__):
     region = user.region
-    car_classes = await car_rent_dao.get_all_car_classes(region.id_)
+    car_classes = await car_rent_dao.get_all_car_classes(region.id)
     return {
         "region": region,
         "car_classes": car_classes
@@ -63,7 +64,7 @@ async def car_rent_list_getter(
     region = user.region
     car_class_id = dialog_manager.dialog_data["car_class_id"]
     car_class = await car_rent_dao.get_car_class(car_class_id)
-    car_rents = await car_rent_dao.get_all_rents_in_class(car_class_id, region.id_)
+    car_rents = await car_rent_dao.get_all_rents_in_class(car_class_id, region.id)
     return {
         "region": region,
         "car_class": car_class,

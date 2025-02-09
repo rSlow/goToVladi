@@ -1,16 +1,20 @@
 from aiogram import types, F
 from aiogram_dialog import Window, DialogManager
-from aiogram_dialog.widgets.kbd import Group, Select, ScrollingGroup
+from aiogram_dialog.widgets.kbd import Group, Select
 from aiogram_dialog.widgets.text import Const, Format
+from dishka import FromDishka
+from dishka.integrations.aiogram_dialog import inject
 
 from goToVladi.bot.states.hotel import HotelSG
 from goToVladi.bot.views import buttons
+from goToVladi.bot.views.types.scrolls.scrolling_group import ScrollingGroup
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import HotelDao
 
 
-async def district_getter(dao: DaoHolder, user: dto.User, **__):
-    districts = await dao.hotel.get_all_districts(user.region.id_)
+@inject
+async def district_getter(dao: FromDishka[HotelDao], user: dto.User, **__):
+    districts = await dao.get_all_districts(user.region.id)
     return {"districts": districts}
 
 
@@ -32,7 +36,7 @@ district_window = Window(
             items="districts",
             on_click=set_district
         ),
-        width=3
+        width=4
     ),
     buttons.CANCEL,
     state=HotelSG.district,
@@ -40,9 +44,10 @@ district_window = Window(
 )
 
 
-async def hotels_getter(dao: DaoHolder, dialog_manager: DialogManager, **__):
+@inject
+async def hotels_getter(dao: FromDishka[HotelDao], dialog_manager: DialogManager, **__):
     district_id = dialog_manager.dialog_data["district_id"]
-    hotels = await dao.hotel.get_filtered_list(district_id=district_id)
+    hotels = await dao.get_filtered_list(district_id=district_id)
     return {"hotels": hotels}
 
 
@@ -71,10 +76,10 @@ list_hotels_window = Window(
         ),
         id="hotels_scroll",
         width=1,
-        height=3,
+        height=4,
         hide_on_single_page=True,
     ),
     buttons.BACK,
-    state=HotelSG.hotels,
+    state=HotelSG.hotel_list,
     getter=hotels_getter
 )

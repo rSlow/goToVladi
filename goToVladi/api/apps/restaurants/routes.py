@@ -4,44 +4,44 @@ from fastapi import APIRouter, UploadFile, Path
 from fastapi import Depends as fDepends
 
 from goToVladi.api.apps.restaurants.forms import RestaurantInputForm
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import RestaurantDao
 
 
 @inject
 async def add_restaurant(
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[RestaurantDao],
         restaurant_form: RestaurantInputForm = fDepends(),
 ):
     restaurant_model = restaurant_form.to_model()
-    restaurant_db = await dao.restaurant.add(restaurant_model)
+    restaurant_db = await dao.add(restaurant_model)
     return restaurant_db
 
 
 @inject
 async def add_media(
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[RestaurantDao],
         medias: list[UploadFile],
         id_: int = Path(alias="id"),
 ):
-    res = await dao.restaurant.add_medias(id_, *medias)
+    res = await dao.add_medias(id_, *medias)
     return {"ok": res}
 
 
 @inject
 async def get_restaurant(
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[RestaurantDao],
         id_: int = Path(alias="id"),
 ):
-    restaurant = await dao.restaurant.get(id_)
+    restaurant = await dao.get(id_)
     return restaurant
 
 
 @inject
 async def delete_restaurant(
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[RestaurantDao],
         id_: int = Path(alias="id"),
 ):
-    await dao.restaurant.delete(id_)
+    await dao.delete(id_)
     return {"ok": True}
 
 

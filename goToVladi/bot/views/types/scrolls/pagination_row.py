@@ -4,52 +4,10 @@ from aiogram_dialog.widgets.kbd import Row, Keyboard, PrevPage, CurrentPage, \
 from aiogram_dialog.widgets.text import Text, Const, Format
 
 
-#
-# class PaginationRow(StubScroll):
-#     def __init__(
-#             self, id_: str,
-#             pages: str | int | PagesGetter | MagicFilter,
-#             on_page_changed: OnPageChangedVariants = None,
-#             prev_text: Text = Const("<"),
-#             next_text: Text = Const("<"),
-#             central_text: Text = Format("{current_page1}"),
-#     ):
-#         super().__init__(
-#             id=id_, pages=pages, on_page_changed=on_page_changed
-#         )
-#
-#     async def _process_item_callback(
-#             self, callback: types.CallbackQuery,
-#             data: str, dialog: DialogProtocol, manager: DialogManager,
-#     ) -> bool:
-#         await self.set_page(callback, int(data), manager)
-#         return True
-#
-#     async def _render_keyboard(
-#             self,
-#             data: dict,
-#             manager: DialogManager,
-#     ) -> RawKeyboard:
-#         return [[
-#             InlineKeyboardButton(
-#                 text="<",
-#                 callback_data=self._item_callback_data(prev_page),
-#             ),
-#             InlineKeyboardButton(
-#                 text=str(current_page + 1),
-#                 callback_data=self._item_callback_data(current_page),
-#             ),
-#             InlineKeyboardButton(
-#                 text=">",
-#                 callback_data=self._item_callback_data(next_page),
-#             ),
-#
-#         ]]
-
 class PaginationRow(Row):
     def __init__(
             self,
-            id_: str ,
+            id_: str,
             scroll: str | Scroll,
             prev_text: Text = Const("◀️"),
             current_text: Text = Format("{current_page1} / {pages}"),

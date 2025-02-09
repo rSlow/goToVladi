@@ -30,11 +30,7 @@ class CarClass(Base):
     )
 
     def to_dto(self):
-        return dto.CarClass(
-            id_=self.id,
-            name=self.name,
-            description=self.description,
-        )
+        return dto.CarClass.model_validate(self)
 
     def __repr__(self):
         return self.name

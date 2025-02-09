@@ -1,7 +1,7 @@
 from aiogram import Router
 
-from .categoring import category_massage_dialog
-from .massage import massage_card_dialog
+from .categories import category_massage_dialog
+from .card import massage_card_dialog
 
 
 def setup():

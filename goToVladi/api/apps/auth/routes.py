@@ -13,7 +13,7 @@ from goToVladi.api.utils.auth.cookie import set_auth_cookie
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.core.config.models import SecurityConfig
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import UserDao
 from goToVladi.core.utils.auth import TG_WIDGET_HTML
 from goToVladi.core.utils.auth.models import UserTgAuth, WebAppAuth
 from .utils.hash import check_tg_hash, check_webapp_hash
@@ -24,7 +24,7 @@ async def login(
         response: Response,
         auth_service: FromDishka[AuthService],
         security_config: FromDishka[SecurityConfig],
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[UserDao],
         form_data: OAuth2PasswordRequestForm = fDepends(),
 ):
     user = await auth_service.authenticate_user(form_data.username, form_data.password, dao)
@@ -52,13 +52,13 @@ async def logout(
 async def tg_login_result(
         response: Response,
         user: Annotated[UserTgAuth, fDepends()],
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[UserDao],
         auth_service: FromDishka[AuthService],
         security_config: FromDishka[SecurityConfig],
         bot_config: FromDishka[BotConfig]
 ):
     check_tg_hash(user, bot_config.token)
-    saved = await dao.user.upsert_user(user.to_dto())
+    saved = await dao.upsert_user(user.to_dto())
     token = auth_service.create_user_token(saved)
     set_auth_cookie(security_config, response, token)
     return {"ok": True}
@@ -68,13 +68,13 @@ async def tg_login_result(
 async def tg_login_result_post(
         response: Response,
         user: Annotated[UserTgAuth, Body()],
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[UserDao],
         auth_service: FromDishka[AuthService],
         security_config: FromDishka[SecurityConfig],
         bot_config: FromDishka[BotConfig]
 ):
     check_tg_hash(user, bot_config.token)
-    saved_user = await dao.user.upsert_user(user.to_dto())
+    saved_user = await dao.upsert_user(user.to_dto())
     token = auth_service.create_user_token(saved_user)
     set_auth_cookie(security_config, response, token)
     return {"ok": True}
@@ -84,14 +84,14 @@ async def tg_login_result_post(
 async def webapp_login_result_post(
         response: Response,
         web_auth: Annotated[WebAppAuth, Body()],
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[UserDao],
         auth_service: FromDishka[AuthService],
         security_config: FromDishka[SecurityConfig],
         bot_config: FromDishka[BotConfig]
 ):
     parsed = check_webapp_hash(web_auth.init_data, bot_config.token)
     user = dto.User.from_aiogram(typing.cast(User, parsed.user))
-    saved = await dao.user.upsert_user(user)
+    saved = await dao.upsert_user(user)
     token = auth_service.create_user_token(saved)
     set_auth_cookie(security_config, response, token)
     return {"ok": True}

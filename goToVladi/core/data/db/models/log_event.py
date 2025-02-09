@@ -18,11 +18,4 @@ class LogEvent(Base):
     data: Mapped[str | None]
 
     def to_dto(self) -> dto.LogEvent:
-        return dto.LogEvent(
-            type_=self.event_type,
-            chat_id=self.chat_id,
-            dt=self.dt,
-            user_id=self.user_id,
-            content_type=self.content_type,
-            data=self.data,
-        )
+        return dto.LogEvent.model_validate(self)

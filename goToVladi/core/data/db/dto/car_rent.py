@@ -1,44 +1,26 @@
-from dataclasses import dataclass, field
-
 from .attachment import BaseAttachment
-from .region import Region
+from .base import BaseListCardDto, BaseCardDto, BaseDto
+from .region import RegionMixin
 
 
-@dataclass
 class CarRentMedia(BaseAttachment):
     car_rent_id: int
 
 
-@dataclass
-class ListCarRent:
+class ListCarRent(BaseListCardDto, RegionMixin):
+    pass
+
+
+class CarClass(BaseDto):
     name: str
-
-    id_: int | None = None
-    region_id: int | None = None
-    region: Region | None = None
-
-
-@dataclass
-class CarClass:
-    name: str
-
-    id_: int | None = None
     description: str | None = None
 
 
-@dataclass
-class CarRent:
-    name: str
-
-    id_: int | None = None
-    region_id: int | None = None
-    region: Region | None = None
-    description: str | None = None
+class CarRent(BaseCardDto, RegionMixin):
     rating: float | None = None
     min_age: int | None = None
     min_experience: int | None = None
     min_price: int | None = None
     phone: str | None = None
-
-    medias: list[CarRentMedia] = field(default_factory=list)
-    car_classes: list[CarClass] = field(default_factory=list)
+    medias: list[CarRentMedia]
+    car_classes: list[CarClass]

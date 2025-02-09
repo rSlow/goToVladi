@@ -1,5 +1,4 @@
 from goToVladi.core.data.db import models as db
-from goToVladi.flaskadmin.utils.media_inline import MediaInline
 
 from goToVladi.flaskadmin.views.base import AppModelView
 from goToVladi.flaskadmin.views.mixins.columns import ColumnListEqualFiltersMixin
@@ -11,9 +10,6 @@ class HotelView(AppModelView,
                 DescriptionMixin,
                 ColumnListEqualFiltersMixin,
                 MediaFilesMixin[db.HotelMedia]):
-    inline_models = [
-        MediaInline(db.HotelMedia),
-    ]
     column_labels = {
         "name": "Название",
         "district": "Район",

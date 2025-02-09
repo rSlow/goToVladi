@@ -1,18 +1,21 @@
 from aiogram import types, F
 from aiogram_dialog import DialogManager
-from aiogram_dialog.widgets.kbd import Select, ScrollingGroup
+from aiogram_dialog.widgets.kbd import Select
 from aiogram_dialog.widgets.text import Format
 from aiogram_dialog.window import Window
+from dishka import FromDishka
+from dishka.integrations.aiogram_dialog import inject
 
 from goToVladi.bot.states.trip import TripSG
 from goToVladi.bot.views import buttons
+from goToVladi.bot.views.types.scrolls.scrolling_group import ScrollingGroup
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import TripDao
 
-
-async def trips_getter(dao: DaoHolder, user: dto.User, **__):
+@inject
+async def trips_getter(dao: FromDishka[TripDao], user: dto.User, **__):
     region = user.region
-    trips = await dao.trip.get_filtered_list(region.id_)
+    trips = await dao.get_filtered_list(region.id)
     return {
         "trips": trips,
         "region": region,

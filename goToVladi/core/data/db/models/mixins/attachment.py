@@ -1,5 +1,4 @@
 import typing as t
-from abc import abstractmethod
 from pathlib import Path
 
 from sqlalchemy.orm import mapped_column, declared_attr
@@ -9,6 +8,7 @@ from sqlalchemy_file.validators import SizeValidator
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.types.file import File
 from goToVladi.core.data.db.utils import file_field
+from goToVladi.core.utils.functools import get_generic_types
 
 AttachmentDtoType = t.TypeVar(
     "AttachmentDtoType", bound=dto.BaseAttachment,
@@ -16,8 +16,12 @@ AttachmentDtoType = t.TypeVar(
 )
 
 
-class AttachmentProtocol:
+class AttachmentProtocol(t.Generic[AttachmentDtoType]):
     __upload_type__ = File
+
+    def __init__(self, *args, **kwargs) -> None:
+        self.__model_dto: type[AttachmentDtoType] = get_generic_types(type(self), 0)[0]
+        super().__init__(*args, **kwargs)
 
     @declared_attr
     def content(self):
@@ -28,11 +32,14 @@ class AttachmentProtocol:
             )
         )
 
-    # need to set ForeignKey and relationship attribute in subclass
-    # parent_model_id: Mapped[int] = mapped_column(ForeignKey('model.id'))
-    # parent_model = relationship(
-    #     "Parent", back_populates="medias", uselist=False
-    # )
+    """
+    
+    here you need to set ForeignKey and relationship attribute in subclass
+    
+    <parent_model>_id: Mapped[int] = mapped_column(ForeignKey('<model>.id'))
+    <parent_model> = relationship("<Parent>", back_populates="medias", uselist=False)
+     
+    """
 
     def convert_content(self) -> dto.FileSchema:
         return dto.FileSchema.from_dict(self.content)
@@ -42,6 +49,5 @@ class AttachmentProtocol:
         relative_path = file_field.get_relative_path(content.url, media_path)
         return relative_path
 
-    @abstractmethod
-    def to_dto(self) -> AttachmentDtoType:
-        ...
+    def to_dto(self) -> dto.DeliveryMedia:
+        return self.__model_dto.model_validate(self, context={"content": self.convert_content()})

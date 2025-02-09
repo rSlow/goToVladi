@@ -4,43 +4,43 @@ from fastapi import APIRouter, UploadFile, Path
 from fastapi import Depends as fDepends
 
 from goToVladi.api.apps.hotels.forms import HotelInputForm
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import HotelDao
 
 
 @inject
 async def add_hotel(
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[HotelDao],
         hotel_form: HotelInputForm = fDepends(),
 ):
     hotel_model = hotel_form.to_model()
-    return await dao.hotel.add(hotel_model)
+    return await dao.add(hotel_model)
 
 
 @inject
 async def add_media(
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[HotelDao],
         medias: list[UploadFile],
         id_: int = Path(alias="id"),
 ):
-    res = await dao.hotel.add_medias(id_, *medias)
+    res = await dao.add_medias(id_, *medias)
     return {"ok": res}
 
 
 @inject
 async def get_hotel(
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[HotelDao],
         id_: int = Path(alias="id"),
 ):
-    hotel = await dao.hotel.get(id_)
+    hotel = await dao.get(id_)
     return hotel
 
 
 @inject
 async def delete_hotel(
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[HotelDao],
         id_: int = Path(alias="id"),
 ):
-    await dao.hotel.delete(id_)
+    await dao.delete(id_)
     return {"ok": True}
 
 

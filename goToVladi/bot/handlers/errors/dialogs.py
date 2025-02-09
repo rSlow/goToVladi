@@ -2,6 +2,7 @@ import logging
 
 from aiogram import Bot
 from aiogram import Dispatcher
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types.error_event import ErrorEvent
 from aiogram_dialog import DialogManager, StartMode, ShowMode
@@ -15,11 +16,17 @@ logger = logging.getLogger(__name__)
 async def clear_unknown_intent(error: ErrorEvent, bot: Bot):
     assert error.update.callback_query
     assert error.update.callback_query.message
-    await bot.edit_message_reply_markup(
-        chat_id=error.update.callback_query.message.chat.id,
-        message_id=error.update.callback_query.message.message_id,
-        reply_markup=None,
-    )
+    logger.warning(f"Unknown intent: {str(error.exception)}")
+
+    try:
+        await bot.edit_message_reply_markup(
+            chat_id=error.update.callback_query.message.chat.id,
+            message_id=error.update.callback_query.message.message_id,
+            reply_markup=None
+        )
+    except TelegramBadRequest:
+        pass
+
 
 
 async def no_context(error: ErrorEvent, bot: Bot, dialog_manager: DialogManager):

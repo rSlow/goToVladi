@@ -17,7 +17,6 @@ from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.bot.views.alert import BotAlert
 from goToVladi.core.config import BaseConfig
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.dao import DaoHolder
 from goToVladi.core.scheduler.scheduler import Scheduler
 from goToVladi.core.utils.lock_factory import LockFactory
 
@@ -52,7 +51,6 @@ class MiddlewareData(DialogMiddlewareData, total=False):
 
     scheduler: Scheduler
 
-    dao: DaoHolder
     user: dto.User | None
     region: dto.Region | None
 

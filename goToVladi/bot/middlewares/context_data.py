@@ -13,7 +13,7 @@ from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.bot.views.alert import BotAlert
 from goToVladi.core.config import BaseConfig
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import UserDao, RegionDao
 from goToVladi.core.scheduler.scheduler import Scheduler
 from goToVladi.core.utils.lock_factory import LockFactory
 
@@ -29,14 +29,12 @@ class ContextDataMiddleware(BaseMiddleware):
             data: MiddlewareData,
     ) -> Any:
         dishka = data["dishka_container"]
-        dao_holder: DaoHolder = await dishka.get(DaoHolder)
         data["bot_config"] = await dishka.get(BotConfig)
         data["api_config"] = await dishka.get(ApiConfig)
         data["base_config"] = await dishka.get(BaseConfig)
         data["locker"] = await dishka.get(LockFactory)
         data["scheduler"] = await dishka.get(Scheduler)
         data["alert"] = await dishka.get(BotAlert)
-        data["dao"] = dao_holder
         data["bg_manager_factory"] = self.bg_manager_factory
         data["add_message_viewer"] = AdditionalMessageViewer(data["dialog_manager"])
         data["jinja_renderer"] = await dishka.get(JinjaRenderer)
@@ -45,10 +43,18 @@ class ContextDataMiddleware(BaseMiddleware):
         if user_tg is None:
             user = None
         else:
+            user_dao = await dishka.get(UserDao)
             if isinstance(event, DialogUpdateEvent):
-                user = await dao_holder.user.get_by_tg_id(user_tg.id)
+                user = await user_dao.get_by_tg_id(user_tg.id)
             else:
-                user = await dao_holder.user.upsert_user(dto.User.from_aiogram(user_tg))
+                user = await user_dao.upsert_user(dto.User.from_aiogram(user_tg))
+                if user.region is None:  # TODO куда нибудь перенести в нормальное место
+                    region_dao = await dishka.get(RegionDao)
+                    region = await region_dao.get_by_ilike_name("Владивосток")
+                    if region:
+                        await user_dao.set_region(user.tg_id, region.id)
+                    user = await user_dao.get_by_tg_id(user.tg_id)
+
         data["user"] = user
 
         return await handler(event, data)

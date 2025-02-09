@@ -9,10 +9,12 @@ from aiogram.filters import ExceptionTypeFilter
 from aiogram.types.error_event import ErrorEvent
 from aiogram.utils.markdown import html_decoration as hd
 from aiogram_dialog import BgManagerFactory
+from dishka import FromDishka
+from dishka.integrations.aiogram import inject
 
 from goToVladi.bot.utils.exceptions import UserNotifyException
 from goToVladi.bot.utils.markdown import get_update_text
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import UserDao
 from goToVladi.core.utils.exceptions.base import BaseError
 
 logger = logging.getLogger(__name__)
@@ -38,9 +40,10 @@ def get_user_id_from_error(error: ErrorEvent) -> int:
         return update.business_message.from_user.id
 
 
-async def bot_blocked(error: ErrorEvent, dao: DaoHolder):
+@inject  # TODO check
+async def bot_blocked(error: ErrorEvent, dao: FromDishka[UserDao]):
     user_id = get_user_id_from_error(error)
-    await dao.user.deactivate(user_id)
+    await dao.deactivate(user_id)
     logger.info("Деактивирован пользователь с ID %s", user_id)
 
 

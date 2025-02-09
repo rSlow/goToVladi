@@ -1,10 +1,10 @@
-from dataclasses import dataclass
 from datetime import datetime
 
+from goToVladi.core.data.db.dto.base import BaseDto
 
-@dataclass
-class LogEvent:
-    type_: str
+
+class LogEvent(BaseDto):
+    event_type: str
     chat_id: int
     dt: datetime
     user_id: int | None = None

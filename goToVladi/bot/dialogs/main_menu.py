@@ -4,10 +4,11 @@ from aiogram_dialog.widgets.text import Const
 
 from goToVladi.bot.dialogs.region import has_region
 from goToVladi.bot.states.car_rent import CarRentSG
+from goToVladi.bot.states.food import FoodCategorisesSG
 from goToVladi.bot.states.hotel import HotelSG
 from goToVladi.bot.states.massage import MassageListSG
 from goToVladi.bot.states.region import RegionSG
-from goToVladi.bot.states.restaurant import RestaurantSG
+from goToVladi.bot.states.sea_recreation import SeaRecreationListSG
 from goToVladi.bot.states.start import MainMenuSG
 from goToVladi.bot.states.trip import TripSG
 
@@ -19,30 +20,36 @@ main_menu = Dialog(
         ),
         Group(
             Start(
-                text=Const("Рестораны"),
-                id="restaurants",
-                state=RestaurantSG.cuisines
+                text=Const("🍛 Гид по еде"),
+                id="food",
+                state=FoodCategorisesSG.state
             ),
             Start(
-                text=Const("Отели"),
+                text=Const("🏨 Отели"),
                 id="hotels",
                 state=HotelSG.district,
             ),
             Start(
-                text=Const("Экскурсии"),
+                text=Const("🌏 Экскурсии"),
                 id="trips",
                 state=TripSG.trip_list,
             ),
             Start(
-                text=Const("Спа / массажи"),
+                text=Const("🌊 Морской отдых"),
+                id="sea_recreation",
+                state=SeaRecreationListSG.category,
+            ),
+            Start(
+                text=Const("💆 Спа / массажи"),
                 id="spa",
                 state=MassageListSG.state,
             ),
             Start(
-                text=Const("Автопрокаты"),
+                text=Const("🛻 Автопрокаты"),
                 id="car_rent",
                 state=CarRentSG.car_class,
             ),
+            width=2,
             when=has_region
         ),
 
@@ -56,6 +63,13 @@ main_menu = Dialog(
             state=RegionSG.set,
             when=~has_region
         ),
+
+        # Start(
+        #     text=Const("🙋‍♂️ Хочу в вами сотрудничать!"),
+        #     id="cooperation",
+        #     state=RestaurantListSG.cuisines
+        # ),
+
         state=MainMenuSG.state
     )
 )

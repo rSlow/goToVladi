@@ -1,13 +1,12 @@
-from dishka import Scope, provide, Provider, provide_all
+from dishka import Scope, Provider, provide_all
 
-from goToVladi.core.data.db.dao import DaoHolder, UserDao, RegionDao, EventLogDao, RestaurantDao, \
-    HotelDao, TripDao, MassageDao, CarRentDao
+from goToVladi.core.data.db.dao import UserDao, RegionDao, EventLogDao, RestaurantDao, HotelDao, \
+    TripDao, MassageDao, CarRentDao, MessageTextDao, DeliveryDao, BarDao, BreakfastDao, \
+    SeaRecreationDao
 
 
 class DaoProvider(Provider):
     scope = Scope.REQUEST
-
-    holder = provide(DaoHolder)
 
     dao = provide_all(
         UserDao,
@@ -18,4 +17,9 @@ class DaoProvider(Provider):
         TripDao,
         MassageDao,
         CarRentDao,
+        MessageTextDao,
+        DeliveryDao,
+        BarDao,
+        BreakfastDao,
+        SeaRecreationDao,
     )

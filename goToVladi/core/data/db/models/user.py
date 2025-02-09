@@ -36,14 +36,4 @@ class User(TimeMixin, Base):
         return rez + ">"
 
     def to_dto(self) -> dto.User:
-        return dto.User(
-            id_=self.id,
-            tg_id=self.tg_id,
-            username=self.username,
-            first_name=self.first_name,
-            last_name=self.last_name,
-            is_bot=self.is_bot,
-            is_superuser=self.is_superuser,
-            is_active=self.is_active,
-            region=self.region.to_dto() if self.region else None
-        )
+        return dto.User.model_validate(self)

@@ -7,10 +7,10 @@ from dishka.integrations.faststream import inject
 from faststream.rabbit import RabbitRouter, RabbitExchange
 from faststream.rabbit.annotations import RabbitBroker, RabbitMessage
 
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import UserDao
 
 router = RabbitRouter()
-mail_exchange = RabbitExchange('mail')
+mail_exchange = RabbitExchange("mail")
 
 
 @dataclass
@@ -22,9 +22,9 @@ class MailingMessage:
 @router.subscriber("all", mail_exchange)
 @inject
 async def prepare_mail(
-        message_text: str, broker: RabbitBroker, dao: FromDishka[DaoHolder],
+        message_text: str, broker: RabbitBroker, dao: FromDishka[UserDao],
 ):
-    user_ids = await dao.user.get_all_active()
+    user_ids = await dao.get_all_active()
     for user_id in user_ids:
         message = MailingMessage(text=message_text, user_id=user_id)
         await broker.publish(message, queue="user", exchange=mail_exchange)

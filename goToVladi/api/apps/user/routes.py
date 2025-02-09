@@ -7,7 +7,7 @@ from fastapi.params import Body, Path
 
 from goToVladi.api.utils.auth import AuthService
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import UserDao
 
 logger = logging.getLogger(__name__)
 
@@ -18,18 +18,15 @@ async def read_users_me(current_user: FromDishka[dto.User]) -> dto.User:
 
 
 @inject
-async def read_user(
-        dao: FromDishka[DaoHolder],
-        id_: int = Path(alias="id")
-) -> dto.User:
-    return await dao.user.get_by_id(id_)
+async def read_user(dao: FromDishka[UserDao], id_: int = Path(alias="id")) -> dto.User:
+    return await dao.get_by_id(id_)
 
 
 @inject
 async def set_password_route(
         auth_service: FromDishka[AuthService],
         user: FromDishka[dto.User],
-        dao: FromDishka[DaoHolder],
+        dao: FromDishka[UserDao],
         password: str = Body()
 ):
     await auth_service.update_user_password(user, password, dao)

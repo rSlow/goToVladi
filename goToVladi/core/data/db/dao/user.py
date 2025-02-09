@@ -74,7 +74,7 @@ class UserDao(BaseDao[db.User]):
         return user.to_dto().with_password(user.hashed_password)
 
     async def set_password(self, user: dto.User, hashed_password: str):
-        db_user = await self._get_by_id(user.id_)
+        db_user = await self._get_by_id(user.id)
         db_user.hashed_password = hashed_password
         await self.commit()
 

@@ -15,7 +15,7 @@ class FlaskLoginMixin:
         return False
 
     def get_id(self):
-        return self.id_  # type:ignore
+        return self.id  # type:ignore
 
 
 class WebAppUser(BaseModel):

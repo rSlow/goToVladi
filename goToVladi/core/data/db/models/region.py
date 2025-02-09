@@ -10,10 +10,7 @@ class Region(Base):
     name: Mapped[str] = mapped_column(unique=True)
 
     def to_dto(self) -> dto.Region:
-        return dto.Region(
-            id_=self.id,
-            name=self.name
-        )
+        return dto.Region.model_validate(self)
 
     def __str__(self):
         return self.name

@@ -24,7 +24,7 @@ def from_message(message: t.Message):
             data = "unexpected content type: " + content_type
 
     return dto.LogEvent(
-        type_="message",
+        event_type="message",
         user_id=message.from_user.id,
         chat_id=message.chat.id,
         content_type=message.content_type,
@@ -38,7 +38,7 @@ def from_callback_query(callback: t.CallbackQuery):
     chat_id = callback.message.chat.id
     if isinstance(callback.message, t.InaccessibleMessage):
         return dto.LogEvent(
-            type_="inaccessible_callback_query",
+            event_type="inaccessible_callback_query",
             chat_id=chat_id,
             dt=dt
         )
@@ -48,7 +48,7 @@ def from_callback_query(callback: t.CallbackQuery):
         data = callback.data
 
     return dto.LogEvent(
-        type_="callback_query",
+        event_type="callback_query",
         user_id=callback.from_user.id,
         chat_id=chat_id,
         dt=dt,

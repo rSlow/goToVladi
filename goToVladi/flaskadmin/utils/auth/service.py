@@ -25,6 +25,6 @@ class AuthService:
             raise exc.InvalidCredentialsError
         if not self.security.pwd_context.verify(password, user.hashed_password):
             raise exc.InvalidCredentialsError
-        if not user.is_superuser or user.id_ is None:
+        if not user.is_superuser or user.id is None:
             raise exc.AccessDeniedError
         return user.without_password()

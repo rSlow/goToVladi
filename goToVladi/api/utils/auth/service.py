@@ -7,7 +7,7 @@ from fastapi import HTTPException, Request
 from starlette import status
 
 from goToVladi.core.data.db import dto
-from goToVladi.core.data.db.dao import DaoHolder
+from goToVladi.core.data.db.dao import UserDao
 from goToVladi.core.utils.auth.security import SecurityProps
 from goToVladi.core.utils.auth.token import Token
 from goToVladi.core.utils.exceptions.user import NoUsernameFound
@@ -21,7 +21,7 @@ class AuthService:
 
     async def authenticate_user(
             self, username: str, password: str,
-            dao: DaoHolder
+            dao: UserDao
     ) -> dto.User:
         http_status_401 = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -30,7 +30,7 @@ class AuthService:
         )
 
         try:
-            user = await dao.user.get_by_username_with_password(username)
+            user = await dao.get_by_username_with_password(username)
         except NoUsernameFound as e:
             raise http_status_401 from e
 
@@ -41,16 +41,16 @@ class AuthService:
         return user.without_password()
 
     async def update_user_password(
-            self, user: dto.User, password: str, dao: DaoHolder
+            self, user: dto.User, password: str, dao: UserDao
     ) -> None:
         hashed_password = self.security.get_password_hash(password)
-        await dao.user.set_password(user, hashed_password)
+        await dao.set_password(user, hashed_password)
 
     def create_user_token(self, user: dto.User) -> Token:
-        return self.security.create_token(data={"sub": str(user.id_)})
+        return self.security.create_token(data={"sub": str(user.id)})
 
     async def get_current_user(
-            self, token: Token, dao: DaoHolder,
+            self, token: Token, dao: UserDao,
     ) -> dto.User:
         logger.debug("try to check token %s", token)
         credentials_exception = HTTPException(
@@ -78,7 +78,7 @@ class AuthService:
             raise e
 
         try:
-            user = await dao.user.get_by_id(user_db_id)
+            user = await dao.get_by_id(user_db_id)
         except Exception as e:
             logger.info("user by id %s not found", user_db_id)
             raise credentials_exception from e
@@ -86,7 +86,7 @@ class AuthService:
         return user
 
     async def get_user_basic(
-            self, request: Request, dao: DaoHolder
+            self, request: Request, dao: UserDao
     ) -> dto.User | None:
         if (header := request.headers.get("Authorization")) is None:
             return None
