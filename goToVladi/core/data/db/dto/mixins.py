@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import ConfigDict
 
 
@@ -12,3 +14,6 @@ class SocialMixin:
     telegram: str | None = None
 
 
+class TimeMixin:
+    created_at: datetime | None = None
+    edited_at: datetime | None = None

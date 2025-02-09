@@ -11,3 +11,4 @@ from .delivery import DeliveryDao
 from .bar import BarDao
 from .breakfast import BreakfastDao
 from .sea_recreation import SeaRecreationDao
+from .cooperation import CooperationDao

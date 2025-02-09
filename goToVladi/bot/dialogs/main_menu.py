@@ -4,6 +4,7 @@ from aiogram_dialog.widgets.text import Const
 
 from goToVladi.bot.dialogs.region import has_region
 from goToVladi.bot.states.car_rent import CarRentSG
+from goToVladi.bot.states.cooperation import CooperationSG
 from goToVladi.bot.states.food import FoodCategorisesSG
 from goToVladi.bot.states.hotel import HotelSG
 from goToVladi.bot.states.massage import MassageListSG
@@ -64,11 +65,11 @@ main_menu = Dialog(
             when=~has_region
         ),
 
-        # Start(
-        #     text=Const("🙋‍♂️ Хочу в вами сотрудничать!"),
-        #     id="cooperation",
-        #     state=RestaurantListSG.cuisines
-        # ),
+        Start(
+            text=Const("🙋‍♂️ Хочу в вами сотрудничать!"),
+            id="cooperation",
+            state=CooperationSG.input
+        ),
 
         state=MainMenuSG.state
     )

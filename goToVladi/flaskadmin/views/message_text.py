@@ -3,9 +3,11 @@ from sqlalchemy.orm import scoped_session, Session
 
 from goToVladi.core.data.db import models as db
 from goToVladi.flaskadmin.views.base import AppModelView
+from goToVladi.flaskadmin.views.mixins.columns import ColumnListEqualFiltersMixin
 
 
-class MessageTextView(AppModelView):
+class MessageTextView(AppModelView,
+                      ColumnListEqualFiltersMixin):
     can_delete = False
     column_labels = {
         "name": "Ключ поля",

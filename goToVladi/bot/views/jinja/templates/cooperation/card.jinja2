@@ -1,0 +1,7 @@
+Подана заявка на сотрудничество <br>
+<br>
+{% if user.username %}
+    Пользователь <a href="t.me:/{{ user }}">{{ user.name_mention }}</a> <br>
+    <br>
+{% endif %}
+{{ data|escape }}

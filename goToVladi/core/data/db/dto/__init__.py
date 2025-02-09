@@ -34,5 +34,6 @@ from .message_text import MessageText
 from .region import Region
 from .trip import Trip, ListTrip, TripMedia
 from .user import User, UserWithCreds
+from .cooperation import Cooperation
 
 id_getter = attrgetter("id")

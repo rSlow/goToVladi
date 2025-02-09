@@ -15,3 +15,4 @@ from .region import Region
 from .sea_recreation import SeaRecreation, SeaRecreationMedia, SeaRecreationCategory
 from .trips import Trip, TripMedia
 from .user import User
+from .cooperation import Cooperation
