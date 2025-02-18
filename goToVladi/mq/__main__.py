@@ -6,15 +6,15 @@ from dishka.integrations.faststream import (
     FastStreamProvider
 )
 from faststream import FastStream
-from faststream.rabbit import RabbitBroker
 
 from goToVladi.bot.config.models import BotAppConfig
-from goToVladi.bot.config.parser.main import load_config
+from goToVladi.bot.config.parser.main import load_config as load_bot_config
 from goToVladi.bot.di import get_bot_providers
 from goToVladi.core.config import setup_logging, BaseConfig
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.config.parser.retort import get_base_retort
 from goToVladi.core.di import get_common_providers
+from goToVladi.core.factory.mq import create_broker
 from goToVladi.mq import tasks
 from goToVladi.mq.config.models.main import MQAppConfig
 from goToVladi.mq.config.parser.main import load_config as load_mq_config
@@ -28,12 +28,9 @@ def main():
 
     retort = get_base_retort()
     mq_config = load_mq_config(paths, retort)
-    bot_config = load_config(paths, retort)
+    bot_config = load_bot_config(paths, retort)
 
-    rabbit_broker = RabbitBroker(
-        url=mq_config.mq.uri,
-        max_consumers=30
-    )
+    rabbit_broker = create_broker(mq_config)
     mq_app = FastStream(rabbit_broker)
 
     di_container = make_async_container(
