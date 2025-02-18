@@ -23,5 +23,6 @@ class CarRent(BaseCardDto, RegionMixin):
     min_experience: int | None = None
     min_price: int | None = None
     phone: PhoneNumberType | None = None
+    site_url: str | None = None
     medias: list[CarRentMedia]
     car_classes: list[CarClass]

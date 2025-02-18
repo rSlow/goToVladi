@@ -1,6 +1,6 @@
 from aiogram import F
 from aiogram_dialog import Dialog, Window, DialogManager
-from aiogram_dialog.widgets.text import Format
+from aiogram_dialog.widgets.text import Format, Const
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
@@ -8,6 +8,7 @@ from goToVladi.bot.states.car_rent import CarRentCardSG
 from goToVladi.bot.views import buttons
 from goToVladi.bot.views.add_message import AdditionalMessageViewer
 from goToVladi.bot.views.types import JinjaTemplate
+from goToVladi.bot.views.types.redirect_url import RedirectUrl
 from goToVladi.core.data.db.dao.car_rent import CarRentDao
 
 
@@ -29,27 +30,12 @@ async def car_rent_getter(
 car_rent_dialog = Dialog(
     Window(
         JinjaTemplate("cards/car_rent.jinja2"),
-        # Format("<b>{car_rent.name}</b>"),
-        # Format(
-        #     text="\nРейтинг редакции - {car_rent.rating}",
-        #     when=F["car_rent"].rating,
-        # ),
-        # Format(
-        #     text="\nМинимальный возраст для аренды авто - {car_rent.min_age}",
-        #     when=F["car_rent"].min_age,
-        # ),
-        # Format(
-        #     text="\nМинимальный стаж вождения - {car_rent.min_experience}",
-        #     when=F["car_rent"].min_experience,
-        # ),
-        # Format(
-        #     text="\nЦена автомобиля от {car_rent.min_price}",
-        #     when=F["car_rent"].min_price,
-        # ),
-        # Format(
-        #     text="<u>\n\nТелефон:</u> <code>{car_rent.phone}</code>",
-        #     when=F["car_rent"].phone
-        # ),
+        RedirectUrl(
+            text=Const("Сайт 🌐"),
+            url=Format("{car_rent.site_url}"),
+            id="site_url",
+            when=F["car_rent"].site_url
+        ),
         buttons.CANCEL,
         state=CarRentCardSG.state,
         getter=car_rent_getter

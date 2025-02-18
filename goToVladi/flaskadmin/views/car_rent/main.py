@@ -1,7 +1,6 @@
 from wtforms.fields.simple import TelField
 
 from goToVladi.core.data.db import models as db
-from goToVladi.flaskadmin.utils.media_inline import MediaInline
 from goToVladi.flaskadmin.views.base import AppModelView
 from goToVladi.flaskadmin.views.mixins.columns import ColumnListEqualFiltersMixin
 from goToVladi.flaskadmin.views.mixins.description import DescriptionMixin
@@ -22,6 +21,7 @@ class CarRentView(AppModelView,
         "min_experience": "Минимальный стаж",
         "min_price": "Минимальная цена",
         "phone": "Телефон",
+        "site_url": "Сайт",
         "medias": "Медиафайлы",
     }
     column_filters = ["name"]

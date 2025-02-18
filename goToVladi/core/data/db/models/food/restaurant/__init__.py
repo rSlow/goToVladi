@@ -1,11 +1,12 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from sqlalchemy_utils import URLType, PhoneNumberType
+from sqlalchemy_utils import URLType
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base
 from goToVladi.core.data.db.models.food.cuisine import FoodCuisine
 from goToVladi.core.data.db.models.mixins import RegionMixin, BaseCardMixin, SocialMixin
+from goToVladi.core.data.db.types.phone import PhoneNumberType
 from goToVladi.core.data.db.utils.media import get_medias_field
 from .media import RestaurantMedia
 

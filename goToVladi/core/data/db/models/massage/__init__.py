@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy_utils import PhoneNumberType
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base
 from goToVladi.core.data.db.models.massage.media import MassageMedia
 from goToVladi.core.data.db.models.mixins import RegionMixin, BaseCardMixin
+from goToVladi.core.data.db.types.phone import PhoneNumberType
 from goToVladi.core.data.db.utils.media import get_medias_field
 
 
@@ -17,22 +17,8 @@ class Massage(BaseCardMixin, RegionMixin, Base):
 
     medias = get_medias_field(MassageMedia)
 
-    def to_dto(self):
-        return dto.Massage(
-            id=self.id,
-            name=self.name,
-            description=self.description,
-            min_price=self.min_price,
-            phone=self.phone,
-            medias=[_media.to_dto() for _media in self.medias],
-            region_id=self.region_id,
-            region=self.region.to_dto() if self.region else None,
-        )
+    def to_list_dto(self) -> dto.ListMassage:
+        return dto.ListMassage.model_validate(self)
 
-    def to_list_dto(self):
-        return dto.ListMassage(
-            id=self.id,
-            name=self.name,
-            region_id=self.region_id,
-            region=self.region.to_dto() if self.region else None,
-        )
+    def to_dto(self) -> dto.Massage:
+        return dto.Massage.model_validate(self)

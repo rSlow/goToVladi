@@ -1,11 +1,11 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy_utils import PhoneNumberType
 
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base
 from goToVladi.core.data.db.models.mixins import RegionMixin
 from goToVladi.core.data.db.models.mixins.base_card import BaseCardMixin
+from goToVladi.core.data.db.types.phone import PhoneNumberType
 from goToVladi.core.data.db.utils.media import get_medias_field
 from .category import SeaRecreationCategory
 from .media import SeaRecreationMedia
