@@ -1,7 +1,14 @@
-<b>{{ car_rent.name }}</b> <br><br>
+<b>{{ car_rent.name }}</b> <br>
+<br>
 
 {% if car_rent.rating %}
     Рейтинг редакции - {{ car_rent.rating }} ⭐️<br>
+{% endif %}
+
+{% if car_rent.description %}
+    <br>
+    {{ car_rent.description }} <br>
+    <br>
 {% endif %}
 
 {% if car_rent.min_age %}

@@ -1,7 +1,7 @@
 from aiogram import Router
 
 from .categoring import car_rent_category_dialog
-from .car_rent import car_rent_dialog
+from .card import car_rent_dialog
 
 
 def setup():
