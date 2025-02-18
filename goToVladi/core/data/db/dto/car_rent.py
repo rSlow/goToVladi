@@ -1,6 +1,7 @@
 from .attachment import BaseAttachment
 from .base import BaseListCardDto, BaseCardDto, BaseDto
 from .region import RegionMixin
+from ..utils.dto_types import PhoneNumberType
 
 
 class CarRentMedia(BaseAttachment):
@@ -21,6 +22,6 @@ class CarRent(BaseCardDto, RegionMixin):
     min_age: int | None = None
     min_experience: int | None = None
     min_price: int | None = None
-    phone: str | None = None
+    phone: PhoneNumberType | None = None
     medias: list[CarRentMedia]
     car_classes: list[CarClass]

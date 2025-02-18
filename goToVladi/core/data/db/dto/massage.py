@@ -1,6 +1,7 @@
 from .attachment import BaseAttachment
 from .base import BaseListCardDto, BaseCardDto
 from .region import RegionMixin
+from ..utils.dto_types import PhoneNumberType
 
 
 class MassageMedia(BaseAttachment):
@@ -13,5 +14,5 @@ class ListMassage(BaseListCardDto, RegionMixin):
 
 class Massage(BaseCardDto, RegionMixin):
     min_price: float | None = None
-    phone: str | None = None
+    phone: PhoneNumberType | None = None
     medias: list[MassageMedia]
