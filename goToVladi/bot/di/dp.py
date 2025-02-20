@@ -5,6 +5,7 @@ from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.redis import RedisEventIsolation, RedisStorage, \
     DefaultKeyBuilder
+from aiogram.fsm.strategy import FSMStrategy
 from aiogram_dialog import BgManagerFactory
 from aiogram_dialog.manager.bg_manager import BgManagerFactoryImpl
 from dishka import Provider, Scope, provide, AsyncContainer
@@ -14,6 +15,8 @@ from redis.asyncio import Redis
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.config.models.storage import StorageConfig, StorageType
 from goToVladi.bot.dialogs import setup_dialogs
+from goToVladi.bot.filters.base import set_filter_on_router
+from goToVladi.bot.filters.user import role_filter
 from goToVladi.bot.handlers import setup_handlers
 from goToVladi.bot.middlewares import setup_middlewares
 from goToVladi.bot.utils.router import print_router_tree
@@ -33,7 +36,7 @@ class DpProvider(Provider):
             bot_config: BotConfig,
             storage: BaseStorage,
     ) -> Dispatcher:
-        dp = Dispatcher(storage=storage, events_isolation=event_isolation)
+        dp = Dispatcher(storage=storage, events_isolation=event_isolation, fsm_strategy=FSMStrategy.CHAT)
         setup_aiogram_dishka(container=dishka, router=dp)
         setup_handlers(dp, bot_config)
         bg_manager_factory = setup_dialogs(dp)
@@ -47,6 +50,8 @@ class DpProvider(Provider):
         #     "Configured middlewares \n%s",
         #     print_middleware_tree(dp) + "\n"
         # )
+
+        set_filter_on_router(dp, role_filter(allow_superuser=True))
 
         return dp
 

@@ -1,4 +1,5 @@
 from aiogram import types as tg
+from pydantic import Field
 
 from goToVladi.core.data.db.dto import Region
 from goToVladi.core.data.db.dto.base import BaseDto
@@ -14,6 +15,8 @@ class User(BaseDto, FlaskLoginMixin):
     is_superuser: bool | None = None
     is_active: bool | None = None
     region: Region | None = None
+
+    roles: list[str] = Field(default_factory=list)  # TODO add role system
 
     @property
     def fullname(self) -> str:
