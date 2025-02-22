@@ -15,7 +15,7 @@ class CarRent(BaseCardMixin, RegionMixin, Base):
 
     rating: Mapped[float | None]
     min_age: Mapped[int | None]
-    min_experience: Mapped[int | None]
+    min_experience: Mapped[float | None]
     min_price: Mapped[int | None]
     phone: Mapped[str | None] = mapped_column(PhoneNumberType(region="RU"), nullable=True)
     site_url: Mapped[str | None] = mapped_column(URLType, nullable=True)

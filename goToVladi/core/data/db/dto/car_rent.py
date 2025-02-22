@@ -20,7 +20,7 @@ class CarClass(BaseDto):
 class CarRent(BaseCardDto, RegionMixin):
     rating: float | None = None
     min_age: int | None = None
-    min_experience: int | None = None
+    min_experience: float | None = None
     min_price: int | None = None
     phone: PhoneNumberType | None = None
     site_url: str | None = None
