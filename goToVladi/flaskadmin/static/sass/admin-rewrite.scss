@@ -19,6 +19,9 @@ div[class^="container"] > .admin-form { // fix for container-fluid
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 
   & > .header-user {
     display: flex;
@@ -45,10 +48,12 @@ div[class^="container"] > .admin-form { // fix for container-fluid
     display: grid;
     grid-template-columns: 250px auto;
     padding-left: 0;
+    position: relative;
     & > .container-nav {
       height: calc(var(--vh) * 100 - 50px);
       //height: 100%;
-      position: relative;
+      position: sticky;
+      top: 50px;
       background: rgb(52, 58, 64);
       overflow-y: scroll;
       scrollbar-width: thin;
