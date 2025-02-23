@@ -18,15 +18,14 @@ class UserView(AppModelView):
     can_delete = False
     can_create = False
     column_labels = {
-        "tg_id": "Telegram ID",
-        "first_name": "Имя",
-        "last_name": "Фамилия",
-        "username": "Имя пользователя",
-        "is_superuser": "Администратор",
-        "region": "Город / регион",
+        db.User.tg_id: "Telegram ID",
+        db.User.first_name: "Имя",
+        db.User.last_name: "Фамилия",
+        db.User.username: "Имя пользователя",
+        db.User.is_superuser: "Администратор",
+        db.User.region: "Город / регион",
     }
-    column_list = ["tg_id", "username", "is_superuser"]
-    column_filters = column_list
+    column_filters = ["tg_id", "username", "is_superuser"]
     form_excluded_columns = [
         "hashed_password", "is_bot", "is_active",
         "created_at", "edited_at"

@@ -3,16 +3,14 @@ from sqlalchemy.orm import scoped_session, Session
 
 from goToVladi.core.data.db import models as db
 from goToVladi.flaskadmin.views.base import AppModelView
-from goToVladi.flaskadmin.views.mixins.columns import ColumnListEqualFiltersMixin
 
 
-class MessageTextView(AppModelView,
-                      ColumnListEqualFiltersMixin):
+class MessageTextView(AppModelView):
     can_delete = False
     column_labels = {
-        "name": "Ключ поля",
-        "description": "Описание",
-        "value": "Текст",
+        db.MessageText.name: "Ключ поля",
+        db.MessageText.description: "Описание",
+        db.MessageText.value: "Текст",
     }
     form_widget_args = {
         "name": {

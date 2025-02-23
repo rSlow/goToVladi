@@ -1,6 +1,6 @@
 from flask_admin.model.form import InlineFormAdmin
 
-# from goToVladi.core.data.db import models as db
+from goToVladi.core.data.db import models as db
 from goToVladi.flaskadmin.views.base import AppModelView
 
 
@@ -14,7 +14,7 @@ class CarClassView(AppModelView):
     ]
     form_excluded_columns = ["car_rents"]
     column_labels = {
-        "name": "Название",
-        "description": "Описание",
-        "car_rents": "Автопрокаты",
+        db.CarClass.name: "Название",
+        db.CarClass.description: "Описание",
+        db.CarClass.car_rents: "Автопрокаты",
     }

@@ -6,7 +6,6 @@ from wtforms.fields.simple import TelField
 
 from goToVladi.core.data.db import models as db
 from goToVladi.flaskadmin.views.base import AppModelView
-from goToVladi.flaskadmin.views.mixins.columns import ColumnListEqualFiltersMixin
 from goToVladi.flaskadmin.views.mixins.description import DescriptionMixin
 from goToVladi.flaskadmin.views.mixins.media import MediaFilesMixin
 
@@ -17,20 +16,19 @@ class AgeField(DecimalField):
 
 class CarRentView(AppModelView,
                   DescriptionMixin,
-                  ColumnListEqualFiltersMixin,
                   MediaFilesMixin[db.CarRentMedia]):
     column_labels = {
-        "car_classes": "Классы автомобилей",
-        "region": "Город / регион",
-        "name": "Название",
-        "description": "Описание",
-        "rating": "Рейтинг",
-        "min_age": "Минимальный возраст",
-        "min_experience": "Минимальный стаж",
-        "min_price": "Минимальная цена",
-        "phone": "Телефон",
-        "site_url": "Сайт",
-        "medias": "Медиафайлы",
+        db.CarRent.car_classes: "Классы автомобилей",
+        db.CarRent.region: "Город / регион",
+        db.CarRent.name: "Название",
+        db.CarRent.description: "Описание",
+        db.CarRent.rating: "Рейтинг",
+        db.CarRent.min_age: "Минимальный возраст",
+        db.CarRent.min_experience: "Минимальный стаж",
+        db.CarRent.min_price: "Минимальная цена",
+        db.CarRent.phone: "Телефон",
+        db.CarRent.site_url: "Сайт",
+        "regions": "Город",
     }
     column_filters = ["name"]
     form_overrides = {

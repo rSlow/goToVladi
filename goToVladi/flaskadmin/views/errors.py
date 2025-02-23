@@ -24,8 +24,7 @@ def create_error_handler(status: int):
 def setup(app: Flask):
     router = Blueprint("errors", __name__)
 
-    app.register_error_handler(500, create_error_handler(500))
-    app.register_error_handler(501, create_error_handler(501))
-    app.register_error_handler(502, create_error_handler(502))
+    for error in [500, 501, 502]:
+        app.register_error_handler(error, create_error_handler(error))
 
     return router

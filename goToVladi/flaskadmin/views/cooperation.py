@@ -3,16 +3,14 @@ from sqlalchemy.orm import scoped_session, Session
 
 from goToVladi.core.data.db import models as db
 from goToVladi.flaskadmin.views.base import AppModelView
-from goToVladi.flaskadmin.views.mixins.columns import ColumnListEqualFiltersMixin
 
 
-class CooperationView(AppModelView,
-                      ColumnListEqualFiltersMixin):
+class CooperationView(AppModelView):
     can_create = False
     column_labels = {
-        "text": "Текст",
-        "is_archived": "Архивное",
-        "created_at": "Время создания",
+        db.Cooperation.text: "Текст",
+        db.Cooperation.is_archived: "Архивное",
+        db.Cooperation.created_at: "Время создания",
     }
     form_excluded_columns = ["edited_at"]
     column_exclude_list = form_excluded_columns
