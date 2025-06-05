@@ -44,7 +44,7 @@ start_window = Window(
 
 
 @inject
-async def regions_getter(dao: FromDishka[RegionDao]):
+async def regions_getter(dao: FromDishka[RegionDao], **__):
     regions = await dao.get_all()
     return {"regions": regions}
 
