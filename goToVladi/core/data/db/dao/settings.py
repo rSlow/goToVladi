@@ -14,6 +14,6 @@ class SettingsDao(BaseDao[db.Setting]):
             select(self.model)
             .where(self.model.key == key)
         )
-        message = result.one()
+        message = result.one_or_none()
         if message is not None:
             return message.to_dto()

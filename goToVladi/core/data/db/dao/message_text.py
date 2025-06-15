@@ -14,6 +14,6 @@ class MessageTextDao(BaseDao[db.MessageText]):
             select(self.model)
             .where(self.model.name == name)
         )
-        message = result.one()
+        message = result.one_or_none()
         if message is not None:
             return message.to_dto()
