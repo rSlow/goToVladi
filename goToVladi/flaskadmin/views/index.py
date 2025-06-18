@@ -14,12 +14,13 @@ from goToVladi.flaskadmin.config.models import FlaskAppConfig
 from goToVladi.flaskadmin.forms.login import LoginForm
 from goToVladi.flaskadmin.utils import exceptions as exc
 from goToVladi.flaskadmin.utils.auth import AuthService
+from goToVladi.flaskadmin.utils.auth.rights import has_admin_panel_rights, is_admin_panel_user
 
 
 class AdminIndexView(BaseAdminIndexView):
     @expose("/")
     def index(self):
-        if not current_user.is_authenticated or not current_user.is_superuser:
+        if not is_admin_panel_user(current_user):
             return redirect(url_for(".login_view"))
         return super().index()
 
@@ -48,7 +49,7 @@ class AdminIndexView(BaseAdminIndexView):
         form_errors = get_flashed_messages(with_categories=True, category_filter=["form-error"])
         form.form_errors.extend([error for _, error in form_errors])
 
-        if current_user.is_authenticated and current_user.is_superuser:
+        if is_admin_panel_user(current_user):
             return redirect(url_for(".index"))
 
         return self.render(
@@ -73,7 +74,7 @@ class AdminIndexView(BaseAdminIndexView):
                 tg_user = UserTgAuth.model_validate(user_data)
                 check_tg_auth(tg_user, config.auth.tg_bot_token)
                 user = crud.user.get_by_tg_id(tg_user.id, session)
-                if not user.is_superuser:
+                if not has_admin_panel_rights(user):
                     raise exc.AccessDeniedError
                 flask_login.login_user(user)
                 return redirect(url_for(".index"))

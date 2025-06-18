@@ -3,6 +3,8 @@ from aiogram_dialog.widgets.kbd import Start, Group
 from aiogram_dialog.widgets.text import Const
 
 from goToVladi.bot.dialogs.region import has_region
+from goToVladi.bot.filters.user import F_User
+from goToVladi.bot.states.admin import AdminMainSG
 from goToVladi.bot.states.car_rent import CarRentSG
 from goToVladi.bot.states.cooperation import CooperationSG
 from goToVladi.bot.states.food import FoodCategorisesSG
@@ -69,6 +71,13 @@ main_menu = Dialog(
             text=Const("🙋‍♂️ Хочу в вами сотрудничать!"),
             id="cooperation",
             state=CooperationSG.input
+        ),
+
+        Start(
+            Const("Админка ⚙️"),
+            id="admin",
+            state=AdminMainSG.state,
+            when=F_User.is_superuser
         ),
 
         state=MainMenuSG.state

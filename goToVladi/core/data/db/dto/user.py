@@ -1,9 +1,15 @@
+from typing import Annotated
+
 from aiogram import types as tg
-from pydantic import Field
+from pydantic import Field, BeforeValidator
 
 from goToVladi.core.data.db.dto import Region
 from goToVladi.core.data.db.dto.base import BaseDto
 from goToVladi.core.utils.auth.models import FlaskLoginMixin
+
+
+def ensure_roles(db_roles):
+    return [role.name for role in db_roles]
 
 
 class User(BaseDto, FlaskLoginMixin):
@@ -16,7 +22,7 @@ class User(BaseDto, FlaskLoginMixin):
     is_active: bool | None = None
     region: Region | None = None
 
-    roles: list[str] = Field(default_factory=list)  # TODO add role system
+    roles: Annotated[list[str], BeforeValidator(ensure_roles)] = Field(default_factory=list)  # noqa
 
     @property
     def fullname(self) -> str:
@@ -28,11 +34,13 @@ class User(BaseDto, FlaskLoginMixin):
 
     @property
     def name_mention(self) -> str:
-        return (self.fullname
+        return (
+                self.fullname
                 or self.username
                 or str(self.tg_id)
                 or str(self.id)
-                or "unknown")
+                or "unknown"
+        )
 
     @classmethod
     def from_aiogram(cls, user: tg.User) -> "User":
@@ -57,3 +65,12 @@ class UserWithCreds(User):
     def without_password(self) -> User:
         user_data = self.model_dump(exclude={"hashed_password"})
         return User.model_validate(user_data)
+
+
+class UserRole(BaseDto):
+    name: str
+    alias: str
+
+    @property
+    def mention(self):
+        return f"{self.alias} ({self.name})"

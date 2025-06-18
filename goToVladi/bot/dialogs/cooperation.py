@@ -22,7 +22,7 @@ async def on_text_input(
     user: dto.User = manager.middleware_data["user"]
     await dao.add(text=data, username=user.username)
     await message.answer("Заявка принята, в ближайшее время мы ее рассмотрим!")
-    for user_id in app_config.admins:  # TODO fix this
+    for user_id in app_config.superusers:  # TODO fix this
         await bot.send_message(
             chat_id=user_id,
             text=jinja.render_template(

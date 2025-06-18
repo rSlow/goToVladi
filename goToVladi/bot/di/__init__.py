@@ -6,6 +6,7 @@ from dishka import Provider
 
 from .bot import BotProvider
 from .dp import DpProvider
+from .interactors import InteractorProvider
 from .jinja import JinjaProvider
 
 
@@ -13,5 +14,6 @@ def get_bot_providers() -> list[Provider]:
     return [
         BotProvider(),
         DpProvider(),
-        JinjaProvider()
+        JinjaProvider(),
+        InteractorProvider()
     ]

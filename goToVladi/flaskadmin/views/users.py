@@ -24,6 +24,7 @@ class UserView(AppModelView):
         db.User.username: "Имя пользователя",
         db.User.is_superuser: "Администратор",
         db.User.region: "Город / регион",
+        db.User.roles: "Роли",
     }
     column_filters = ["tg_id", "username", "is_superuser"]
     form_excluded_columns = [
@@ -36,21 +37,21 @@ class UserView(AppModelView):
         },
     }
 
-    @action(
-        name="set_as_admin",
-        text="Сделать администратором",
-        confirmation="Вы действительно хотите дать этим пользователям права администратора?"
-    )
+    # @action(
+    #     name="set_as_admin",
+    #     text="Сделать администратором",
+    #     confirmation="Вы действительно хотите дать этим пользователям права администратора?"
+    # )
     def set_as_admin(self, id_list: list[str]):
         id_list = [*map(int, id_list)]
         crud.user.set_admin_rights(self.session, id_list, True)
         flash(f"Обновлены права {len(id_list)} пользователям.", "info")
 
-    @action(
-        name="set_as_not_admin",
-        text="Убрать права администратора",
-        confirmation="Вы действительно забрать у этих пользователей права администратора?"
-    )
+    # @action(
+    #     name="set_as_not_admin",
+    #     text="Убрать права администратора",
+    #     confirmation="Вы действительно забрать у этих пользователей права администратора?"
+    # )
     def set_as_not_admin(self, id_list: list[str]):
         id_list = [*map(int, id_list)]
         if current_user.id in id_list:

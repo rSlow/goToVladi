@@ -14,6 +14,6 @@ from .message_text import MessageText
 from .region import Region
 from .sea_recreation import SeaRecreation, SeaRecreationMedia, SeaRecreationCategory
 from .trips import Trip, TripMedia
-from .user import User
+from .user import User, Role, UsersRoles
 from .cooperation import Cooperation
 from .settings import Setting

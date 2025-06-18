@@ -22,5 +22,6 @@ class SettingsView(NoReadonlyCreateView, AppModelView):
 
     @inject
     def is_visible(self, app_config: FromDishka[AppConfig]):
-        if current_user.is_authenticated:
-            return current_user.tg_id in app_config.admins
+        return current_user.tg_id in app_config.superusers
+
+    is_accessible = is_visible

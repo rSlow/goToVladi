@@ -4,6 +4,7 @@ from sqlalchemy.orm import mapped_column, Mapped, relationship
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.models import Base, Region
 from goToVladi.core.data.db.models.mixins.time import TimeMixin
+from .roles import UsersRoles, Role
 
 
 class User(TimeMixin, Base):
@@ -18,6 +19,9 @@ class User(TimeMixin, Base):
     is_bot: Mapped[bool] = mapped_column(default=False, server_default=sql.false())
     is_superuser: Mapped[bool] = mapped_column(default=False, server_default=sql.false())
     is_active: Mapped[bool] = mapped_column(default=True, server_default=sql.true())
+    roles: Mapped[list[Role]] = relationship(
+        secondary=UsersRoles, back_populates="users",
+    )
 
     region_id: Mapped[int] = mapped_column(
         ForeignKey("regions.id", ondelete="SET NULL"), nullable=True

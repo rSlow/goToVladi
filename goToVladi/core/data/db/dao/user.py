@@ -1,8 +1,7 @@
-from sqlalchemy import ScalarResult, select, Result, update
+from sqlalchemy import ScalarResult, select, Result, update, func
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 from goToVladi.core.data.db import models as db, dto
 from goToVladi.core.data.db.dao.base import BaseDao
@@ -15,7 +14,7 @@ class UserDao(BaseDao[db.User]):
         result: ScalarResult[db.User] = await self.session.scalars(
             select(self.model)
             .where(self.model.tg_id == tg_id)
-            .options(*get_user_options())
+            .options(*user_options())
         )
         user = result.one()
         return user.to_dto()
@@ -24,7 +23,7 @@ class UserDao(BaseDao[db.User]):
         result = await self.session.scalars(
             select(self.model)
             .where(self.model.id == id_)
-            .options(*get_user_options())
+            .options(*user_options())
         )
         return result.one().to_dto()
 
@@ -32,7 +31,7 @@ class UserDao(BaseDao[db.User]):
         result: Result[tuple[db.User]] = await self.session.execute(
             select(self.model)
             .where(self.model.username == username)
-            .options(*get_user_options())
+            .options(*user_options())
         )
 
         try:
@@ -102,8 +101,28 @@ class UserDao(BaseDao[db.User]):
         )
         await self.commit()
 
+    async def count_with_role(self, role_id: int):
+        res = await self.session.scalars(
+            select(func.count(self.model.id))
+            .join(db.UsersRoles)
+            .join(db.Role)
+            .where(db.Role.id == role_id)
+        )
+        return res.one()
 
-def get_user_options():
+    async def get_all_with_role(self, role_id: int):
+        res = await self.session.scalars(
+            select(self.model)
+            .join(db.UsersRoles)
+            .join(db.Role)
+            .where(db.Role.id == role_id)
+            .options(*user_options())
+        )
+        return [user.to_dto() for user in res.all()]
+
+
+def user_options():
     return (
         joinedload(db.User.region),
+        selectinload(db.User.roles),
     )

@@ -5,4 +5,4 @@ from dataclasses import dataclass
 class AppConfig:
     name: str
     version: str | int
-    admins: list[int]
+    superusers: list[int]
