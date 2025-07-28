@@ -4,7 +4,7 @@ from aiogram import Dispatcher, Router
 
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.filters.private import set_chat_private_filter
-from . import base_commands
+from . import base_commands, test
 from . import errors
 
 logger = logging.getLogger(__name__)
@@ -18,6 +18,7 @@ def setup_handlers(dp: Dispatcher, bot_config: BotConfig):
 
     handlers_router.include_routers(
         base_commands.setup(),
+        test.setup(),
     )
     dp.include_router(handlers_router)
 

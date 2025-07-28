@@ -5,24 +5,33 @@ import uvicorn
 from aiogram import Bot, Dispatcher
 from dishka import make_async_container, AsyncContainer
 from dishka.integrations.fastapi import setup_dishka as setup_fastapi_dishka
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
+from bot_schema_parser.loader import PostgresqlButtonConfigLoader
+from bot_schema_parser.data_builder import LoaderSwitchDataBuilder
+from bot_schema_parser.setup import setup_schema
 from goToVladi.api import create_app as create_api_app, ApiAppConfig
 from goToVladi.api.config.models.api import ApiConfig
 from goToVladi.api.config.parser.main import load_config as load_api_config
 from goToVladi.api.di import get_api_providers
 from goToVladi.api.utils.webhook.handler import SimpleRequestHandler
 from goToVladi.api.utils.webhook.setup import setup_lifespan
-from goToVladi.bot.config.models import BotAppConfig
+from goToVladi.bot.config.models import BotAppConfig, BotConfig
 from goToVladi.bot.config.models.webhook import WebhookConfig
 from goToVladi.bot.config.parser.main import load_config as load_bot_config
 from goToVladi.bot.di import get_bot_providers
 from goToVladi.bot.di.dp import resolve_update_types
+from goToVladi.bot.handlers import setup_handlers
 from goToVladi.bot.utils import ui
+from goToVladi.bot.utils.setup import setup_dispatcher
+from goToVladi.bot.views.types.db_text import DBText
 from goToVladi.core.config import BaseConfig
 from goToVladi.core.config.models.web import WebConfig
 from goToVladi.core.config.parser.config_logging import setup_logging
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.config.parser.retort import get_base_retort
+from goToVladi.core.data.db.dao import MessageTextDao
+from goToVladi.core.data.db.models import MessageConfig
 from goToVladi.core.data.db.utils.storage import configure_storages
 from goToVladi.core.di import get_common_providers
 from goToVladi.core.utils import di_visual
@@ -60,7 +69,7 @@ def main():
 
     startup_callback = partial(
         on_startup,
-        di_container, api_config.web, api_config.api, webhook_config
+        di_container, api_config.web, api_config.api, webhook_config, bot_config.bot
     )
     shutdown_callback = partial(on_shutdown, di_container)
     api_app.add_event_handler("startup", startup_callback)
@@ -79,7 +88,8 @@ def main():
 
 async def on_startup(
         dishka: AsyncContainer,
-        web_config: WebConfig, api_config: ApiConfig, webhook_config: WebhookConfig
+        web_config: WebConfig, api_config: ApiConfig, webhook_config: WebhookConfig,
+        bot_config: BotConfig
 ):
     webhook_url = (
             web_config.real_base_url +
@@ -87,8 +97,10 @@ async def on_startup(
             webhook_config.path
     )
 
-    bot: Bot = await dishka.get(Bot)
     dp: Dispatcher = await dishka.get(Dispatcher)
+    setup_dispatcher(dp, dishka, bot_config)
+
+    bot: Bot = await dishka.get(Bot)
     await bot.set_webhook(
         url=webhook_url,
         secret_token=webhook_config.secret,
@@ -98,6 +110,19 @@ async def on_startup(
 
     await ui.setup(bot)
     logger.info(f"Bot {(await bot.get_my_name()).name} is ready.")
+
+    async with dishka() as container:
+        await DBText.check_keys(await container.get(MessageTextDao))
+
+    # ----------------------------------------------------- #
+    session_maker = await dishka.get(async_sessionmaker[AsyncSession])
+    config_loader = PostgresqlButtonConfigLoader(
+        message_identifier_parser=int,
+        database_class=MessageConfig,
+        session_maker=session_maker
+    )
+    button_data_builder = LoaderSwitchDataBuilder(config_loader)
+    setup_schema(dp, button_data_builder)
 
 
 async def on_shutdown(dishka: AsyncContainer):

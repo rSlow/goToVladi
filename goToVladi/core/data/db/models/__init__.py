@@ -17,3 +17,4 @@ from .trips import Trip, TripMedia
 from .user import User, Role, UsersRoles
 from .cooperation import Cooperation
 from .settings import Setting
+from .message_config import MessageConfig

@@ -1,35 +1,51 @@
-from typing import Any, Callable, Optional, Awaitable, ParamSpec
+from enum import StrEnum, auto
+from typing import Any, Callable, Optional, Awaitable, ParamSpec, final
 
 from dishka import AsyncContainer
 
+from goToVladi.bot.views.alert import BotAlert
 from goToVladi.core.data.db.dao import SettingsDao
 
 P = ParamSpec("P")
 
 
-def db_settings_filter(
-        key: str, allowed_value: Any = True,
-        worker: Optional[Callable[P, Awaitable[bool]]] = None
+@final
+class MatchMode(StrEnum):
+    allow_if_matched = auto()
+    allow_if_not_matched = auto()
+
+
+def filter_on_db_setting(
+        key: str, value_to_filter_work: Any = True,
+        match_mode: MatchMode = MatchMode.allow_if_not_matched,
+        filter_: Optional[Callable[P, Awaitable[bool]]] = None
 ):
-    async def _db_settings_filter(*args, **kwargs):
+    async def _filter_on_db_setting(*args, **kwargs):
         container: AsyncContainer = kwargs.get("dishka_container")
         settings_dao = await container.get(SettingsDao)
         setting = await settings_dao.get_by_key(key)
         if setting is None:
-            return True
+            alert = await container.get(BotAlert)
+            await alert(f"setting {key = } is not found!")
+            return match_mode == MatchMode.allow_if_not_matched
 
-        setting_value = setting.value
-        if setting_value.isdigit():
-            setting_value = int(setting_value)
+        db_value = setting.value
+        if db_value.isdigit():
+            db_value = int(db_value)
 
-        if allowed_value is True:
-            setting_value = bool(setting_value)
+        if value_to_filter_work is True:
+            db_value = bool(db_value)
 
-        is_filter_allowed = setting_value == allowed_value
+        values_matched = db_value == value_to_filter_work
+        if values_matched and filter_ is not None:
+            return await filter_(*args, **kwargs)
 
-        if worker is not None and not is_filter_allowed:
-            return await worker(*args, **kwargs)
+        if match_mode is MatchMode.allow_if_matched:
+            return values_matched
 
-        return is_filter_allowed
+        if match_mode is MatchMode.allow_if_not_matched:
+            return not values_matched
 
-    return _db_settings_filter
+        return False
+
+    return _filter_on_db_setting

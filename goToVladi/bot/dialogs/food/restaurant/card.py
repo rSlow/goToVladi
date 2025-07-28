@@ -37,41 +37,44 @@ async def get_restaurant(
 
 
 restaurant_card_dialog = Dialog(
-    Window(
-        Format("<b>{restaurant.name}</b>\n"),
-        Format("<u>Оценка</u>: {restaurant.rating} / 5 ⭐️"),
-        Format("<u>Средний чек</u>: {restaurant.average_check} ₽\n"),
-        ScrollingSplitText(
-            text=Format("{restaurant.description}"),
-            id_=DESCRIPTION_SCROLL,
-            page_size=600,
-            when=F["restaurant"].description,
-            sep="\n"
-        ),
-        Format(
-            text="<u>\nТелефон:</u> <code>{restaurant.phone}</code>",
-            when=F["restaurant"].phone
-        ),
-
-        PaginationRow(
-            id_=DESCRIPTION_SCROLL, scroll=DESCRIPTION_SCROLL,
-            current_text=Format("Описание {current_page1} / {pages}"),
-            when=F["description_length"] >= 600
-        ),
-
-        Group(
-            RedirectUrl(
-                text=Const("Сайт 🌐"),
-                url=Format("{restaurant.site_url}"),
-                id="site_url",
-                when=F["restaurant"].site_url
+    # with_schematic(
+        Window(
+            Format("<b>{restaurant.name}</b>\n"),
+            Format("<u>Оценка</u>: {restaurant.rating} / 5 ⭐️"),
+            Format("<u>Средний чек</u>: {restaurant.average_check} ₽\n"),
+            ScrollingSplitText(
+                text=Format("{restaurant.description}"),
+                id_=DESCRIPTION_SCROLL,
+                page_size=600,
+                when=F["restaurant"].description,
+                sep="\n"
             ),
-            *get_social_urls(data_field_name="restaurant"),
-            width=2,
-            when=F["restaurant"]  # .paid TODO сделать фильтрацию по оплате
+            Format(
+                text="<u>\nТелефон:</u> <code>{restaurant.phone}</code>",
+                when=F["restaurant"].phone
+            ),
+
+            PaginationRow(
+                id_=DESCRIPTION_SCROLL, scroll=DESCRIPTION_SCROLL,
+                current_text=Format("Описание {current_page1} / {pages}"),
+                when=F["description_length"] >= 600
+            ),
+
+            Group(
+                RedirectUrl(
+                    text=Const("Сайт 🌐"),
+                    url=Format("{restaurant.site_url}"),
+                    id="site_url",
+                    when=F["restaurant"].site_url
+                ),
+                *get_social_urls(data_field_name="restaurant"),
+                width=2,
+                when=F["restaurant"]  # .paid TODO сделать фильтрацию по оплате
+            ),
+            buttons.CANCEL,
+            state=RestaurantCardSG.state,
+            getter=get_restaurant,
         ),
-        buttons.CANCEL,
-        state=RestaurantCardSG.state,
-        getter=get_restaurant,
-    )
+        # alias="Карточка ресторана"
+    # )
 )

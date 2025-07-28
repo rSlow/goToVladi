@@ -1,5 +1,6 @@
 from aiogram import types, F
 from aiogram_dialog import Window, DialogManager
+from aiogram_dialog.manager.bg_manager import BgManager
 from aiogram_dialog.widgets.kbd import Group, Select
 from aiogram_dialog.widgets.text import Const, Format
 from dishka import FromDishka
@@ -23,7 +24,6 @@ async def set_district(
         manager: DialogManager, district_id: str
 ):
     manager.dialog_data["district_id"] = int(district_id)
-    await manager.next()
 
 
 district_window = Window(

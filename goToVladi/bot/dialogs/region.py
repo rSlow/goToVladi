@@ -52,7 +52,7 @@ async def regions_getter(dao: FromDishka[RegionDao], **__):
 @inject
 async def on_region_click(
         callback: types.CallbackQuery, _, manager: DialogManager, region_id: str,
-        user_dao:FromDishka[UserDao]
+        user_dao: FromDishka[UserDao]
 ):
     middleware_data: MiddlewareData = manager.middleware_data
     user = middleware_data["user"]

@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from sqlalchemy import select
 
 from goToVladi.core.data.db import models as db
@@ -17,3 +19,10 @@ class MessageTextDao(BaseDao[db.MessageText]):
         message = result.one_or_none()
         if message is not None:
             return message.to_dto()
+
+    async def get_missing_keys(self, keys: Iterable[str]):
+        res = await self.session.scalars(
+            select(self.model)
+            .where(self.model.name.not_in(keys))
+        )
+        return [key.to_dto() for key in res.all()]

@@ -1,16 +1,10 @@
-from aiogram import Bot
-
-from goToVladi.bot.config.models import BotConfig
+from goToVladi.bot.views.alert import BotAlert
 
 
 class ErrorMessageInteractor:
-    def __init__(self, bot: Bot, config: BotConfig):
-        self.bot = bot
-        self.config = config
+    def __init__(self, alert: BotAlert):
+        self.alert = alert
 
     async def __call__(self, exc: Exception):
         if exc.args:
-            await self.bot.send_message(
-                chat_id=self.config.log_chat,
-                text=exc.args[0]
-            )
+            await self.alert(exc.args[0])

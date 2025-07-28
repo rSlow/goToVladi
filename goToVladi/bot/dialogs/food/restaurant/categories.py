@@ -15,7 +15,10 @@ from goToVladi.core.data.db.dao import RestaurantDao
 @inject
 async def get_cuisines(dao: FromDishka[RestaurantDao], user: dto.User, **__):
     cuisines = await dao.get_all_cuisines(region_id=user.region.id)
-    return {"cuisines": cuisines}
+    return {
+        "cuisines": cuisines,
+        "region": user.region,
+    }
 
 
 async def set_cuisine(_, __, manager: DialogManager, cuisine_id: str):
@@ -92,5 +95,7 @@ restaurants_window = Window(
 
 restaurant_list_dialog = Dialog(
     cuisines_window,
-    restaurants_window
+    restaurants_window,
+    # with_schematic(cuisines_window, name="cuisines", alias="Кухни ресторанов"),
+    # with_schematic(restaurants_window, name="restaurants", alias="Рестораны"),
 )

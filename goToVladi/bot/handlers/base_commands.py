@@ -6,8 +6,10 @@ from dishka import FromDishka
 from dishka.integrations.aiogram import inject
 from jinja2 import Environment
 
+from goToVladi.bot.di.jinja import JinjaRenderer
 from goToVladi.bot.states.region import RegionSG
 from goToVladi.bot.states.start import MainMenuSG
+from goToVladi.bot.utils.dialog import update_window
 from goToVladi.bot.views import commands
 from goToVladi.bot.views.jinja import render_template
 from goToVladi.core.data.db import dto
@@ -31,24 +33,24 @@ async def cmd_start(
 @inject
 async def cmd_help(
         message: types.Message, dialog_manager: DialogManager,
-        jinja: FromDishka[Environment]
+        jinja: FromDishka[JinjaRenderer]
 ):
-    template = jinja.get_template("help.jinja2")
-    await message.answer(render_template(template))
-    await dialog_manager.update({}, show_mode=ShowMode.DELETE_AND_SEND)
+    await message.answer(jinja.render_template("help.jinja2"))
+    await update_window(dialog_manager)
 
 
-async def cmd_about(message: types.Message, dialog_manager: DialogManager):
-    await message.answer(
-        f"Разработчик бота - @rs1ow\n"
-        f"Дизайнер бота - @petrunin_artem"
-    )
-    await dialog_manager.update({}, show_mode=ShowMode.DELETE_AND_SEND)
+@inject
+async def cmd_about(
+        message: types.Message, dialog_manager: DialogManager,
+        jinja: FromDishka[JinjaRenderer]
+):
+    await message.answer(jinja.render_template("about.jinja2"))
+    await update_window(dialog_manager)
 
 
 async def cmd_update(message: types.Message, dialog_manager: DialogManager):
     await message.delete()
-    await dialog_manager.update({}, show_mode=ShowMode.DELETE_AND_SEND)
+    await update_window(dialog_manager)
 
 
 async def cmd_region(_: types.Message, dialog_manager: DialogManager):

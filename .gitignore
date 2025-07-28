@@ -162,3 +162,5 @@ cython_debug/
 /goToVladi/flaskadmin/static/css/c/
 /deploy/
 /log/
+/poetry.toml
+/test.py
