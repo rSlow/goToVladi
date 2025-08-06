@@ -5,9 +5,10 @@ from aiogram import Bot
 from aiogram.types import InlineKeyboardButton, KeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder, KeyboardBuilder, ReplyKeyboardBuilder
 
+from . import BotSchema
 from .buttons.base import ApiButton, BuildingButton, RawButton
-from .buttons.types import InlineButtonActions, ReplyButtonActions, ButtonActions, \
-    AiogramButton, AiogramButtonType, ButtonActionsEnum
+from .buttons.types import InlineButtonActions, ReplyButtonActions, AiogramButtonType, \
+    ButtonActionsEnum
 from .data_builder import BaseDataBuilder
 from .message import ApiMessage, ApiKeyboard, ButtonFactory
 from .sender import SendExecutor, default_send_executor
@@ -67,13 +68,17 @@ class BotSchemaManager:
     def __init__(
             self,
             bot: Bot,
-            data_builders: dict[type[BuildingButton], BaseDataBuilder],
-            send_executor: SendExecutor = default_send_executor,
+            bot_schema: BotSchema,
+            data_builder: BaseDataBuilder,
+            send_executor: SendExecutor,
     ):
         self._bot = bot
-        self._data_builders = data_builders
+        self._bot_schema = bot_schema
+        self._data_builder = data_builder
         self._send_executor = send_executor
-        # TODO check all builders registered
+
+        for schema in self._bot_schema.window_schemas:
+            ...
 
     @staticmethod  # TODO
     def _get_markup_factory(button_factory_name: ButtonFactory) -> BaseMarkupFactory:
@@ -90,8 +95,7 @@ class BotSchemaManager:
             button_class: AiogramButtonType
     ):
         if isinstance(button, BuildingButton):
-            data_builder = self._data_builders[type(button)]
-            button_data = await data_builder.create_data(button)
+            button_data = await self._data_builder.create_data(button)
             return button.as_aiogram_button(button_data, button_class)
             # return button_class(**button.get_button_kwargs(button_data))
         if isinstance(button, RawButton):
@@ -126,3 +130,6 @@ class BotSchemaManager:
         if button_class_type == KeyboardButton:
             return [t.value for t in ReplyButtonActions]
         raise ButtonClassTypeError
+
+    async def handle_button(self, button_config: ApiButton):
+        pass

@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import Any, Callable, TypeVar, Protocol
+from typing import Any, Callable, TypeVar, Protocol, Hashable
 
 from sqlalchemy import JSON, insert, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -27,10 +27,10 @@ class ButtonConfigLoader(ABC):
         return self._message_identifier_parser(message_identifier)
 
     @abstractmethod
-    async def load_button_config(self, button_config_identifier: Any) -> ApiMessage | None: ...
+    async def load_button_config(self, button_config_identifier: Hashable) -> ApiMessage | None: ...
 
     @abstractmethod
-    async def save_button_config(self, button: ApiButton) -> Any: ...
+    async def save_button_config(self, button: ApiButton) -> Hashable: ...
 
 
 class PostgresqlMessageConfig:
@@ -45,7 +45,7 @@ class PostgresqlMessageConfig:
     __tablename__ = "message_config"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    button_data = mapped_column(JSON)
+    button_data: dict = mapped_column(JSON)
 
 
 class PostgresqlButtonConfigLoader(ButtonConfigLoader):

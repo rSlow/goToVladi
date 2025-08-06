@@ -1,11 +1,9 @@
-from aiogram import types, Router, Bot
+from aiogram import types, Router
 from aiogram.filters import Command
 
-from bot_schema_parser import ApiMessage, BotSchema
-from bot_schema_parser.buttons import SwitchStateButton
-from bot_schema_parser.data_builder import BaseSwitchDataBuilder
+from bot_schema_parser import ApiMessage
 from bot_schema_parser.schema_manager import BotSchemaManager
-from bot_schema_parser.types import BUILDER_KEY, SCHEMA_KEY
+from bot_schema_parser.types import MANAGER_KEY
 
 message_json = {
     "chat_ids": [
@@ -67,13 +65,8 @@ message_json = {
 }
 
 
-async def cmd_test(message: types.Message, bot: Bot, **kwargs):
-    data_builder: BaseSwitchDataBuilder = kwargs.get(BUILDER_KEY)
-    schema_manager: BotSchemaManager = BotSchemaManager(
-        bot,
-        {SwitchStateButton: data_builder}
-    )
-    bot_schema: BotSchema = kwargs.get(SCHEMA_KEY)
+async def cmd_test(_message: types.Message, **kwargs):
+    schema_manager: BotSchemaManager = kwargs.get(MANAGER_KEY)
     api_message = ApiMessage.model_validate(message_json)
     await schema_manager.handle_message(api_message)
 

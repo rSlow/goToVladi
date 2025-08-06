@@ -1,15 +1,17 @@
 import warnings
 from typing import Iterable, cast
 
-from aiogram import Dispatcher
+from aiogram import Dispatcher, Bot
 from aiogram_dialog import Dialog, Window
 from aiogram_dialog.setup import collect_dialogs
-from aiogram_dialog.widgets.kbd import Keyboard, SwitchTo, Start, ListGroup, Group
+from aiogram_dialog.widgets.kbd import Keyboard, ListGroup, Group
 
-from .data_builder import BaseSwitchDataBuilder
+from .data_builder import BaseDataBuilder
 from .handlers import register_schema_handlers
+from .schema_manager import BotSchemaManager
 from .schematic import WindowSchema, BotSchema, WindowSchemas
-from .types import SCHEMATIC_ATTR_NAME, SCHEMA_KEY, BUILDER_KEY
+from .sender import SendExecutor, default_send_executor
+from .types import SCHEMATIC_ATTR_NAME, MANAGER_KEY
 
 
 def _get_window_buttons(keyboard: Keyboard) -> Iterable[Keyboard]:
@@ -41,12 +43,12 @@ def get_dp_schematic(dp: Dispatcher):
                 if window.keyboard:
                     buttons.extend(_get_window_buttons(window.keyboard))
 
-    for button in buttons:
-        if isinstance(button, (Start, SwitchTo)):
-            target_window = window_schemas.get(button.state)
-            if target_window:
-                # TODO create target caller
-                ...
+    # for button in buttons:
+    #     if isinstance(button, (Start, SwitchTo)):
+    #         target_window = window_schemas.get(button.state)
+    #         if target_window:
+    #             # TODO create target caller
+    #             ...
 
     return BotSchema(
         window_schemas=window_schemas,
@@ -56,13 +58,20 @@ def get_dp_schematic(dp: Dispatcher):
 
 def setup_schema(
         dp: Dispatcher,
-        data_builder: BaseSwitchDataBuilder
+        bot: Bot,
+        data_builder: BaseDataBuilder,
+        send_executor: SendExecutor = default_send_executor
 ):
     bot_schema: BotSchema = get_dp_schematic(dp)
-    register_schema_handlers(dp, data_builder.data_factory)
+    bot_schema_manager = BotSchemaManager(
+        bot=bot,
+        bot_schema=bot_schema,
+        data_builder=data_builder,
+        send_executor=send_executor
+    )
+    register_schema_handlers(dp, bot_schema_manager)
     dp.workflow_data.update(
         {
-            SCHEMA_KEY: bot_schema,
-            BUILDER_KEY: data_builder
+            MANAGER_KEY: bot_schema_manager,
         }
     )

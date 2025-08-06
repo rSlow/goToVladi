@@ -5,16 +5,19 @@ from aiogram.filters.callback_data import CallbackData
 from aiogram_dialog import DialogManager
 from aiogram_dialog.context.storage import StorageProxy
 
-from .types import LOADER_BUTTON_PREFIX, BUILDER_KEY
+from bot_schema_parser.schema_manager import BotSchemaManager
+
+# from .types import
 
 DataFactorySep = "⋮"
 LOADER_DATA_PREFIX = "\x1F"
 
 
-class BaseMessageConfigDataFactory(ABC, CallbackData, sep=DataFactorySep, prefix=LOADER_DATA_PREFIX):
+class BaseMessageConfigDataFactory(ABC, CallbackData, sep=DataFactorySep,
+                                   prefix=LOADER_DATA_PREFIX):
     def __init_subclass__(cls, **kwargs) -> None:
         if "prefix" not in kwargs:
-            kwargs["prefix"] = cls.__prefix__
+            kwargs["prefix"] = getattr(cls, "__prefix__", None)
         super().__init_subclass__(**kwargs)
 
 
@@ -30,22 +33,21 @@ class LoaderMessageConfigDataFactory(BaseMessageConfigDataFactory):
 
 def register_schema_handlers(
         dp: Dispatcher,
-        message_config_data_factory: BaseMessageConfigDataFactory = LoaderMessageConfigDataFactory,
+        schema_manager: BotSchemaManager,
         # TODO
 ):
+    data_builder = schema_manager._data_builder
+
     async def _message_schema_handler(
             message: types.Message, **kwargs
     ):
         ...
 
     async def _callback_schema_handler(
-            callback: types.CallbackQuery, callback_data: LoaderMessageConfigDataFactory,
+            callback: types.CallbackQuery, callback_data: BaseMessageConfigDataFactory,
             dialog_manager: DialogManager, aiogd_storage_proxy: StorageProxy, **kwargs
     ):
-        data_builder = kwargs.get(BUILDER_KEY)
-        button_config = await data_builder.parse_button_data(callback_data)
-
-        schema_manager = kwargs.get("schema_manager")
+        button_config = await data_builder.parse_data(callback_data)
         await schema_manager.handle_button(button_config)
 
     dp.message.register(

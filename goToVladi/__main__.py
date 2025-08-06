@@ -7,8 +7,8 @@ from dishka import make_async_container, AsyncContainer
 from dishka.integrations.fastapi import setup_dishka as setup_fastapi_dishka
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from bot_schema_parser.loader import PostgresqlButtonConfigLoader
 from bot_schema_parser.data_builder import LoaderSwitchDataBuilder
+from bot_schema_parser.loader import PostgresqlButtonConfigLoader
 from bot_schema_parser.setup import setup_schema
 from goToVladi.api import create_app as create_api_app, ApiAppConfig
 from goToVladi.api.config.models.api import ApiConfig
@@ -21,7 +21,6 @@ from goToVladi.bot.config.models.webhook import WebhookConfig
 from goToVladi.bot.config.parser.main import load_config as load_bot_config
 from goToVladi.bot.di import get_bot_providers
 from goToVladi.bot.di.dp import resolve_update_types
-from goToVladi.bot.handlers import setup_handlers
 from goToVladi.bot.utils import ui
 from goToVladi.bot.utils.setup import setup_dispatcher
 from goToVladi.bot.views.types.db_text import DBText
@@ -122,7 +121,7 @@ async def on_startup(
         session_maker=session_maker
     )
     button_data_builder = LoaderSwitchDataBuilder(config_loader)
-    setup_schema(dp, button_data_builder)
+    setup_schema(dp, bot, button_data_builder)
 
 
 async def on_shutdown(dishka: AsyncContainer):
