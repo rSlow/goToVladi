@@ -1,11 +1,10 @@
 from abc import abstractmethod, ABC
-from typing import TypeVar, Any, Generic
+from typing import Any, Generic
 
-from .buttons.base import BuildingButton
-from .handlers import LoaderMessageConfigDataFactory, BaseMessageConfigDataFactory
-from .loader import ButtonConfigLoader
-
-DF = TypeVar("DF", bound=BaseMessageConfigDataFactory, covariant=True)
+from bot_schema_parser.buttons.base import BuildingButton
+from bot_schema_parser.data_factory import BaseMessageConfigDataFactory, DF, \
+    LoaderMessageConfigDataFactory
+from bot_schema_parser.loader import ButtonConfigLoader
 
 
 class BaseDataBuilder(ABC, Generic[DF]):
@@ -15,16 +14,14 @@ class BaseDataBuilder(ABC, Generic[DF]):
     @abstractmethod
     async def parse_data(self, data: Any) -> BuildingButton: ...
 
-    @abstractmethod
+    # @abstractmethod
     @property
     def data_factory(self) -> type[BaseMessageConfigDataFactory]: ...
 
 
 class BaseSwitchDataBuilder(BaseDataBuilder[DF], ABC):
     pass
-    # def __init_subclass__(cls, **kwargs):
-    #     cls._data_factory: type[DF] = get_original_bases(cls)[0].__args__[0]
-    #     super().__init_subclass__(**kwargs)
+
 
 
 # class DirectSwitchDataBuilder(BaseSwitchDataBuilder[DirectMessageConfigDataFactory]):
@@ -44,19 +41,19 @@ class BaseSwitchDataBuilder(BaseDataBuilder[DF], ABC):
 
 
 class LoaderSwitchDataBuilder(BaseSwitchDataBuilder[LoaderMessageConfigDataFactory]):
-    def __init__(self, loader: ButtonConfigLoader):
-        self._loader = loader
+    def __init__(self, config_loader: ButtonConfigLoader):
+        self._config_loader = config_loader
 
     async def create_data(self, button: BuildingButton):
-        button_config_identifier = await self._loader.save_button_config(button)
+        button_config_identifier = await self._config_loader.save_button_config(button)
         return self.data_factory(
             identifier=str(button_config_identifier)
         ).pack()
 
     async def parse_data(self, data: DF) -> BuildingButton:
-        identifier = self._loader.parse_message(data.identifier)
-        button_config = await self._loader.load_button_config(identifier)
-        return BuildingButton.model_validate(button_config)
+        identifier = self._config_loader.parse_message(data.identifier)
+        return await self._config_loader.load_button_config(identifier)
+
 
     @property
     def data_factory(self):

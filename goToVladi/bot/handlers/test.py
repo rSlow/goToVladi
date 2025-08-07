@@ -2,7 +2,7 @@ from aiogram import types, Router
 from aiogram.filters import Command
 
 from bot_schema_parser import ApiMessage
-from bot_schema_parser.schema_manager import BotSchemaManager
+from bot_schema_parser.button_manager import BotButtonManager
 from bot_schema_parser.types import MANAGER_KEY
 
 message_json = {
@@ -66,7 +66,7 @@ message_json = {
 
 
 async def cmd_test(_message: types.Message, **kwargs):
-    schema_manager: BotSchemaManager = kwargs.get(MANAGER_KEY)
+    schema_manager: BotButtonManager = kwargs.get(MANAGER_KEY)
     api_message = ApiMessage.model_validate(message_json)
     await schema_manager.handle_message(api_message)
 

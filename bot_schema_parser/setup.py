@@ -7,8 +7,8 @@ from aiogram_dialog.setup import collect_dialogs
 from aiogram_dialog.widgets.kbd import Keyboard, ListGroup, Group
 
 from .data_builder import BaseDataBuilder
-from .handlers import register_schema_handlers
-from .schema_manager import BotSchemaManager
+from .handlers import register_switch_state_handlers
+from .button_manager import BotButtonManager
 from .schematic import WindowSchema, BotSchema, WindowSchemas
 from .sender import SendExecutor, default_send_executor
 from .types import SCHEMATIC_ATTR_NAME, MANAGER_KEY
@@ -50,10 +50,7 @@ def get_dp_schematic(dp: Dispatcher):
     #             # TODO create target caller
     #             ...
 
-    return BotSchema(
-        window_schemas=window_schemas,
-        buttons=buttons
-    )
+    return BotSchema(window_schemas=window_schemas, buttons=buttons)
 
 
 def setup_schema(
@@ -63,15 +60,15 @@ def setup_schema(
         send_executor: SendExecutor = default_send_executor
 ):
     bot_schema: BotSchema = get_dp_schematic(dp)
-    bot_schema_manager = BotSchemaManager(
+    bot_button_manager = BotButtonManager(
         bot=bot,
         bot_schema=bot_schema,
         data_builder=data_builder,
         send_executor=send_executor
     )
-    register_schema_handlers(dp, bot_schema_manager)
+    register_switch_state_handlers(dp, bot_button_manager)
     dp.workflow_data.update(
         {
-            MANAGER_KEY: bot_schema_manager,
+            MANAGER_KEY: bot_button_manager,
         }
     )

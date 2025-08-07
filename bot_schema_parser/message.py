@@ -1,21 +1,15 @@
-from enum import StrEnum
-
 from pydantic import BaseModel, Field, field_validator
 
 from bot_schema_parser.buttons import ApiButton
 from bot_schema_parser.keyboard import ApiKeyboard
-
-
-class ButtonFactory(StrEnum):
-    REPLY = "REPLY"
-    INLINE = "INLINE"
+from bot_schema_parser.markup import MarkupFactoryEnum
 
 
 class ApiMessage(BaseModel):
     chat_ids: list[int]
     text: str
     keyboard: ApiKeyboard = Field(default_factory=list)
-    button_factory: ButtonFactory
+    button_factory: MarkupFactoryEnum
 
     @field_validator("keyboard", mode="before")  # noqa
     @classmethod
@@ -23,7 +17,7 @@ class ApiMessage(BaseModel):
         return \
             [
                 [
-                    ApiButton.get_model_class(button["type_name"]).model_validate(button)
+                    ApiButton.init_from_dict_config(button)
                     for button in row
                 ]
                 for row in keyboard

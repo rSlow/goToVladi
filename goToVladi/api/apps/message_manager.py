@@ -7,7 +7,7 @@ from fastapi.responses import RedirectResponse
 from pydantic import AnyUrl
 
 from bot_schema_parser import ApiMessage
-from bot_schema_parser.schema_manager import BotSchemaManager
+from bot_schema_parser.button_manager import BotButtonManager
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao import EventLogDao
 from goToVladi.core.utils import dates
@@ -16,7 +16,7 @@ from goToVladi.core.utils import dates
 @inject
 async def parse_bot_message(
         message: Annotated[ApiMessage, Body()],
-        bot_schema_manager: FromDishka[BotSchemaManager],
+        bot_schema_manager: FromDishka[BotButtonManager],
 ):
     await bot_schema_manager.create_message(message)
 

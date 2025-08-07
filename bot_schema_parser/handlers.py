@@ -1,61 +1,39 @@
-from abc import ABC
-
 from aiogram import Dispatcher, types, F
-from aiogram.filters.callback_data import CallbackData
 from aiogram_dialog import DialogManager
 from aiogram_dialog.context.storage import StorageProxy
 
-from bot_schema_parser.schema_manager import BotSchemaManager
-
-# from .types import
+from bot_schema_parser.button_manager import BotButtonManager
+from bot_schema_parser.data_factory import BaseMessageConfigDataFactory
 
 DataFactorySep = "⋮"
 LOADER_DATA_PREFIX = "\x1F"
 
 
-class BaseMessageConfigDataFactory(ABC, CallbackData, sep=DataFactorySep,
-                                   prefix=LOADER_DATA_PREFIX):
-    def __init_subclass__(cls, **kwargs) -> None:
-        if "prefix" not in kwargs:
-            kwargs["prefix"] = getattr(cls, "__prefix__", None)
-        super().__init_subclass__(**kwargs)
-
-
-class DirectMessageConfigDataFactory(BaseMessageConfigDataFactory):
-    state: str
-    start_data: list[str] | None = None
-    dialog_data: list[str] | None = None
-
-
-class LoaderMessageConfigDataFactory(BaseMessageConfigDataFactory):
-    identifier: str
-
-
-def register_schema_handlers(
+def register_switch_state_handlers(
         dp: Dispatcher,
-        schema_manager: BotSchemaManager,
+        bot_button_manager: BotButtonManager,
         # TODO
 ):
-    data_builder = schema_manager._data_builder
+    data_builder = bot_button_manager._data_builder
 
-    async def _message_schema_handler(
+    async def _message_switch_state_handler(
             message: types.Message, **kwargs
     ):
         ...
 
-    async def _callback_schema_handler(
+    async def _callback_switch_state_handler(
             callback: types.CallbackQuery, callback_data: BaseMessageConfigDataFactory,
             dialog_manager: DialogManager, aiogd_storage_proxy: StorageProxy, **kwargs
     ):
         button_config = await data_builder.parse_data(callback_data)
-        await schema_manager.handle_button(button_config)
+        await bot_button_manager.handle_button(button_config)
 
     dp.message.register(
-        _message_schema_handler,
-        F.data.startswith(LOADER_BUTTON_PREFIX)
+        _message_switch_state_handler,
+        F.data.startswith(LOADER_DATA_PREFIX)  # TODO
     )
 
     dp.callback_query.register(
-        _callback_schema_handler,
-        message_config_data_factory.filter()
+        _callback_switch_state_handler,
+        data_builder.data_factory.filter()
     )

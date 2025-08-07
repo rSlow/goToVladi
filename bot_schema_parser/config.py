@@ -5,9 +5,6 @@ from pydantic import BaseModel
 from .data_builder import BaseSwitchDataBuilder, DirectSwitchDataBuilder
 
 
-class MarkupFactory(StrEnum):
-    INLINE = auto()
-    REPLY = auto()
 
 
 class SchemaConfig(BaseModel):

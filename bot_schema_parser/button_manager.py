@@ -5,13 +5,13 @@ from aiogram import Bot
 from aiogram.types import InlineKeyboardButton, KeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder, KeyboardBuilder, ReplyKeyboardBuilder
 
-from . import BotSchema
-from .buttons.base import ApiButton, BuildingButton, RawButton
-from .buttons.types import InlineButtonActions, ReplyButtonActions, AiogramButtonType, \
-    ButtonActionsEnum
-from .data_builder import BaseDataBuilder
-from .message import ApiMessage, ApiKeyboard, ButtonFactory
-from .sender import SendExecutor, default_send_executor
+from bot_schema_parser.buttons.base import ApiButton, BuildingButton, RawButton
+
+from bot_schema_parser.data_builder import BaseDataBuilder
+from bot_schema_parser.markup import MarkupFactoryEnum, BaseMarkupFactory
+from bot_schema_parser.message import ApiMessage, ApiKeyboard
+from bot_schema_parser.schematic import BotSchema
+from bot_schema_parser.sender import SendExecutor
 
 
 class ButtonBuilder:
@@ -22,49 +22,7 @@ class ButtonBuilder:
 ButtonClassTypeError = TypeError("button_class_type must be InlineKeyboardButton or KeyboardButton")
 
 
-class BaseMarkupFactory(Protocol):
-    @property
-    @abstractmethod
-    def builder(self) -> KeyboardBuilder: ...
-
-    @property
-    @abstractmethod
-    def button_class(self) -> AiogramButtonType: ...
-
-    @property
-    @abstractmethod
-    def button_actions(self) -> ButtonActionsEnum: ...
-
-
-class ReplyMarkupFactory(BaseMarkupFactory):
-    @property
-    def builder(self):
-        return ReplyKeyboardBuilder()
-
-    @property
-    def button_class(self):
-        return KeyboardButton
-
-    @property
-    def button_actions(self):
-        return ReplyButtonActions
-
-
-class InlineMarkupFactory(BaseMarkupFactory):
-    @property
-    def builder(self):
-        return InlineKeyboardBuilder()
-
-    @property
-    def button_class(self):
-        return KeyboardButton
-
-    @property
-    def button_actions(self):
-        return InlineButtonActions
-
-
-class BotSchemaManager:
+class BotButtonManager:
     def __init__(
             self,
             bot: Bot,
@@ -82,12 +40,10 @@ class BotSchemaManager:
 
     @staticmethod  # TODO
     def _get_markup_factory(button_factory_name: ButtonFactory) -> BaseMarkupFactory:
-        if button_factory_name == ButtonFactory.REPLY:
-            return ReplyMarkupFactory()
-        elif button_factory_name == ButtonFactory.INLINE:
-            return InlineMarkupFactory()
-
-        raise ButtonClassTypeError  # TODO
+        try:
+            return MarkupFactoryEnum[button_factory_name].value
+        except KeyError:
+            raise ButtonClassTypeError  # TODO
 
     async def _create_aiogram_button(
             self,
@@ -96,10 +52,10 @@ class BotSchemaManager:
     ):
         if isinstance(button, BuildingButton):
             button_data = await self._data_builder.create_data(button)
-            return button.as_aiogram_button(button_data, button_class)
+            return button.as_aiogram_button(button_class, button_data)
             # return button_class(**button.get_button_kwargs(button_data))
         if isinstance(button, RawButton):
-            return button
+            return button.as_aiogram_button(button_class)
         raise TypeError("")  # TODO unknown button type
 
     async def _create_markup(self, keyboard: ApiKeyboard, button_factory: ButtonFactory):
@@ -118,7 +74,7 @@ class BotSchemaManager:
         markup = await self._create_markup(message.keyboard, message.button_factory)
         await self._send_executor(
             bot=self._bot,
-            chat_ids=message.chat_id,
+            chat_ids=message.chat_ids,
             text=message.text,
             markup=markup
         )
@@ -131,5 +87,8 @@ class BotSchemaManager:
             return [t.value for t in ReplyButtonActions]
         raise ButtonClassTypeError
 
-    async def handle_button(self, button_config: ApiButton):
-        pass
+    async def handle_button(self, button: ApiButton):
+        await button.execute(
+            self._bot,
+            self._bot_schema
+        )
