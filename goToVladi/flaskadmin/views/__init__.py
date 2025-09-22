@@ -15,9 +15,9 @@ from .food import mount_food_view
 from .hotels import mount_hotel_views
 from .mailing import mount_mailing_view
 from .massages import mount_massages_views
-from .message_text import mount_message_text_view
 from .regions import mount_region_views
 from .sea_recreation import mount_sea_recreation_views
+from .service import mount_service_views
 from .trips import mount_trips_views
 from .users import mount_users_views
 
@@ -36,7 +36,7 @@ def mount_admin_views(admin_app: Admin, session: scoped_session[Session]):
     mount_cooperation_view(admin_app, session)
     mount_users_views(admin_app, session)
     mount_mailing_view(admin_app)
-    mount_message_text_view(admin_app, session)
+    mount_service_views(admin_app, session)
 
 
 def mount_views(app: Flask, config: FlaskAppConfig):

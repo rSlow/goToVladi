@@ -4,11 +4,11 @@ from aiogram_dialog.widgets.input import TextInput
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
-from goToVladi.bot.config.models import BotConfig
 from goToVladi.bot.di.jinja import JinjaRenderer
 from goToVladi.bot.states.cooperation import CooperationSG
 from goToVladi.bot.views import buttons
 from goToVladi.bot.views.types import JinjaTemplate
+from goToVladi.core.config.models import AppConfig
 from goToVladi.core.data.db import dto
 from goToVladi.core.data.db.dao.cooperation import CooperationDao
 
@@ -17,12 +17,12 @@ from goToVladi.core.data.db.dao.cooperation import CooperationDao
 async def on_text_input(
         message: types.Message, _, manager: DialogManager, data: str,
         dao: FromDishka[CooperationDao], bot: FromDishka[Bot], jinja: FromDishka[JinjaRenderer],
-        bot_config: FromDishka[BotConfig]
+        app_config: FromDishka[AppConfig]
 ):
     user: dto.User = manager.middleware_data["user"]
     await dao.add(text=data, username=user.username)
     await message.answer("Заявка принята, в ближайшее время мы ее рассмотрим!")
-    for user_id in bot_config.superusers:  # TODO fix this
+    for user_id in app_config.admins:  # TODO fix this
         await bot.send_message(
             chat_id=user_id,
             text=jinja.render_template(

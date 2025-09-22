@@ -13,6 +13,7 @@ __all__ = [
     "Massage", "ListMassage", "MassageMedia",
     "CarRent", "CarRentMedia", "CarClass", "ListCarRent",
     "MessageText",
+    "Setting",
     "id_getter"
 ]
 
@@ -35,5 +36,6 @@ from .region import Region
 from .trip import Trip, ListTrip, TripMedia
 from .user import User, UserWithCreds
 from .cooperation import Cooperation
+from .settings import Setting
 
 id_getter = attrgetter("id")

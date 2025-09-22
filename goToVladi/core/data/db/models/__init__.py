@@ -16,3 +16,4 @@ from .sea_recreation import SeaRecreation, SeaRecreationMedia, SeaRecreationCate
 from .trips import Trip, TripMedia
 from .user import User
 from .cooperation import Cooperation
+from .settings import Setting
