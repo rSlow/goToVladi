@@ -1,6 +1,6 @@
 from aiogram_dialog import Dialog
 
-from bot_schema_parser import with_schematic, DataParam
+from dialog_schematic_manager import with_schematic, DataParam
 from .card import hotel_window
 from .categories import district_window, list_hotels_window
 

@@ -3,7 +3,7 @@ from typing import Protocol, Iterable
 
 from aiogram import Bot
 
-from bot_schema_parser.buttons.types import KeyboardMarkup
+from bot_schema_parser.markup import KeyboardMarkup
 
 
 class SendExecutor(Protocol):

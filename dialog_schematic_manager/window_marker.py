@@ -1,15 +1,15 @@
 from aiogram_dialog import Window
 
+from .attrs import WINDOW_SCHEMA_KEY
 from .data_param import DataParam
-from .__outer import TargetCaller
-from .types import WindowT, SCHEMATIC_ATTR_NAME
+from .generics import WindowT
 from .window_schema import WindowSchema
 
 
 def with_schematic(
         window: WindowT, alias: str,
         start_data: list[DataParam] | None = None, dialog_data: list[DataParam] | None = None,
-        target_caller: TargetCaller | None = None
+        # target_caller: TargetCaller | None = None
 ) -> WindowT:
     if not isinstance(window, Window):
         raise TypeError(f"{window} must be a <{WindowT.__bound__.__name__}> type")
@@ -22,6 +22,6 @@ def with_schematic(
         dialog_data=dialog_data or [],
         # target_caller=target_caller,
     )
-    setattr(window, SCHEMATIC_ATTR_NAME, window_schema)
+    setattr(window, WINDOW_SCHEMA_KEY, window_schema)
 
     return window

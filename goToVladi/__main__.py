@@ -5,11 +5,10 @@ import uvicorn
 from aiogram import Bot, Dispatcher
 from dishka import make_async_container, AsyncContainer
 from dishka.integrations.fastapi import setup_dishka as setup_fastapi_dishka
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
+from fastapi import FastAPI
 
-from bot_schema_parser.data_builder import LoaderSwitchDataBuilder
-from bot_schema_parser.loader import PostgresqlButtonConfigLoader
-from bot_schema_parser.setup import setup_schema
+from dialog_schematic_manager.fastapi_integration import register_manager
+from dialog_schematic_manager.setup import setup_schema
 from goToVladi.api import create_app as create_api_app, ApiAppConfig
 from goToVladi.api.config.models.api import ApiConfig
 from goToVladi.api.config.parser.main import load_config as load_api_config
@@ -30,7 +29,6 @@ from goToVladi.core.config.parser.config_logging import setup_logging
 from goToVladi.core.config.parser.paths import get_paths
 from goToVladi.core.config.parser.retort import get_base_retort
 from goToVladi.core.data.db.dao import MessageTextDao
-from goToVladi.core.data.db.models import MessageConfig
 from goToVladi.core.data.db.utils.storage import configure_storages
 from goToVladi.core.di import get_common_providers
 from goToVladi.core.utils import di_visual
@@ -68,7 +66,7 @@ def main():
 
     startup_callback = partial(
         on_startup,
-        di_container, api_config.web, api_config.api, webhook_config, bot_config.bot
+        di_container, api_app, api_config.web, api_config.api, webhook_config, bot_config.bot,
     )
     shutdown_callback = partial(on_shutdown, di_container)
     api_app.add_event_handler("startup", startup_callback)
@@ -86,7 +84,7 @@ def main():
 
 
 async def on_startup(
-        dishka: AsyncContainer,
+        dishka: AsyncContainer, app: FastAPI,
         web_config: WebConfig, api_config: ApiConfig, webhook_config: WebhookConfig,
         bot_config: BotConfig
 ):
@@ -114,14 +112,22 @@ async def on_startup(
         await DBText.check_keys(await container.get(MessageTextDao))
 
     # ----------------------------------------------------- #
-    session_maker = await dishka.get(async_sessionmaker[AsyncSession])
-    config_loader = PostgresqlButtonConfigLoader(
-        message_identifier_parser=int,
-        database_class=MessageConfig,
-        session_maker=session_maker
+    # session_maker = await dishka.get(async_sessionmaker[AsyncSession])
+    # button_config_loader = PostgresqlButtonConfigLoader(
+    #     message_identifier_parser=int,
+    #     database_class=MessageConfig,
+    #     session_maker=session_maker
+    # )
+    # data_builder = LoaderSwitchDataBuilder(button_config_loader)
+    # data_builder.register_buttons(
+    #     SwitchStateButton,
+    #     UrlButton,
+    # )
+    schema_manager = setup_schema(
+        dp,
+        # bot, data_builder
     )
-    button_data_builder = LoaderSwitchDataBuilder(config_loader)
-    setup_schema(dp, bot, button_data_builder)
+    register_manager(app, schema_manager)
 
 
 async def on_shutdown(dishka: AsyncContainer):

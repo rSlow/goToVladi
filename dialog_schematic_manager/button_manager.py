@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Protocol
+from typing import Protocol, Iterable
 
 from aiogram import Bot
 from aiogram.types import InlineKeyboardButton, KeyboardButton
@@ -11,7 +11,7 @@ from bot_schema_parser.data_builder import BaseDataBuilder
 from bot_schema_parser.markup import MarkupFactoryEnum, BaseMarkupFactory
 from bot_schema_parser.message import ApiMessage, ApiKeyboard
 from bot_schema_parser.schematic import BotSchema
-from bot_schema_parser.sender import SendExecutor
+from bot_schema_parser.sender import SendExecutor, default_send_executor
 
 
 class ButtonBuilder:
@@ -28,12 +28,13 @@ class BotButtonManager:
             bot: Bot,
             bot_schema: BotSchema,
             data_builder: BaseDataBuilder,
-            send_executor: SendExecutor,
+            send_executor: SendExecutor = default_send_executor,
     ):
         self._bot = bot
         self._bot_schema = bot_schema
         self._data_builder = data_builder
         self._send_executor = send_executor
+        self._button_types: list[str, type[ApiButton]] = {}
 
         for schema in self._bot_schema.window_schemas:
             ...
@@ -92,3 +93,10 @@ class BotButtonManager:
             self._bot,
             self._bot_schema
         )
+
+    def register_buttons(self, buttons: Iterable[ApiButton]):
+        for button in buttons:
+            self._button_types[button.type_key] = button
+
+    def with_send_executor(self, send_executor: SendExecutor):
+        self._send_executor = send_executor

@@ -4,7 +4,8 @@ from aiogram import Dispatcher, Router
 
 from goToVladi.bot.config.models.bot import BotConfig
 from goToVladi.bot.filters.private import set_chat_private_filter
-from . import base_commands, test
+from . import base_commands
+from . import test
 from . import errors
 
 logger = logging.getLogger(__name__)

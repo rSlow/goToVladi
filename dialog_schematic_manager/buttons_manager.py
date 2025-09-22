@@ -1,0 +1,2 @@
+class ButtonsManager:
+    pass

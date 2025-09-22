@@ -2,7 +2,7 @@ from aiogram_dialog import Window, Dialog
 from aiogram_dialog.widgets.kbd import Start, Group
 from aiogram_dialog.widgets.text import Const
 
-from bot_schema_parser import with_schematic
+from dialog_schematic_manager import with_schematic
 from goToVladi.bot.dialogs.region import has_region
 from goToVladi.bot.filters.user import F_User
 from goToVladi.bot.states.admin import AdminMainSG

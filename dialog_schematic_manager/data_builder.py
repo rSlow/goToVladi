@@ -14,14 +14,13 @@ class BaseDataBuilder(ABC, Generic[DF]):
     @abstractmethod
     async def parse_data(self, data: Any) -> BuildingButton: ...
 
-    # @abstractmethod
+    @abstractmethod
     @property
     def data_factory(self) -> type[BaseMessageConfigDataFactory]: ...
 
 
 class BaseSwitchDataBuilder(BaseDataBuilder[DF], ABC):
     pass
-
 
 
 # class DirectSwitchDataBuilder(BaseSwitchDataBuilder[DirectMessageConfigDataFactory]):
@@ -53,7 +52,6 @@ class LoaderSwitchDataBuilder(BaseSwitchDataBuilder[LoaderMessageConfigDataFacto
     async def parse_data(self, data: DF) -> BuildingButton:
         identifier = self._config_loader.parse_message(data.identifier)
         return await self._config_loader.load_button_config(identifier)
-
 
     @property
     def data_factory(self):

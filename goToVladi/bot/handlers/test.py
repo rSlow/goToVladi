@@ -1,9 +1,8 @@
-from aiogram import types, Router
+import aiohttp
+from aiogram import types, Router, Bot
 from aiogram.filters import Command
 
-from bot_schema_parser import ApiMessage
-from bot_schema_parser.button_manager import BotButtonManager
-from bot_schema_parser.types import MANAGER_KEY
+from dialog_schematic_manager import DialogSchematicManager
 
 message_json = {
     "chat_ids": [
@@ -65,10 +64,13 @@ message_json = {
 }
 
 
-async def cmd_test(_message: types.Message, **kwargs):
-    schema_manager: BotButtonManager = kwargs.get(MANAGER_KEY)
-    api_message = ApiMessage.model_validate(message_json)
-    await schema_manager.handle_message(api_message)
+async def cmd_test(message: types.Message, schematic_manager: DialogSchematicManager, bot:Bot):
+    async with aiohttp.ClientSession() as session:
+        res = await session.get(
+            url=
+        )
+        schematic = await res.json()
+        await message.answer(text=str(schematic))
 
 
 def setup():

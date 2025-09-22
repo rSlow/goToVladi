@@ -1,4 +1,4 @@
-from bot_schema_parser.loader import PostgresqlMessageConfig
+from dialog_schematic_manager.loader import PostgresqlMessageConfig
 from goToVladi.core.data.db.models import Base
 
 
